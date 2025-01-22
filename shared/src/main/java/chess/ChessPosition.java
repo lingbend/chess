@@ -9,13 +9,14 @@ import java.util.Objects;
  * signature of the existing methods.
  */
 public class ChessPosition {
+
     @Override
     public boolean equals(Object o) {
-        if (o == null || getClass() != o.getClass()) {
+        if (o == null || this.getClass() != o.getClass()) {
             return false;
         }
         ChessPosition that = (ChessPosition) o;
-        return pos_row == that.pos_row && pos_col == that.pos_col;
+        return this.pos_row == that.pos_row && this.pos_col == that.pos_col;
     }
 
     @Override
