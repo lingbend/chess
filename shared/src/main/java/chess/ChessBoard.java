@@ -8,14 +8,9 @@ package chess;
  */
 public class ChessBoard {
 
-    private ChessSquare[][] board = new ChessSquare[8][8];
+    private ChessPiece[][] board = new ChessPiece[8][8];
 
     public ChessBoard() {
-        for(int i = 1; i < 9; i++) {
-            for(int j = 1; j < 9; j++) {
-                board[i][j] = new ChessSquare(null, new ChessPosition(i, j));
-            }
-        }
     }
 
     /**
