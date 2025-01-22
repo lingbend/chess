@@ -1,7 +1,6 @@
 package chess;
 
 import java.util.Collection;
-import java.lang.String;
 
 /**
  * Represents a single chess piece
@@ -11,12 +10,12 @@ import java.lang.String;
  */
 public class ChessPiece {
 
-    private ChessGame.TeamColor teamcolor;
+    private final ChessGame.TeamColor teamcolor;
     private ChessPiece.PieceType piecetype;
 
     public ChessPiece(ChessGame.TeamColor pieceColor, ChessPiece.PieceType type) {
-        teamcolor = pieceColor;
-        piecetype = type;
+        this.teamcolor = pieceColor;
+        this.piecetype = type;
     }
 
     /**
