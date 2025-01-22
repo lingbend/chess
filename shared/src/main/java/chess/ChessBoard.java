@@ -8,9 +8,10 @@ package chess;
  */
 public class ChessBoard {
 
-    private ChessPiece[][] board = new ChessPiece[8][8];
+    private ChessPiece[][] board = new ChessPiece[8][8]; //[row][col]
 
     public ChessBoard() {
+        this.resetBoard();
     }
 
     /**
@@ -39,6 +40,27 @@ public class ChessBoard {
      * (How the game of chess normally starts)
      */
     public void resetBoard() {
-        throw new RuntimeException("Not implemented");
+        this.board = new ChessPiece[8][8];
+        backStripe(ChessGame.TeamColor.BLACK, 7);
+        pawnStripe(ChessGame.TeamColor.BLACK, 6);
+        pawnStripe(ChessGame.TeamColor.WHITE, 1);
+        backStripe(ChessGame.TeamColor.WHITE, 0);
+    }
+
+    private void pawnStripe(ChessGame.TeamColor color, int row) {
+        for (int i = 0; i < 8; i++) {
+            this.board[row][i] = new ChessPiece(color, ChessPiece.PieceType.PAWN);
+        }
+    }
+
+    private void backStripe(ChessGame.TeamColor color, int row) {
+        this.board[row][0] = new ChessPiece(color, ChessPiece.PieceType.ROOK);
+        this.board[row][1] = new ChessPiece(color, ChessPiece.PieceType.KNIGHT);
+        this.board[row][2] = new ChessPiece(color, ChessPiece.PieceType.BISHOP);
+        this.board[row][3] = new ChessPiece(color, ChessPiece.PieceType.QUEEN);
+        this.board[row][4] = new ChessPiece(color, ChessPiece.PieceType.KING);
+        this.board[row][5] = new ChessPiece(color, ChessPiece.PieceType.BISHOP);
+        this.board[row][6] = new ChessPiece(color, ChessPiece.PieceType.KNIGHT);
+        this.board[row][7] = new ChessPiece(color, ChessPiece.PieceType.ROOK);
     }
 }
