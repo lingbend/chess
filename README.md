@@ -2,6 +2,10 @@
 
 This project demonstrates mastery of proper software design, client/server architecture, networking using HTTP and WebSocket, database persistence, unit testing, serialization, and security.
 
+# Note
+
+This project is currently in progress and is on track to complete at the end of Winter semester, 2025 (April).
+
 ## 10k Architecture Overview
 
 The application implements a multiplayer chess server and a command line chess client.
