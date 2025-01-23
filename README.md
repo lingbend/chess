@@ -4,7 +4,7 @@ This project demonstrates mastery of proper software design, client/server archi
 
 # Note
 
-This project is currently in progress and is on track to complete at the end of Winter semester, 2025 (April).
+**This project is currently in progress and is on track to complete at the end of Winter semester, 2025 (April).**
 
 ## 10k Architecture Overview
 
