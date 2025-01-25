@@ -21,6 +21,11 @@ public class ChessPiece {
     }
 
     @Override
+    public String toString() {
+        return teamcolor + " " + piecetype;
+    }
+
+    @Override
     public boolean equals(Object o) {
         if (o == null || this.getClass() != o.getClass()) {
             return false;
