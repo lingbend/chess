@@ -109,9 +109,16 @@ public class ChessPiece {
             validends.addAll(checkDirUntil(board, myPosition, -1, 1));
             validends.addAll(checkDirUntil(board, myPosition, -1, -1));
         }
-//        else if (this.piecetype == PieceType.KNIGHT) {
-//
-//        }
+        else if (this.piecetype == PieceType.KNIGHT) {
+            validends.addAll(checkDirUntil(board, myPosition, 1, 2, 1));
+            validends.addAll(checkDirUntil(board, myPosition, 1, -2, 1));
+            validends.addAll(checkDirUntil(board, myPosition, -1, 2, 1));
+            validends.addAll(checkDirUntil(board, myPosition, -1, -2, 1));
+            validends.addAll(checkDirUntil(board, myPosition, 2, 1, 1));
+            validends.addAll(checkDirUntil(board, myPosition, 2, -1, 1));
+            validends.addAll(checkDirUntil(board, myPosition, -2, 1, 1));
+            validends.addAll(checkDirUntil(board, myPosition, -2, -1, 1));
+        }
         else if (this.piecetype == PieceType.QUEEN) {
             validends.addAll(checkDirUntil(board, myPosition, 1, 0));
             validends.addAll(checkDirUntil(board, myPosition, -1, 0));
@@ -122,9 +129,16 @@ public class ChessPiece {
             validends.addAll(checkDirUntil(board, myPosition, -1, 1));
             validends.addAll(checkDirUntil(board, myPosition, -1, -1));
         }
-//        else if (this.piecetype == PieceType.KING) {
-//
-//        }
+        else if (this.piecetype == PieceType.KING) {
+            validends.addAll(checkDirUntil(board, myPosition, 1, 0, 1));
+            validends.addAll(checkDirUntil(board, myPosition, -1, 0, 1));
+            validends.addAll(checkDirUntil(board, myPosition, 0, 1, 1));
+            validends.addAll(checkDirUntil(board, myPosition, 0, -1, 1));
+            validends.addAll(checkDirUntil(board, myPosition, 1, 1, 1));
+            validends.addAll(checkDirUntil(board, myPosition, 1, -1, 1));
+            validends.addAll(checkDirUntil(board, myPosition, -1, 1, 1));
+            validends.addAll(checkDirUntil(board, myPosition, -1, -1, 1));
+        }
 
         ArrayList<ChessMove> validmoves = generateMoves(validends, myPosition);
 
@@ -185,6 +199,11 @@ public class ChessPiece {
             curr_row += row_mod;
             curr_col += col_mod;
             moved += 1;
+        }
+
+        if (onBoard(curr_row) && onBoard(curr_col) && isTarget(board, curr_row, curr_col)
+                && this.piecetype != PieceType.PAWN) {
+            valid_move.add(new ChessPosition(curr_row, curr_col));
         }
 
         return valid_move;
