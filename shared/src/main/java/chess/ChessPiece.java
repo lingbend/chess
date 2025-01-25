@@ -69,7 +69,7 @@ public class ChessPiece {
      * @return Collection of valid moves
      */
     public Collection<ChessMove> pieceMoves(ChessBoard board, ChessPosition myPosition) {
-        Collection<ChessPosition> validmoves = new ArrayList<ChessPosition>();
+        Collection<ChessPosition> validmoves = new ArrayList<>();
         int curr_x = myPosition.getColumn();
         int curr_y = myPosition.getRow();
         if (this.piecetype == PieceType.PAWN) {
@@ -146,14 +146,54 @@ public class ChessPiece {
 //
 //    }
 
-    private boolean isOccupied(ChessBoard board, ChessPosition pos) {
-        if (board.getPiece(pos) != null) {
+    private ArrayList<ChessPosition> checkDirUntil (ChessBoard board, ChessPosition start,
+                                                    int col_mod, int row_mod) {
+        ArrayList<ChessPosition> valid_move = new ArrayList<>();
+        int curr_row = start.getRow() + row_mod;
+        int curr_col = start.getColumn() + col_mod;
+
+        while (onBoard(curr_row) && onBoard(curr_col) && !isOccupied(board, curr_row, curr_col)){
+            valid_move.add(new ChessPosition(curr_row, curr_col));
+            curr_row += row_mod;
+            curr_col += col_mod;
+        }
+
+        if (onBoard(curr_row) && onBoard(curr_col) && isOccupied(board, curr_row, curr_col)) {
+            valid_move.add(new ChessPosition(curr_row, curr_col));
+        }
+
+        return valid_move;
+    }
+
+    private ArrayList<ChessPosition> checkDirUntil (ChessBoard board, ChessPosition start,
+                                                    int col_mod, int row_mod, int max_dist) {
+
+        ArrayList<ChessPosition> valid_move = new ArrayList<>();
+        int curr_row = start.getRow() + row_mod;
+        int curr_col = start.getColumn() + col_mod;
+        int moved = 1;
+
+        while (onBoard(curr_row) && onBoard(curr_col) && !isOccupied(board, curr_row, curr_col)
+                && moved <= max_dist) {
+            valid_move.add(new ChessPosition(curr_row, curr_col));
+            curr_row += row_mod;
+            curr_col += col_mod;
+            moved += 1;
+        }
+
+        return valid_move;
+
+    }
+
+    private boolean isOccupied(ChessBoard board, int curr_row, int curr_col) {
+        if (board.getPiece(curr_row, curr_col) != null) {
             return true;
         }
         else {
             return false;
         }
     }
+
 
     private boolean onBoard(int num) {
         if (num > 0 && num < 9) {
