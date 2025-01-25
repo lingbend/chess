@@ -69,82 +69,70 @@ public class ChessPiece {
      * @return Collection of valid moves
      */
     public Collection<ChessMove> pieceMoves(ChessBoard board, ChessPosition myPosition) {
-        Collection<ChessPosition> validmoves = new ArrayList<>();
+        ArrayList<ChessPosition> validends = new ArrayList<>();
         int curr_x = myPosition.getColumn();
         int curr_y = myPosition.getRow();
         if (this.piecetype == PieceType.PAWN) {
             if (this.teamcolor == ChessGame.TeamColor.WHITE) {
-                if (curr_y + 1 < 7 && board.getPiece(new ChessPosition(curr_y + 1, curr_x)) == null) { //row, col
-                    validmoves.add(new ChessPosition(curr_y + 1, curr_x));
+                if (curr_y == 2) {
+                    validends.addAll(checkDirUntil(board, myPosition, 0, 1, 2));
+                }
+                else {
+                    validends.addAll(checkDirUntil(board, myPosition, 0, 1, 1));
+                }
+                validends.addAll(checkPawnDiagonals(board, myPosition));
+            }
+            else {
+                if (curr_y == 7) {
+                    validends.addAll(checkDirUntil(board, myPosition, 0, -1, 2));
+                }
+                else {
+                    validends.addAll(checkDirUntil(board, myPosition, 0, -1, 1));
+                }
+                validends.addAll(checkPawnDiagonals(board, myPosition));
+            }
+        }
+//        else if (this.piecetype == PieceType.ROOK) {
+//
+//        }
+//        else if (this.piecetype == PieceType.BISHOP) {
+//
+//        }
+//        else if (this.piecetype == PieceType.KNIGHT) {
+//
+//        }
+//        else if (this.piecetype == PieceType.QUEEN) {
+//
+//        }
+//        else if (this.piecetype == PieceType.KING) {
+//
+//        }
+
+        ArrayList<ChessMove> validmoves = generateMoves(validends, myPosition);
+
+        return validmoves;
+    }
+
+    private ArrayList<ChessMove> generateMoves (ArrayList<ChessPosition> endlist, ChessPosition start) {
+        ArrayList<ChessMove> movelist = new ArrayList<>();
+        for (int i = endlist.size(); i > 0; i--) {
+            if (this.piecetype == PieceType.PAWN && ((this.teamcolor ==
+                    ChessGame.TeamColor.WHITE && endlist.get(i - 1).getRow() == 8) ||
+                    (this.teamcolor == ChessGame.TeamColor.BLACK && endlist.get(i - 1).getRow() == 1))) {
+                for (PieceType j : PieceType.values() ) {
+                    if (j == PieceType.KING || j == PieceType.PAWN) {
+                        continue;
+                    }
+                    movelist.add(new ChessMove(start, endlist.get(i - 1), j));
                 }
             }
             else {
-
+                movelist.add(new ChessMove(start, endlist.get(i - 1), null));
             }
         }
-        else if (this.piecetype == PieceType.ROOK) {
-
-        }
-        else if (this.piecetype == PieceType.BISHOP) {
-
-        }
-        else if (this.piecetype == PieceType.KNIGHT) {
-
-        }
-        else if (this.piecetype == PieceType.QUEEN) {
-
-        }
-        else if (this.piecetype == PieceType.KING) {
-
-        }
-        return null;
+        return movelist;
     }
 
-//    private ArrayList<ArrayList<ChessPosition>> moveLocations(ChessPosition myPosition) {
-//        int curr_col = myPosition.getColumn();
-//        int curr_row = myPosition.getRow();
-//        ArrayList<ArrayList<ChessPosition>> index = new ArrayList<ArrayList<ChessPosition>>();
-//        ArrayList<ChessPosition> temp_list = new ArrayList<ChessPosition>();
-//
-//        if (this.piecetype == PieceType.PAWN) {
-//
-//            int placeholder_row = 1;
-//            for (int i = 1; (onBoard(placeholder_row) && i < 3); i++) {
-//                if (this.teamcolor == ChessGame.TeamColor.WHITE) {
-//                    placeholder_row = curr_row + i;
-//                }
-//                else {
-//                    placeholder_row = curr_row - i;
-//                }
-//                temp_list.add(new ChessPosition(placeholder_row, curr_col));
-//            }
-//
-//            index.add((ArrayList<ChessPosition>)temp_list.clone());
-//            temp_list.clear();
-//
-//            if (this.teamcolor == ChessGame.TeamColor.WHITE) {
-//                placeholder_row = curr_row + 1;
-//            }
-//            else {
-//                placeholder_row = curr_row - 1;
-//            }
-//            int placeholder_col = curr_col - 1;
-//            if (onBoard(placeholder_col) && onBoard(placeholder_row)) {
-//                temp_list.add(new ChessPosition(placeholder_row, placeholder_col));
-//                index.add((ArrayList<ChessPosition>)temp_list.clone());
-//                temp_list.clear();
-//            }
-//            placeholder_col = curr_col + 1;
-//            if (onBoard(placeholder_col) && onBoard(placeholder_row)) {
-//                temp_list.add(new ChessPosition(placeholder_row, placeholder_col));
-//                index.add((ArrayList<ChessPosition>)temp_list.clone());
-//                temp_list.clear();
-//            }
-//
-//
-//        }
-//
-//    }
 
     private ArrayList<ChessPosition> checkDirUntil (ChessBoard board, ChessPosition start,
                                                     int col_mod, int row_mod) {
@@ -185,8 +173,27 @@ public class ChessPiece {
 
     }
 
-    private boolean isOccupied(ChessBoard board, int curr_row, int curr_col) {
-        if (board.getPiece(curr_row, curr_col) != null) {
+    private ArrayList<ChessPosition> checkPawnDiagonals (ChessBoard board, ChessPosition start) {
+        ArrayList<ChessPosition> moves = new ArrayList<>();
+        int curr_col = start.getColumn();
+        int curr_row = start.getRow();
+        if (this.teamcolor == ChessGame.TeamColor.WHITE) {
+            curr_row += 1;
+        }
+        else {
+            curr_row -= 1;
+        }
+        if (onBoard(curr_col - 1) && onBoard(curr_row) && isOccupied(board, curr_row, curr_col - 1)) {
+            moves.add(new ChessPosition(curr_row, curr_col - 1));
+        }
+        if (onBoard(curr_col + 1) && onBoard(curr_row) && isOccupied(board, curr_row, curr_col + 1)) {
+            moves.add(new ChessPosition(curr_row, curr_col + 1));
+        }
+        return moves;
+    }
+
+    private boolean isOccupied(ChessBoard chessboard, int curr_row, int curr_col) {
+        if (chessboard.getPiece(curr_row, curr_col) != null) {
             return true;
         }
         else {
