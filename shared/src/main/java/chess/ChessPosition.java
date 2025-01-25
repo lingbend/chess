@@ -26,7 +26,7 @@ public class ChessPosition {
 
     @Override
     public String toString() {
-        String output = "Row: " + this.pos_row + " Col: " + this.pos_col;
+        String output = "(" + this.pos_row + " ," + this.pos_col + ")";
         return output;
     }
 
