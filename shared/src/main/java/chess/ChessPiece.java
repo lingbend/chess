@@ -112,9 +112,16 @@ public class ChessPiece {
 //        else if (this.piecetype == PieceType.KNIGHT) {
 //
 //        }
-//        else if (this.piecetype == PieceType.QUEEN) {
-//
-//        }
+        else if (this.piecetype == PieceType.QUEEN) {
+            validends.addAll(checkDirUntil(board, myPosition, 1, 0));
+            validends.addAll(checkDirUntil(board, myPosition, -1, 0));
+            validends.addAll(checkDirUntil(board, myPosition, 0, 1));
+            validends.addAll(checkDirUntil(board, myPosition, 0, -1));
+            validends.addAll(checkDirUntil(board, myPosition, 1, 1));
+            validends.addAll(checkDirUntil(board, myPosition, 1, -1));
+            validends.addAll(checkDirUntil(board, myPosition, -1, 1));
+            validends.addAll(checkDirUntil(board, myPosition, -1, -1));
+        }
 //        else if (this.piecetype == PieceType.KING) {
 //
 //        }
