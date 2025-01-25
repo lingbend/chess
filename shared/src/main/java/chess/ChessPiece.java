@@ -97,12 +97,18 @@ public class ChessPiece {
                 validends.addAll(checkPawnDiagonals(board, myPosition));
             }
         }
-//        else if (this.piecetype == PieceType.ROOK) {
-//
-//        }
-//        else if (this.piecetype == PieceType.BISHOP) {
-//
-//        }
+        else if (this.piecetype == PieceType.ROOK) {
+            validends.addAll(checkDirUntil(board, myPosition, 1, 0));
+            validends.addAll(checkDirUntil(board, myPosition, -1, 0));
+            validends.addAll(checkDirUntil(board, myPosition, 0, 1));
+            validends.addAll(checkDirUntil(board, myPosition, 0, -1));
+        }
+        else if (this.piecetype == PieceType.BISHOP) {
+            validends.addAll(checkDirUntil(board, myPosition, 1, 1));
+            validends.addAll(checkDirUntil(board, myPosition, 1, -1));
+            validends.addAll(checkDirUntil(board, myPosition, -1, 1));
+            validends.addAll(checkDirUntil(board, myPosition, -1, -1));
+        }
 //        else if (this.piecetype == PieceType.KNIGHT) {
 //
 //        }
@@ -151,7 +157,7 @@ public class ChessPiece {
             curr_col += col_mod;
         }
 
-        if (onBoard(curr_row) && onBoard(curr_col) && isOccupied(board, curr_row, curr_col)) {
+        if (onBoard(curr_row) && onBoard(curr_col) && isTarget(board, curr_row, curr_col)) {
             valid_move.add(new ChessPosition(curr_row, curr_col));
         }
 
