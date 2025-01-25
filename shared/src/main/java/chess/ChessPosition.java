@@ -24,6 +24,12 @@ public class ChessPosition {
         return Objects.hash(pos_row, pos_col);
     }
 
+    @Override
+    public String toString() {
+        String output = "Row: " + this.pos_row + " Col: " + this.pos_col;
+        return output;
+    }
+
     private final int pos_row;
     private final int pos_col;
 
