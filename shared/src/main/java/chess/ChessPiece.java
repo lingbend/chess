@@ -188,13 +188,23 @@ public class ChessPiece {
         else {
             curr_row -= 1;
         }
-        if (onBoard(curr_col - 1) && onBoard(curr_row) && isOccupied(board, curr_row, curr_col - 1)) {
+        if (onBoard(curr_col - 1) && onBoard(curr_row) && isTarget(board, curr_row, curr_col - 1)) {
             moves.add(new ChessPosition(curr_row, curr_col - 1));
         }
-        if (onBoard(curr_col + 1) && onBoard(curr_row) && isOccupied(board, curr_row, curr_col + 1)) {
+        if (onBoard(curr_col + 1) && onBoard(curr_row) && isTarget(board, curr_row, curr_col + 1)) {
             moves.add(new ChessPosition(curr_row, curr_col + 1));
         }
         return moves;
+    }
+
+    private boolean isTarget(ChessBoard chessboard, int curr_row, int curr_col) {
+        if (chessboard.getPiece(curr_row, curr_col) != null &&
+                chessboard.getPiece(curr_row, curr_col).teamcolor != this.teamcolor ) {
+            return true;
+        }
+        else {
+            return false;
+        }
     }
 
     private boolean isOccupied(ChessBoard chessboard, int curr_row, int curr_col) {
