@@ -1,5 +1,6 @@
 package chess;
 
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Objects;
 
@@ -68,8 +69,18 @@ public class ChessPiece {
      * @return Collection of valid moves
      */
     public Collection<ChessMove> pieceMoves(ChessBoard board, ChessPosition myPosition) {
+        Collection<ChessPosition> validmoves = new ArrayList<ChessPosition>();
+        int curr_x = myPosition.getColumn();
+        int curr_y = myPosition.getRow();
         if (this.piecetype == PieceType.PAWN) {
+            if (this.teamcolor == ChessGame.TeamColor.WHITE) {
+                if (curr_y + 1 < 7 && board.getPiece(new ChessPosition(curr_y + 1, curr_x)) == null) { //row, col
+                    validmoves.add(new ChessPosition(curr_y + 1, curr_x));
+                }
+            }
+            else {
 
+            }
         }
         else if (this.piecetype == PieceType.ROOK) {
 
@@ -88,4 +99,69 @@ public class ChessPiece {
         }
         return null;
     }
+
+//    private ArrayList<ArrayList<ChessPosition>> moveLocations(ChessPosition myPosition) {
+//        int curr_col = myPosition.getColumn();
+//        int curr_row = myPosition.getRow();
+//        ArrayList<ArrayList<ChessPosition>> index = new ArrayList<ArrayList<ChessPosition>>();
+//        ArrayList<ChessPosition> temp_list = new ArrayList<ChessPosition>();
+//
+//        if (this.piecetype == PieceType.PAWN) {
+//
+//            int placeholder_row = 1;
+//            for (int i = 1; (onBoard(placeholder_row) && i < 3); i++) {
+//                if (this.teamcolor == ChessGame.TeamColor.WHITE) {
+//                    placeholder_row = curr_row + i;
+//                }
+//                else {
+//                    placeholder_row = curr_row - i;
+//                }
+//                temp_list.add(new ChessPosition(placeholder_row, curr_col));
+//            }
+//
+//            index.add((ArrayList<ChessPosition>)temp_list.clone());
+//            temp_list.clear();
+//
+//            if (this.teamcolor == ChessGame.TeamColor.WHITE) {
+//                placeholder_row = curr_row + 1;
+//            }
+//            else {
+//                placeholder_row = curr_row - 1;
+//            }
+//            int placeholder_col = curr_col - 1;
+//            if (onBoard(placeholder_col) && onBoard(placeholder_row)) {
+//                temp_list.add(new ChessPosition(placeholder_row, placeholder_col));
+//                index.add((ArrayList<ChessPosition>)temp_list.clone());
+//                temp_list.clear();
+//            }
+//            placeholder_col = curr_col + 1;
+//            if (onBoard(placeholder_col) && onBoard(placeholder_row)) {
+//                temp_list.add(new ChessPosition(placeholder_row, placeholder_col));
+//                index.add((ArrayList<ChessPosition>)temp_list.clone());
+//                temp_list.clear();
+//            }
+//
+//
+//        }
+//
+//    }
+
+    private boolean isOccupied(ChessBoard board, ChessPosition pos) {
+        if (board.getPiece(pos) != null) {
+            return true;
+        }
+        else {
+            return false;
+        }
+    }
+
+    private boolean onBoard(int num) {
+        if (num > 0 && num < 9) {
+            return true;
+        }
+        else {
+            return false;
+        }
+    }
+
 }

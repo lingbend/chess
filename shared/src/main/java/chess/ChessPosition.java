@@ -24,8 +24,8 @@ public class ChessPosition {
         return Objects.hash(pos_row, pos_col);
     }
 
-    int pos_row;
-    int pos_col;
+    private final int pos_row;
+    private final int pos_col;
 
     public ChessPosition(int row, int col) {
         this.pos_row = row;
