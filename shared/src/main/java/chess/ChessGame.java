@@ -10,8 +10,10 @@ import java.util.Collection;
  */
 public class ChessGame {
 
-    public ChessGame() {
+    private ChessBoard board = new ChessBoard();
 
+    public ChessGame() {
+        board.resetBoard();
     }
 
     /**
@@ -46,7 +48,6 @@ public class ChessGame {
      * startPosition
      */
     public Collection<ChessMove> validMoves(ChessPosition startPosition) {
-        throw new RuntimeException("Not implemented");
     }
 
     /**
