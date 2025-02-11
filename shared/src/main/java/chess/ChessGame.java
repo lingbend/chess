@@ -70,7 +70,12 @@ public class ChessGame {
     }
 
     private static boolean isInCheckHelper(TeamColor color, ChessBoard board) {
-        return false;
+        if (color == TeamColor.WHITE) {
+            return ChessPiece.isKingChecked(board, board.getWhiteKingPos(), color);
+        }
+        else {
+            return ChessPiece.isKingChecked(board, board.getBlackKingPos(), color);
+        }
     }
 
     private static void makeMoveHelper(ChessMove move, ChessBoard board) {
@@ -115,7 +120,7 @@ public class ChessGame {
      * @return True if the specified team is in check
      */
     public boolean isInCheck(TeamColor teamColor) {
-        throw new RuntimeException("Not implemented");
+        return isInCheckHelper(teamColor, game_board);
     }
 
     /**
