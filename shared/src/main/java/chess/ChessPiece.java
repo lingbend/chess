@@ -172,56 +172,63 @@ public class ChessPiece {
     public static boolean isKingChecked(ChessBoard board, ChessPosition king_loc, ChessGame.TeamColor color) {
         boolean pawn_check = false;
         if (color == ChessGame.TeamColor.WHITE && (checkOnceForEnemy(board, king_loc, -1, 1,
-                color, PieceType.PAWN) || checkOnceForEnemy(board, king_loc, 1, 0, color,
+                color, PieceType.PAWN) || checkOnceForEnemy(board, king_loc, 1, 1, color,
                 PieceType.PAWN))) {
             pawn_check = true;
         }
         else if (color == ChessGame.TeamColor.BLACK && (checkOnceForEnemy(board, king_loc, -1, -1,
-                color, PieceType.PAWN) || checkOnceForEnemy(board, king_loc, -1, 0, color,
+                color, PieceType.PAWN) || checkOnceForEnemy(board, king_loc, 1, -1, color,
                 PieceType.PAWN))) {
             pawn_check = true;
         }
-        return (
-                //Rook check
-                checkDirForEnemy(board, king_loc, 1, 0, color, PieceType.ROOK)
-                || checkDirForEnemy(board, king_loc, -1, 0, color, PieceType.ROOK)
-                || checkDirForEnemy(board, king_loc, 0, 1, color, PieceType.ROOK)
-                || checkDirForEnemy(board, king_loc, 0, -1, color, PieceType.ROOK)
-                //Bishop check
-                || checkDirForEnemy(board, king_loc, 1, -1, color, PieceType.BISHOP)
+        if (pawn_check) {
+            return true;
+        }
+        else if (checkDirForEnemy(board, king_loc, 1, 0, color, PieceType.ROOK)
+            || checkDirForEnemy(board, king_loc, -1, 0, color, PieceType.ROOK)
+            || checkDirForEnemy(board, king_loc, 0, 1, color, PieceType.ROOK)
+            || checkDirForEnemy(board, king_loc, 0, -1, color, PieceType.ROOK)) {
+            return true;
+        }
+        else if (checkDirForEnemy(board, king_loc, 1, -1, color, PieceType.BISHOP)
                 || checkDirForEnemy(board, king_loc, -1, 1, color, PieceType.BISHOP)
                 || checkDirForEnemy(board, king_loc, -1, -1, color, PieceType.BISHOP)
-                || checkDirForEnemy(board, king_loc, 1, 1, color, PieceType.BISHOP)
-                //Knight check
-                || checkOnceForEnemy(board, king_loc, 1, 2, color, PieceType.KNIGHT)
+                || checkDirForEnemy(board, king_loc, 1, 1, color, PieceType.BISHOP)) {
+            return true;
+        }
+        else if (checkOnceForEnemy(board, king_loc, 1, 2, color, PieceType.KNIGHT)
                 || checkOnceForEnemy(board, king_loc, 2, 1, color, PieceType.KNIGHT)
                 || checkOnceForEnemy(board, king_loc, -1, 2, color, PieceType.KNIGHT)
                 || checkOnceForEnemy(board, king_loc, 1, -2, color, PieceType.KNIGHT)
                 || checkOnceForEnemy(board, king_loc, -2, 1, color, PieceType.KNIGHT)
                 || checkOnceForEnemy(board, king_loc, 2, -1, color, PieceType.KNIGHT)
                 || checkOnceForEnemy(board, king_loc, -1, -2, color, PieceType.KNIGHT)
-                || checkOnceForEnemy(board, king_loc, -2, -1, color, PieceType.KNIGHT)
-                //Queen Check
-                || checkDirForEnemy(board, king_loc, 1, -1, color, PieceType.QUEEN)
+                || checkOnceForEnemy(board, king_loc, -2, -1, color, PieceType.KNIGHT)) {
+            return true;
+        }
+        else if (checkDirForEnemy(board, king_loc, 1, -1, color, PieceType.QUEEN)
                 || checkDirForEnemy(board, king_loc, -1, 1, color, PieceType.QUEEN)
                 || checkDirForEnemy(board, king_loc, -1, -1, color, PieceType.QUEEN)
                 || checkDirForEnemy(board, king_loc, 1, 1, color, PieceType.QUEEN)
                 || checkDirForEnemy(board, king_loc, 1, 0, color, PieceType.QUEEN)
                 || checkDirForEnemy(board, king_loc, -1, 0, color, PieceType.QUEEN)
                 || checkDirForEnemy(board, king_loc, 0, 1, color, PieceType.QUEEN)
-                || checkDirForEnemy(board, king_loc, 0, -1, color, PieceType.QUEEN)
-                //King Check
-                || checkOnceForEnemy(board, king_loc, 1, -1, color, PieceType.KING)
+                || checkDirForEnemy(board, king_loc, 0, -1, color, PieceType.QUEEN)) {
+            return true;
+        }
+        else if (checkOnceForEnemy(board, king_loc, 1, -1, color, PieceType.KING)
                 || checkOnceForEnemy(board, king_loc, -1, 1, color, PieceType.KING)
                 || checkOnceForEnemy(board, king_loc, -1, -1, color, PieceType.KING)
                 || checkOnceForEnemy(board, king_loc, 1, 1, color, PieceType.KING)
                 || checkOnceForEnemy(board, king_loc, 1, 0, color, PieceType.KING)
                 || checkOnceForEnemy(board, king_loc, -1, 0, color, PieceType.KING)
                 || checkOnceForEnemy(board, king_loc, 0, 1, color, PieceType.KING)
-                || checkOnceForEnemy(board, king_loc, 0, -1, color, PieceType.KING)
-                //Pawn Check
-                || pawn_check
-                );
+                || checkOnceForEnemy(board, king_loc, 0, -1, color, PieceType.KING)) {
+            return true;
+        }
+        else {
+            return false;
+        }
     }
 
 
@@ -261,7 +268,7 @@ public class ChessPiece {
         }
 
         if (onBoard(curr_row) && onBoard(curr_col) && isTarget(board, curr_row, curr_col)
-                && this.piecetype != PieceType.PAWN) {
+                && this.piecetype != PieceType.PAWN && moved <= max_dist) {
             valid_move.add(new ChessPosition(curr_row, curr_col));
         }
 
