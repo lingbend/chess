@@ -89,12 +89,6 @@ public class ChessGame {
             piece.setPieceType(promo);
         }
         board.addPiece(end, piece);
-        if (game_turn == TeamColor.WHITE) {
-            game_turn = TeamColor.BLACK;
-        }
-        else {
-            game_turn = TeamColor.WHITE;
-        }
     }
 
     /**
@@ -116,6 +110,12 @@ public class ChessGame {
             for (ChessMove i : validMoves(start)) {
                 if (move.equals(i)) {
                     makeMoveHelper(move, game_board);
+                    if (game_turn == TeamColor.WHITE) {
+                        game_turn = TeamColor.BLACK;
+                    }
+                    else {
+                        game_turn = TeamColor.WHITE;
+                    }
                     return;
                 }
             }
