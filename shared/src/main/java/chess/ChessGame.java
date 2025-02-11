@@ -91,7 +91,21 @@ public class ChessGame {
      * @throws InvalidMoveException if move is invalid
      */
     public void makeMove(ChessMove move) throws InvalidMoveException {
-        makeMoveHelper(move, game_board);
+        ChessPosition start = move.getStartPosition();
+        ChessPosition end = move.getEndPosition();
+        ChessPiece.PieceType promo = move.getPromotionPiece();
+        ChessPiece piece = game_board.getPiece(start);
+        TeamColor color = piece.getTeamColor();
+        if (color != game_turn) {
+            throw new InvalidMoveException("Not " + color + "'s turn");
+        }
+        for (ChessMove i : validMoves(start)) {
+            if (move == i) {
+                makeMoveHelper(move, game_board);
+                return;
+            }
+        }
+        throw new InvalidMoveException(move + " for " + piece + " is not a valid move");
     }
 
     /**
