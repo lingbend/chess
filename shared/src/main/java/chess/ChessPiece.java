@@ -169,6 +169,30 @@ public class ChessPiece {
         return movelist;
     }
 
+    public static boolean isKingChecked(ChessBoard board, ChessPosition king_loc, ChessGame.TeamColor color) {
+        return (
+                //Rook check
+                checkDirForEnemy(board, king_loc, 1, 0, color)
+                || checkDirForEnemy(board, king_loc, -1, 0, color)
+                || checkDirForEnemy(board, king_loc, 0, 1, color)
+                || checkDirForEnemy(board, king_loc, 0, -1, color)
+                //Bishop check
+                || checkDirForEnemy(board, king_loc, 1, -1, color)
+                || checkDirForEnemy(board, king_loc, -1, 1, color)
+                || checkDirForEnemy(board, king_loc, -1, -1, color)
+                || checkDirForEnemy(board, king_loc, 1, 1, color)
+                //Knight check
+                || checkOnceForEnemy(board, king_loc, 1, 2, color)
+                || checkOnceForEnemy(board, king_loc, 2, 1, color)
+                || checkOnceForEnemy(board, king_loc, -1, 2, color)
+                || checkOnceForEnemy(board, king_loc, 1, -2, color)
+                || checkOnceForEnemy(board, king_loc, -2, 1, color)
+                || checkOnceForEnemy(board, king_loc, 2, -1, color)
+                || checkOnceForEnemy(board, king_loc, -1, -2, color)
+                || checkOnceForEnemy(board, king_loc, -2, -1, color)
+                );
+    }
+
 
     private ArrayList<ChessPosition> checkDirUntil (ChessBoard board, ChessPosition start,
                                                     int col_mod, int row_mod) {
@@ -214,6 +238,32 @@ public class ChessPiece {
 
     }
 
+    private static boolean checkDirForEnemy (ChessBoard board, ChessPosition start, int col_mod, int row_mod, ChessGame.TeamColor color) {
+        int curr_row = start.getRow() + row_mod;
+        int curr_col = start.getColumn() + col_mod;
+
+        while (onBoard(curr_row) && onBoard(curr_col) && !isOccupied(board, curr_row, curr_col)){
+            curr_row += row_mod;
+            curr_col += col_mod;
+        }
+
+        if (onBoard(curr_row) && onBoard(curr_col) && isTarget(board, curr_row, curr_col, color)) {
+            return true;
+        }
+        return false;
+    }
+
+    private static boolean checkOnceForEnemy (ChessBoard board, ChessPosition start,
+                                      int col_mod, int row_mod, ChessGame.TeamColor color) {
+        int curr_row = start.getRow() + row_mod;
+        int curr_col = start.getColumn() + col_mod;
+
+        if (onBoard(curr_row) && onBoard(curr_col) && isTarget(board, curr_row, curr_col, color)) {
+            return true;
+        }
+        return false;
+    }
+
     private ArrayList<ChessPosition> checkPawnDiagonals (ChessBoard board, ChessPosition start) {
         ArrayList<ChessPosition> moves = new ArrayList<>();
         int curr_col = start.getColumn();
@@ -243,7 +293,17 @@ public class ChessPiece {
         }
     }
 
-    private boolean isOccupied(ChessBoard chessboard, int curr_row, int curr_col) {
+    private static boolean isTarget(ChessBoard chessboard, int curr_row, int curr_col, ChessGame.TeamColor color) {
+        if (chessboard.getPiece(curr_row, curr_col) != null &&
+                chessboard.getPiece(curr_row, curr_col).teamcolor != color ) {
+            return true;
+        }
+        else {
+            return false;
+        }
+    }
+
+    private static boolean isOccupied(ChessBoard chessboard, int curr_row, int curr_col) {
         if (chessboard.getPiece(curr_row, curr_col) != null) {
             return true;
         }
@@ -253,7 +313,7 @@ public class ChessPiece {
     }
 
 
-    private boolean onBoard(int num) {
+    private static boolean onBoard(int num) {
         if (num > 0 && num < 9) {
             return true;
         }
