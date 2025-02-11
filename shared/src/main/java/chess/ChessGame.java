@@ -74,7 +74,14 @@ public class ChessGame {
     }
 
     private static void makeMoveHelper(ChessMove move, ChessBoard board) {
-
+        ChessPosition start = move.getStartPosition();
+        ChessPosition end = move.getEndPosition();
+        ChessPiece.PieceType promo = move.getPromotionPiece();
+        ChessPiece piece = board.getPiece(start);
+        if (promo != null) {
+            piece.setPieceType(promo);
+        }
+        board.addPiece(end, piece);
     }
 
     /**
@@ -84,7 +91,7 @@ public class ChessGame {
      * @throws InvalidMoveException if move is invalid
      */
     public void makeMove(ChessMove move) throws InvalidMoveException {
-        throw new RuntimeException("Not implemented");
+        makeMoveHelper(move, game_board);
     }
 
     /**
