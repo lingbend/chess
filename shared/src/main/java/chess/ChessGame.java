@@ -79,7 +79,7 @@ public class ChessGame {
         }
     }
 
-    private static void makeMoveHelper(ChessMove move, ChessBoard board) {
+    private void makeMoveHelper(ChessMove move, ChessBoard board) {
         ChessPosition start = move.getStartPosition();
         ChessPosition end = move.getEndPosition();
         ChessPiece.PieceType promo = move.getPromotionPiece();
@@ -89,6 +89,12 @@ public class ChessGame {
             piece.setPieceType(promo);
         }
         board.addPiece(end, piece);
+        if (game_turn == TeamColor.WHITE) {
+            game_turn = TeamColor.BLACK;
+        }
+        else {
+            game_turn = TeamColor.WHITE;
+        }
     }
 
     /**
