@@ -2,7 +2,6 @@ package chess;
 
 import java.util.Collection;
 import java.util.ArrayList;
-import java.util.Arrays;
 
 /**
  * For a class that can manage a chess game, making moves on a board
@@ -13,16 +12,18 @@ import java.util.Arrays;
 public class ChessGame {
 
     private ChessBoard game_board = new ChessBoard();
+    private TeamColor game_turn;
 
     public ChessGame() {
         game_board.resetBoard();
+        game_turn = TeamColor.WHITE;
     }
 
     /**
      * @return Which team's turn it is
      */
     public TeamColor getTeamTurn() {
-        throw new RuntimeException("Not implemented");
+        return game_turn;
     }
 
     /**
@@ -31,7 +32,7 @@ public class ChessGame {
      * @param team the team whose turn it is
      */
     public void setTeamTurn(TeamColor team) {
-        throw new RuntimeException("Not implemented");
+        game_turn = team;
     }
 
     /**
