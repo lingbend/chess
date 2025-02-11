@@ -84,6 +84,7 @@ public class ChessGame {
         ChessPosition end = move.getEndPosition();
         ChessPiece.PieceType promo = move.getPromotionPiece();
         ChessPiece piece = board.getPiece(start);
+        board.addPiece(start, null);
         if (promo != null) {
             piece.setPieceType(promo);
         }
@@ -106,7 +107,7 @@ public class ChessGame {
             throw new InvalidMoveException("Not " + color + "'s turn");
         }
         for (ChessMove i : validMoves(start)) {
-            if (move == i) {
+            if (move.equals(i)) {
                 makeMoveHelper(move, game_board);
                 return;
             }

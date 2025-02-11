@@ -20,7 +20,11 @@ public class ChessBoard {
     }
 
     public ChessBoard(ChessBoard old) {
-        board = Arrays.copyOf(old.board, 8);
+        for (int i = 1; i < 9; i++) {
+            for (int j = 1; j < 9; j++) {
+                board[i-1][j-1] = old.getPiece(i, j);
+            }
+        }
         wKingPos = old.wKingPos;
         bKingPos = old.bKingPos;
     }
@@ -35,7 +39,7 @@ public class ChessBoard {
         int row = position.getRow() - 1;
         int col = position.getColumn() - 1;
         this.board[row][col] = piece;
-        if (piece.getPieceType() == ChessPiece.PieceType.KING) {
+        if (piece != null && piece.getPieceType() == ChessPiece.PieceType.KING) {
             if (piece.getTeamColor() == ChessGame.TeamColor.WHITE) {
                 wKingPos = position;
             }
