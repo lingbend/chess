@@ -1,6 +1,8 @@
 package chess;
 
 import java.util.Collection;
+import java.util.ArrayList;
+import java.util.Arrays;
 
 /**
  * For a class that can manage a chess game, making moves on a board
@@ -10,10 +12,10 @@ import java.util.Collection;
  */
 public class ChessGame {
 
-    private ChessBoard board = new ChessBoard();
+    private ChessBoard game_board = new ChessBoard();
 
     public ChessGame() {
-        board.resetBoard();
+        game_board.resetBoard();
     }
 
     /**
@@ -48,6 +50,30 @@ public class ChessGame {
      * startPosition
      */
     public Collection<ChessMove> validMoves(ChessPosition startPosition) {
+        ChessPiece piece = game_board.getPiece(startPosition);
+        if (piece == null) {
+            return null;
+        }
+        ArrayList<ChessMove> raw_moves = (ArrayList<ChessMove>)
+                piece.pieceMoves(game_board, startPosition);
+        ChessBoard temp;
+        ArrayList<ChessMove> cleaned_moves = new ArrayList<>(8);
+        for (ChessMove i : raw_moves) {
+            temp = new ChessBoard(game_board);
+            makeMoveHelper(i, temp);
+            if (!isInCheckHelper(piece.getTeamColor(), temp)) {
+                cleaned_moves.add(i);
+            }
+        }
+        return cleaned_moves;
+    }
+
+    private static boolean isInCheckHelper(TeamColor color, ChessBoard board) {
+        return false;
+    }
+
+    private static void makeMoveHelper(ChessMove move, ChessBoard board) {
+
     }
 
     /**
