@@ -11,10 +11,14 @@ import java.util.Objects;
  */
 public class ChessBoard {
 
-    private ChessPiece[][] board = new ChessPiece[8][8]; //[row][col]
+    public ChessPiece[][] board = new ChessPiece[8][8]; //[row][col]
 
     public ChessBoard() {
 
+    }
+
+    public ChessBoard(ChessBoard old) {
+        board = Arrays.copyOf(old.board, 8);
     }
 
     /**
