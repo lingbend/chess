@@ -11,7 +11,9 @@ import java.util.Objects;
  */
 public class ChessBoard {
 
-    public ChessPiece[][] board = new ChessPiece[8][8]; //[row][col]
+    private ChessPiece[][] board = new ChessPiece[8][8]; //[row][col]
+    public ChessPosition wKingPos;
+    public ChessPosition bKingPos;
 
     public ChessBoard() {
 
@@ -19,6 +21,8 @@ public class ChessBoard {
 
     public ChessBoard(ChessBoard old) {
         board = Arrays.copyOf(old.board, 8);
+        wKingPos = old.wKingPos;
+        bKingPos = old.bKingPos;
     }
 
     /**
@@ -31,7 +35,14 @@ public class ChessBoard {
         int row = position.getRow() - 1;
         int col = position.getColumn() - 1;
         this.board[row][col] = piece;
-
+        if (piece.getPieceType() == ChessPiece.PieceType.KING) {
+            if (piece.getTeamColor() == ChessGame.TeamColor.WHITE) {
+                wKingPos = position;
+            }
+            else {
+                bKingPos = position;
+            }
+        }
     }
 
     @Override
@@ -67,7 +78,13 @@ public class ChessBoard {
         return this.board[row][col];
     }
 
+    public ChessPosition getWhiteKingPos() {
+        return wKingPos;
+    }
 
+    public ChessPosition getBlackKingPos() {
+        return bKingPos;
+    }
 
 
     /**
@@ -80,6 +97,8 @@ public class ChessBoard {
         pawnStripe(ChessGame.TeamColor.BLACK, 6);
         pawnStripe(ChessGame.TeamColor.WHITE, 1);
         backStripe(ChessGame.TeamColor.WHITE, 0);
+        bKingPos = new ChessPosition(8, 5);
+        wKingPos = new ChessPosition(1, 5);
     }
 
     private void pawnStripe(ChessGame.TeamColor color, int row) {
