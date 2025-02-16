@@ -7,9 +7,9 @@ public class AuthData {
     String authToken = null;
     String username = null;
 
-    public AuthData(String name){
+    public AuthData(String name, String token){
         username = name;
-        // Add token generator call
+        authToken = token;
     }
 
     public void SetAuthToken(String newToken) {
