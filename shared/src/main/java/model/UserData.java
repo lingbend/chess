@@ -7,7 +7,11 @@ public class UserData {
     String password = null;
     String email = null;
 
-    public UserData(){}
+    public UserData(String user, String pass, String mail){
+        username = user;
+        password = pass;
+        email = mail;
+    }
 
     public void SetUsername(String newUsername) {
         username = newUsername;
