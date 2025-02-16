@@ -4,14 +4,14 @@ import java.lang.String;
 import java.util.Map;
 
 public class ResultObj implements ServiceObj{
-    String code = null;
-    String message = null;
-    String gameID = null;
-    String whiteUsername = null;
-    String blackUsername = null;
-    String gameName = null;
-    String username = null;
-    String authToken = null;
+    String code;
+    String message;
+    String gameID;
+    String whiteUsername;
+    String blackUsername;
+    String gameName;
+    String username;
+    String authToken;
 
     public ResultObj(Map map){
         code = (String) map.get("code");

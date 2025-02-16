@@ -4,13 +4,13 @@ import java.lang.String;
 import java.util.Map;
 
 public class RequestObj implements ServiceObj{
-    String username = null;
-    String password = null;
-    String email = null;
-    String authToken = null;
-    String gameName = null;
-    String color = null;
-    String gameID = null;
+    String username;
+    String password;
+    String email;
+    String authToken;
+    String gameName;
+    String color;
+    String gameID;
 
     public RequestObj(Map map) {
         username = (String) map.get("username");
