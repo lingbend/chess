@@ -1,6 +1,7 @@
 package service;
 
 import java.lang.String;
+import java.util.Map;
 
 public class ResultObj implements ServiceObj{
     String code = null;
@@ -12,7 +13,16 @@ public class ResultObj implements ServiceObj{
     String username = null;
     String authToken = null;
 
-    public ResultObj(){}
+    public ResultObj(Map map){
+        code = (String) map.get("code");
+        message = (String) map.get("message");
+        gameID = (String) map.get("gameID");
+        whiteUsername = (String) map.get("whiteUsername");
+        blackUsername = (String) map.get("blackUsername");
+        gameName = (String) map.get("gameName");
+        username = (String) map.get("username");
+        authToken = (String) map.get("authToken");
+    }
 
 
     public void SetCode(String newCode) {
