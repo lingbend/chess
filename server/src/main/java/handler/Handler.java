@@ -6,7 +6,7 @@ import service.*;
 
 public interface Handler {
     void Deserialize(String json);
-    String Serialize(ResultObj obj);
+    String[] Serialize(ResultObj obj);
 }
 
 

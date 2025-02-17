@@ -3,6 +3,7 @@ import service.*;
 import com.google.gson.Gson;
 import java.util.Map;
 import dataAccess.*;
+import java.util.Arrays;
 
 public class JsonHandler implements Handler{
 
@@ -38,8 +39,11 @@ public class JsonHandler implements Handler{
         }
     }
 
-    public String Serialize(ResultObj obj) {
+    public String[] Serialize(ResultObj obj) {
+        String code = obj.GetCode();
+        obj.SetCode(null);
         String json = new Gson().toJson(obj);
-        return json;
+        String[] response = {code, json};
+        return response;
     }
 }
