@@ -9,9 +9,11 @@ import java.util.Map;
 
 public class RegisterService implements Service{
 
+    JsonHandler handler = null;
+
     public RegisterService(){}
 
-    public void run(ServiceObj serviceObj) {
+    public void run(ServiceObj serviceObj) throws DataAccessException {
         RequestObj request = (RequestObj) serviceObj;
         var authAccess = new AuthAccess();
         var userAccess = new UserAccess();
@@ -25,13 +27,16 @@ public class RegisterService implements Service{
         // add authorization token generator call here
         String token = "1234";
         if (!authAccess.Create(new AuthData(request.GetUsername(), token))) {
-            throw new DataAccessException("unable to store authToken")
+            throw new DataAccessException("unable to store authToken");
         }
 
         var result = new ResultObj(Map.of(new String( "username"),
                 request.GetUsername(), new String("authToken"), token));
-        var handler = new JsonHandler(this);
         handler.Serialize(result);
+    }
+
+    public void registerHandler(Handler newHandler) {
+        handler = (JsonHandler) newHandler;
     }
 
 }
