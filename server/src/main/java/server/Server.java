@@ -3,10 +3,12 @@ package server;
 import spark.*;
 import service.*;
 import handler.*;
+import dataAccess.DB;
 
 public class Server {
 
     public int run(int desiredPort) {
+        new DB();
         Spark.port(desiredPort);
 
         Spark.staticFiles.location("web");
@@ -14,7 +16,7 @@ public class Server {
         // Register your endpoints and handle exceptions here.
         Spark.post("/user", this::register);
         //This line initializes the server and can be removed once you have a functioning endpoint
-        Spark.init();
+//        Spark.init();
 
         Spark.awaitInitialization();
         return Spark.port();
