@@ -13,7 +13,7 @@ public class RegisterService implements Service{
 
     public RegisterService(){}
 
-    public void run(ServiceObj serviceObj) throws DataAccessException {
+    public String[] run(ServiceObj serviceObj) throws DataAccessException {
         RequestObj request = (RequestObj) serviceObj;
         var authAccess = new AuthAccess();
         var userAccess = new UserAccess();
@@ -32,7 +32,7 @@ public class RegisterService implements Service{
 
         var result = new ResultObj(Map.of(new String( "username"),
                 request.GetUsername(), new String("authToken"), token));
-        handler.Serialize(result);
+        return handler.Serialize(result);
     }
 
     public void registerHandler(Handler newHandler) {
