@@ -23,30 +23,18 @@ public class JsonHandler implements Handler{
             return service.run(request);
         }
         catch (DataAccessException ex) {
+            String code = "500";
             if (ex.getMessage().equals("already taken")) {
-                var result = new ResultObj(Map.of("code", "403", "message", "Error: " + ex.getMessage()));
-                return Serialize(result);
-            }
-            else if (ex.getMessage().equals("unable to create user")) {
-                var result = new ResultObj(Map.of("code", "500", "message", "Error: " + ex.getMessage()));
-                return Serialize(result);
-            }
-            else if (ex.getMessage().equals("unable to store authToken")) {
-                var result = new ResultObj(Map.of("code", "500", "message", "Error: " + ex.getMessage()));
-                return Serialize(result);
+                code = "403";
             }
             else if (ex.getMessage().equals("bad request")){
-                var result = new ResultObj(Map.of("code", "400", "message", "Error: " + ex.getMessage()));
-                return Serialize(result);
+                code = "400";
             }
             else if (ex.getMessage().equals("unauthorized")){
-                var result = new ResultObj(Map.of("code", "401", "message", "Error: " + ex.getMessage()));
-                return Serialize(result);
+                code = "401";
             }
-            else {
-                var result = new ResultObj(Map.of("code", "500", "message", "Error: " + ex.getMessage()));
-                return Serialize(result);
-            }
+            var result = new ResultObj(Map.of("code", code, "message", "Error: " + ex.getMessage()));
+            return Serialize(result);
         }
     }
 
