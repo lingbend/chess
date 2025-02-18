@@ -39,6 +39,10 @@ public class JsonHandler implements Handler{
                 var result = new ResultObj(Map.of("code", "400", "message", "Error: " + ex.getMessage()));
                 return Serialize(result);
             }
+            else if (ex.getMessage().equals("unauthorized")){
+                var result = new ResultObj(Map.of("code", "401", "message", "Error: " + ex.getMessage()));
+                return Serialize(result);
+            }
             else {
                 var result = new ResultObj(Map.of("code", "500", "message", "Error: " + ex.getMessage()));
                 return Serialize(result);
