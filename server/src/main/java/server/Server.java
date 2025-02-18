@@ -4,6 +4,8 @@ import spark.*;
 import service.*;
 import handler.*;
 import dataAccess.DB;
+import java.lang.String;
+import java.lang.Integer;
 
 public class Server {
 
@@ -31,6 +33,9 @@ public class Server {
         var service =  new RegisterService();
         var handler = new JsonHandler(service);
         service.registerHandler(handler);
-        return handler.Deserialize(req.body());
+        String[] handlerRes = handler.Deserialize(req.body());
+        res.type("application/json");
+        res.status(Integer.valueOf(handlerRes[0]));
+        return handlerRes[1];
     }
 }

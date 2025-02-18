@@ -30,8 +30,8 @@ public class RegisterService implements Service{
             throw new DataAccessException("unable to store authToken");
         }
 
-        var result = new ResultObj(Map.of(new String( "username"),
-                request.GetUsername(), new String("authToken"), token));
+        var result = new ResultObj(Map.of("username",
+                request.GetUsername(), "authToken", token, "code", "200"));
         return handler.Serialize(result);
     }
 

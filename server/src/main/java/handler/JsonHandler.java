@@ -15,7 +15,7 @@ public class JsonHandler implements Handler{
 
     public String[] Deserialize(String json) {
         try {
-            Map requestMap = new Gson().fromJson(json, Map.class);
+            Map<String, String> requestMap = new Gson().fromJson(json, Map.class);
             var request = new RequestObj(requestMap);
             return service.run(request);
         }

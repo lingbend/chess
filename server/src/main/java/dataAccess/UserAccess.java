@@ -24,10 +24,22 @@ public class UserAccess implements dataAccess {
         }
         return false;
     };
-    public boolean Update(String index){};
-    public boolean Delete(Object index){};
-    public boolean Match(Object index){};
-    public Object Read(String index){};
-    public boolean DeleteAll(Class type){};
+
+    //To implement:
+    public boolean Update(String index){
+        return false;
+    };
+    public boolean Delete(Object index){
+        return false;
+    };
+    public boolean Match(Object index){
+        return false;
+    };
+    public Object Read(String index){
+        return null;
+    };
+    public boolean DeleteAll(Class type){
+        return false;
+    };
 
 }
