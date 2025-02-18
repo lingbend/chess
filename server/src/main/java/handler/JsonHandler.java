@@ -2,8 +2,8 @@ package handler;
 import service.*;
 import com.google.gson.Gson;
 import java.util.Map;
+import java.util.TreeMap;
 import dataAccess.*;
-import java.util.Arrays;
 
 public class JsonHandler implements Handler{
 
@@ -13,11 +13,14 @@ public class JsonHandler implements Handler{
         service = serviceType;
     }
 
-    public String[] Deserialize(String json) {
+    public String[] Deserialize(String json, String auth) {
         try {
-            Map<String, String> requestMap = null;
-            if (json != null) {
-                requestMap = new Gson().fromJson(json, Map.class);
+            TreeMap<String, String> requestMap = new TreeMap();
+            if (json != null && !json.isEmpty()) {
+                requestMap = new Gson().fromJson(json, TreeMap.class);
+            }
+            if (auth != null) {
+                requestMap.put("authToken", auth);
             }
             var request = new RequestObj(requestMap);
             return service.run(request);

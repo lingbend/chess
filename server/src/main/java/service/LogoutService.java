@@ -29,7 +29,7 @@ public class LogoutService implements Service{
         }
         // add authorization token generator call here
         String token = "1234";
-        if (!authAccess.Delete(new AuthData(request.GetUsername(), token))) {
+        if (!authAccess.Delete(request.GetAuthToken())) {
             throw new DataAccessException("unable to delete authToken");
         }
 

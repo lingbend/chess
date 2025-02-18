@@ -20,6 +20,12 @@ public class AuthAccess implements dataAccess {
 
     //To implement:
     public boolean Find(Object index){
+        String auth = (String) index;
+        for (var i : DB.auth) {
+            if (i.GetAuthToken().equals(auth)) {
+                return true;
+            }
+        }
         return false;
     };
     public boolean Update(String index){
