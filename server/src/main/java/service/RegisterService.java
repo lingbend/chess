@@ -17,6 +17,9 @@ public class RegisterService implements Service{
         RequestObj request = (RequestObj) serviceObj;
         var authAccess = new AuthAccess();
         var userAccess = new UserAccess();
+        if (request.GetUsername() == null || request.GetPassword() == null || request.GetEmail() == null) {
+            throw new DataAccessException("bad request");
+        }
         if (userAccess.Find(request.GetUsername())) {
             throw new DataAccessException("already taken");
         }
