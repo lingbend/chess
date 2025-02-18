@@ -9,5 +9,5 @@ public interface dataAccess {
     boolean Delete(Object index);
     boolean Match(Object index);
     Object Read(String index);
-    boolean DeleteAll(Class type);
+    boolean DeleteAll();
 }

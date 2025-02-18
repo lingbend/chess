@@ -2,6 +2,8 @@ package dataAccess;
 
 import model.AuthData;
 
+import java.util.ArrayList;
+
 public class AuthAccess implements dataAccess {
 
     public AuthAccess(){}
@@ -32,8 +34,9 @@ public class AuthAccess implements dataAccess {
     public Object Read(String index){
         return null;
     };
-    public boolean DeleteAll(Class type){
-        return false;
-    };
+    public boolean DeleteAll(){
+        DB.auth = new ArrayList<>();
+        return true;
+    }
 
 }

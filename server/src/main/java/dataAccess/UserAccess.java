@@ -2,6 +2,8 @@ package dataAccess;
 
 import model.UserData;
 
+import java.util.ArrayList;
+
 public class UserAccess implements dataAccess {
 
     public UserAccess(){}
@@ -38,8 +40,8 @@ public class UserAccess implements dataAccess {
     public Object Read(String index){
         return null;
     };
-    public boolean DeleteAll(Class type){
-        return false;
-    };
-
+    public boolean DeleteAll(){
+        DB.users = new ArrayList<>();
+        return true;
+    }
 }
