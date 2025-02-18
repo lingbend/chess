@@ -37,9 +37,17 @@ public class UserAccess implements dataAccess {
     public boolean Match(Object index){
         return false;
     };
+
     public Object Read(String index){
+        String username = (String) index;
+        for (var i : DB.users) {
+            if (i.GetUsername().equals(username)) {
+                return i;
+            }
+        }
         return null;
-    };
+    }
+
     public boolean DeleteAll(){
         DB.users = new ArrayList<>();
         return true;
