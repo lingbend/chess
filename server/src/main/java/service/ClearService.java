@@ -20,17 +20,14 @@ public class ClearService implements Service{
         var authAccess = new AuthAccess();
         var userAccess = new UserAccess();
         var gameAccess = new GameAccess();
-        if (request.GetUsername() == null || request.GetPassword() == null || request.GetEmail() == null) {
-            throw new DataAccessException("bad request");
-        }
         if (!userAccess.DeleteAll()) {
-            throw new DataAccessException("already taken");
+            throw new DataAccessException("unable to delete user data");
         }
         if (!gameAccess.DeleteAll()) {
-            throw new DataAccessException("unable to create user");
+            throw new DataAccessException("unable to delete games");
         }
         if (!authAccess.DeleteAll()) {
-            throw new DataAccessException("unable to store authToken");
+            throw new DataAccessException("unable to delete auth tokens");
         }
 
         var result = new ResultObj(Map.of("code", "200"));

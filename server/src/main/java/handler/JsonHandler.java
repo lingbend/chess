@@ -35,8 +35,12 @@ public class JsonHandler implements Handler{
                 var result = new ResultObj(Map.of("code", "500", "message", ex.getMessage()));
                 return Serialize(result);
             }
-            else {
+            else if (ex.getMessage().equals("bad request")){
                 var result = new ResultObj(Map.of("code", "400", "message", ex.getMessage()));
+                return Serialize(result);
+            }
+            else {
+                var result = new ResultObj(Map.of("code", "500", "message", ex.getMessage()));
                 return Serialize(result);
             }
         }
