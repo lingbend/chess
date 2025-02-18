@@ -45,7 +45,13 @@ public class JsonHandler implements Handler{
     public String[] Serialize(ResultObj obj) {
         String code = obj.GetCode();
         obj.SetCode(null);
-        String json = new Gson().toJson(obj);
+        String json;
+        if (code != null) {
+            json = new Gson().toJson(obj);
+        }
+        else {
+            json = "";
+        }
         String[] response = {code, json};
         return response;
     }
