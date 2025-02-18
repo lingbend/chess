@@ -28,7 +28,7 @@ public class AuthAccess implements dataAccess {
         }
         return false;
     };
-    public boolean Update(String index){
+    public boolean Update(Object index){
         return false;
     };
     public boolean Delete(Object index){
@@ -44,6 +44,12 @@ public class AuthAccess implements dataAccess {
         return false;
     };
     public Object Read(String index){
+        String auth = (String) index;
+        for (var i : DB.auth) {
+            if (i.GetAuthToken().equals(auth)) {
+                return i;
+            }
+        }
         return null;
     };
     public boolean DeleteAll(){

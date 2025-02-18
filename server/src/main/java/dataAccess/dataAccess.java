@@ -5,7 +5,7 @@ import java.lang.String;
 public interface dataAccess {
     boolean Create(Object obj);
     boolean Find(Object index);
-    boolean Update(String index);
+    boolean Update(Object index);
     boolean Delete(Object index);
     boolean Match(Object index);
     Object Read(String index);

@@ -28,7 +28,7 @@ public class UserAccess implements dataAccess {
     };
 
     //To implement:
-    public boolean Update(String index){
+    public boolean Update(Object index){
         return false;
     };
     public boolean Delete(Object index){
