@@ -26,6 +26,12 @@ public class AuthAccess implements dataAccess {
         return false;
     };
     public boolean Delete(Object index){
+        String auth = (String) index;
+        for (var i : DB.auth) {
+            if (i.GetAuthToken().equals(auth)) {
+                return DB.auth.remove(i);
+            }
+        }
         return false;
     };
     public boolean Match(Object index){

@@ -20,6 +20,7 @@ public class Server {
         Spark.post("/user", this::register);
         Spark.delete("/db", this::clear);
         Spark.post("/session", this::login);
+        Spark.delete("/session", this::logout);
         //This line initializes the server and can be removed once you have a functioning endpoint
 //        Spark.init();
 
@@ -44,6 +45,11 @@ public class Server {
 
     private Object login(Request req, Response res) {
         var service = new LoginService();
+        return passToHandler(req, res, service);
+    }
+
+    private Object logout(Request req, Response res) {
+        var service = new LogoutService();
         return passToHandler(req, res, service);
     }
 
