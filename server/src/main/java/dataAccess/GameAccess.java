@@ -14,6 +14,9 @@ public class GameAccess implements dataAccess {
     public boolean Find(Object index){
         return false;
     };
+    public ArrayList<GameData> FindAll(){
+        return DB.games;
+    }
     public boolean Update(String index){
         return false;
     };
