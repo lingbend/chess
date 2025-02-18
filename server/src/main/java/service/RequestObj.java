@@ -13,13 +13,15 @@ public class RequestObj implements ServiceObj{
     String gameID;
 
     public RequestObj(Map map) {
-        username = (String) map.get("username");
-        password = (String) map.get("password");
-        email = (String) map.get("email");
-        authToken = (String) map.get("authToken");
-        gameName = (String) map.get("gameName");
-        color = (String) map.get("color");
-        gameID = (String) map.get("gameID");
+        if (map != null) {
+            username = (String) map.get("username");
+            password = (String) map.get("password");
+            email = (String) map.get("email");
+            authToken = (String) map.get("authToken");
+            gameName = (String) map.get("gameName");
+            color = (String) map.get("color");
+            gameID = (String) map.get("gameID");
+        }
     }
 
     public void SetUsername(String newUsername) {
