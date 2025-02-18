@@ -29,7 +29,7 @@ public class JoinGameService implements Service{
                 && !request.GetColor().equals("BLACK"))) {
             throw new DataAccessException("bad request");
         }
-        if (authAccess.Find(request.GetAuthToken())) {
+        if (!authAccess.Find(request.GetAuthToken())) {
             throw new DataAccessException("unauthorized");
         }
         if (!gameAccess.Find(request.GetGameID())) {

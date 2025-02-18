@@ -1,7 +1,12 @@
 package service;
 
+import model.GameData;
+
 import java.lang.String;
+import java.util.ArrayList;
 import java.util.Map;
+import java.util.TreeMap;
+import com.google.gson.Gson;
 
 public class ResultObj implements ServiceObj{
     String code;
@@ -12,6 +17,7 @@ public class ResultObj implements ServiceObj{
     String gameName;
     String username;
     String authToken;
+    ArrayList<TreeMap> games;
 
     public ResultObj(Map map){
         code = (String) map.get("code");
@@ -22,6 +28,13 @@ public class ResultObj implements ServiceObj{
         gameName = (String) map.get("gameName");
         username = (String) map.get("username");
         authToken = (String) map.get("authToken");
+        var tempGames = (ArrayList<GameData>) map.get("games");
+        if (tempGames != null) {
+            games = new ArrayList<TreeMap>();
+            for (var i : tempGames) {
+                games.add(i.GetMap());
+            }
+        }
     }
 
 

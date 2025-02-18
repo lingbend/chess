@@ -19,7 +19,7 @@ public class RequestObj implements ServiceObj{
             email = (String) map.get("email");
             authToken = (String) map.get("authToken");
             gameName = (String) map.get("gameName");
-            color = (String) map.get("color");
+            color = (String) map.get("playerColor");
             gameID = (String) map.get("gameID");
         }
     }

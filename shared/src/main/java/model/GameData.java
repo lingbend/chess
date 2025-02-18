@@ -2,6 +2,7 @@ package model;
 
 import java.lang.String;
 import chess.ChessGame;
+import java.util.TreeMap;
 
 public class GameData {
 
@@ -55,6 +56,15 @@ public class GameData {
 
     public ChessGame GetGame() {
         return game;
+    }
+
+    public TreeMap GetMap() {
+        var map = new TreeMap();
+        map.put("gameID", gameID);
+        map.put("gameName", gameName);
+        map.put("whiteUsername", whiteUsername);
+        map.put("blackUsername", blackUsername);
+        return map;
     }
 
 }
