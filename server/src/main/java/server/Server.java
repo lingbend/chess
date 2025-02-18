@@ -22,6 +22,7 @@ public class Server {
         Spark.post("/session", this::login);
         Spark.delete("/session", this::logout);
         Spark.get("/game", this::findGames);
+        Spark.post("/game", this::makeGame);
         //This line initializes the server and can be removed once you have a functioning endpoint
 //        Spark.init();
 
@@ -56,6 +57,11 @@ public class Server {
 
     private Object findGames(Request req, Response res) {
         var service = new FindGamesService();
+        return passToHandler(req, res, service);
+    }
+
+    private Object makeGame(Request req, Response res) {
+        var service = new MakeGameService();
         return passToHandler(req, res, service);
     }
 

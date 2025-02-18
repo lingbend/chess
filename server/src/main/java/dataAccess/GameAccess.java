@@ -9,7 +9,8 @@ public class GameAccess implements dataAccess {
     public GameAccess(){}
 
     public boolean Create(Object obj){
-        return false;
+        GameData data = (GameData) obj;
+        return DB.games.add(data);
     };
     public boolean Find(Object index){
         return false;

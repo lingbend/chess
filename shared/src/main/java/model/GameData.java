@@ -11,7 +11,11 @@ public class GameData {
     String gameName = null;
     ChessGame game = null;
 
-    public GameData(){}
+    public GameData(int id, String name){
+        gameID = id;
+        gameName = name;
+        game = new ChessGame();
+    }
 
     public void SetGameID(int num) {
         gameID = num;
