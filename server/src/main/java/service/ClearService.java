@@ -3,9 +3,6 @@ package service;
 import dataAccess.*;
 import handler.Handler;
 import handler.JsonHandler;
-import model.AuthData;
-import model.UserData;
-
 import java.util.Map;
 
 
