@@ -2,6 +2,7 @@ package service;
 
 import java.lang.String;
 import java.util.Map;
+import java.lang.Integer;
 
 public class RequestObj implements ServiceObj{
     String username;
@@ -20,7 +21,12 @@ public class RequestObj implements ServiceObj{
             authToken = String.valueOf(map.get("authToken"));
             gameName = String.valueOf(map.get("gameName"));
             color = String.valueOf(map.get("playerColor"));
-            gameID = String.valueOf(map.get("gameID"));
+            Object tempID = map.get("gameID");
+            if (tempID != null) {
+                gameID = String.valueOf((int) (double) tempID);
+            }
+//            gameID = String.valueOf(map.get("gameID"));
+
         }
     }
 
