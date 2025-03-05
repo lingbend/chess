@@ -15,18 +15,25 @@ public class RequestObj implements ServiceObj{
 
     public RequestObj(Map map) {
         if (map != null) {
-            username = String.valueOf(map.get("username"));
-            password = String.valueOf(map.get("password"));
-            email = String.valueOf(map.get("email"));
-            authToken = String.valueOf(map.get("authToken"));
-            gameName = String.valueOf(map.get("gameName"));
-            color = String.valueOf(map.get("playerColor"));
+            username = value(map.get("username"));
+            password = value(map.get("password"));
+            email = value(map.get("email"));
+            authToken = value(map.get("authToken"));
+            gameName = value(map.get("gameName"));
+            color = value(map.get("playerColor"));
             Object tempID = map.get("gameID");
             if (tempID != null) {
-                gameID = String.valueOf((int) (double) tempID);
+                gameID = value((int) (double) tempID);
             }
-//            gameID = String.valueOf(map.get("gameID"));
+        }
+    }
 
+    private String value(Object obj) {
+        if (obj == null) {
+            return null;
+        }
+        else {
+            return String.valueOf(obj);
         }
     }
 
