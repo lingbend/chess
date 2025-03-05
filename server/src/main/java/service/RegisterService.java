@@ -27,8 +27,7 @@ public class RegisterService implements Service{
                 request.GetPassword(), request.GetEmail()))) {
             throw new DataAccessException("unable to create user");
         }
-        // add authorization token generator call here
-        String token = "1234";
+        String token = AuthData.makeAuthToken();
         if (!authAccess.Create(new AuthData(request.GetUsername(), token))) {
             throw new DataAccessException("unable to store authToken");
         }

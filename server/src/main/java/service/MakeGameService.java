@@ -28,8 +28,8 @@ public class MakeGameService implements Service{
         if (!authAccess.Find(request.GetAuthToken())) {
             throw new DataAccessException("unauthorized");
         }
-        //Generate unique game ID
-        String gameID = "1234";
+
+        String gameID = AuthData.makeAuthToken();
         if (!gameAccess.Create(new GameData(Integer.valueOf(gameID), request.GetGameName()))) {
             throw new DataAccessException("unable to create new game");
         }

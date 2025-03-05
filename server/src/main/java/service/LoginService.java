@@ -31,8 +31,7 @@ public class LoginService implements Service{
         if (!user.GetPassword().equals(request.GetPassword())) {
             throw new DataAccessException("unauthorized");
         }
-        // add authorization token generator call here
-        String token = "1234";
+        String token = AuthData.makeAuthToken();
         if (!authAccess.Create(new AuthData(request.GetUsername(), token))) {
             throw new DataAccessException("unable to store authToken");
         }
