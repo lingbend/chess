@@ -1,6 +1,9 @@
 package model;
 
 import java.lang.String;
+import java.time.Instant;
+import java.util.Random;
+import java.io.Console;
 
 public class AuthData {
 
@@ -28,4 +31,14 @@ public class AuthData {
         return username;
     }
 
+    public static String makeAuthToken() {
+        Instant time = Instant.now();
+        Random rand = new Random();
+        int mod = rand.nextInt();
+        long longTime = time.getEpochSecond() / 2;
+        long longRand = rand.nextLong() / 2;
+        long longCat = (longTime + longRand) % mod;
+        String auth = String.valueOf(longCat);
+        return auth;
+    }
 }
