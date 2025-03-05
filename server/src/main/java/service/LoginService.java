@@ -36,7 +36,7 @@ public class LoginService implements Service{
             throw new DataAccessException("unable to store authToken");
         }
 
-        var result = new ResultObj(Map.of( "authToken", token, "code", "200"));
+        var result = new ResultObj(Map.of("username", user.GetUsername(),"authToken", token, "code", "200"));
         return handler.Serialize(result);
     }
 

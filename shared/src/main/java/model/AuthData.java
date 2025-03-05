@@ -34,7 +34,7 @@ public class AuthData {
     public static String makeAuthToken() {
         Instant time = Instant.now();
         Random rand = new Random();
-        int mod = rand.nextInt();
+        int mod = rand.nextInt(10000);
         long longTime = time.getEpochSecond() / 2;
         long longRand = rand.nextLong() / 2;
         long longCat = (longTime + longRand) % mod;
