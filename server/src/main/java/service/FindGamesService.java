@@ -5,8 +5,6 @@ import dataAccess.DataAccessException;
 import dataAccess.GameAccess;
 import handler.Handler;
 import handler.JsonHandler;
-import model.AuthData;
-import model.UserData;
 
 import java.util.Map;
 

@@ -6,7 +6,6 @@ import java.lang.String;
 import java.util.ArrayList;
 import java.util.Map;
 import java.util.TreeMap;
-import com.google.gson.Gson;
 
 public class ResultObj implements ServiceObj{
     String code;

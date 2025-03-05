@@ -7,7 +7,6 @@ import dataAccess.*;
 import handler.Handler;
 import handler.JsonHandler;
 import model.AuthData;
-import model.UserData;
 import model.*;
 
 import java.util.Map;
@@ -22,7 +21,6 @@ public class JoinGameService implements Service{
     public String[] run(ServiceObj serviceObj) throws DataAccessException {
         RequestObj request = (RequestObj) serviceObj;
         var authAccess = new AuthAccess();
-        var userAccess = new UserAccess();
         var gameAccess = new GameAccess();
         if (request.GetColor() == null || request.GetGameID() == null
                 || request.GetAuthToken() == null || (!request.GetColor().equals("WHITE")

@@ -2,7 +2,6 @@ package service;
 
 import java.lang.String;
 import java.util.Map;
-import java.lang.Integer;
 
 public class RequestObj implements ServiceObj{
     String username;
