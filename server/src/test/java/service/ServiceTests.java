@@ -116,6 +116,55 @@ public class ServiceTests {
     }
 
     @Test
+    public void createGamePositive() throws DataAccessException{
+        var service = new RegisterService();
+        var request = new RequestObj(Map.of("username", "chicken", "password" ,"aslk3sd0%3", "email", "duck@duck.com"));
+        var handler = new JsonHandler(service);
+        service.registerHandler(handler);
+        Map result = unserialize(service.run(request));
+
+        var service2 = new MakeGameService();
+        request = new RequestObj(Map.of("gameName", "Stinkor", "authToken", result.get("authToken")));
+        service2.registerHandler(handler);
+        result = unserialize(service2.run(request));
+
+        Assertions.assertNotNull(result.get("gameID"));
+        result.remove("gameID");
+
+        Map requestMap = Map.of("code", "200");
+        Assertions.assertEquals(requestMap, result, "Create Game positive failed");
+    }
+
+    @Test
+    public void createGameNegative() throws DataAccessException, Exception {
+        var service = new RegisterService();
+        var request = new RequestObj(Map.of("username", "chicken", "password" ,"aslk3sd0%3", "email", "duck@duck.com"));
+        var handler = new JsonHandler(service);
+        service.registerHandler(handler);
+        Map result = unserialize(service.run(request));
+
+        var service2 = new MakeGameService();
+        request = new RequestObj(Map.of("authToken", result.get("authToken")));
+        service2.registerHandler(handler);
+        try {
+            service2.run(request);
+            throw new Exception("create Game Negative failed (bad request)");
+        }
+        catch (DataAccessException ex) {
+            Assertions.assertEquals("bad request", ex.getMessage());
+        }
+
+        request = new RequestObj(Map.of("gameName", "Stinkor", "authToken", "als"));
+        try {
+            service2.run(request);
+            throw new Exception("create Game Negative failed (unauthorized)");
+        }
+        catch (DataAccessException ex) {
+            Assertions.assertEquals("unauthorized", ex.getMessage());
+        }
+    }
+
+    @Test
     public void clearPositive() throws DataAccessException{
         var service = new ClearService();
         var request = new RequestObj(Map.of());
