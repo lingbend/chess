@@ -81,6 +81,38 @@ public class ServiceTests {
     }
 
     @Test
+    public void logoutPositive() throws DataAccessException {
+        var service = new RegisterService();
+        var request = new RequestObj(Map.of("username", "chicken", "password" ,"aslk3sd0%3", "email", "duck@duck.com"));
+        var handler = new JsonHandler(service);
+        service.registerHandler(handler);
+        Map result = unserialize(service.run(request));
+
+        var service2 = new LogoutService();
+        request = new RequestObj(Map.of("authToken", result.get("authToken")));
+        handler = new JsonHandler(service2);
+        service2.registerHandler(handler);
+        result = unserialize(service2.run(request));
+        Map requestMap = Map.of("code", "200");
+        Assertions.assertEquals(requestMap, result);
+    }
+
+    @Test
+    public void logoutNegative() throws DataAccessException, Exception {
+        var service2 = new LogoutService();
+        var request = new RequestObj(Map.of());
+        var handler = new JsonHandler(service2);
+        service2.registerHandler(handler);
+        try {
+            service2.run(request);
+            throw new Exception("Failed logout negative");
+        }
+        catch (DataAccessException ex) {
+            Assertions.assertEquals("unauthorized", ex.getMessage());
+        }
+    }
+
+    @Test
     public void clearPositive() throws DataAccessException{
         var service = new ClearService();
         var request = new RequestObj(Map.of());
