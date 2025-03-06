@@ -52,6 +52,35 @@ public class ServiceTests {
     }
 
     @Test
+    public void loginPositive() throws DataAccessException {
+        makeUser();
+        var service = new LoginService();
+        var request = new RequestObj(Map.of("username", "chicken", "password" ,"aslk3sd0%3"));
+        var handler = new JsonHandler(service);
+        service.registerHandler(handler);
+        Map result = unserialize(service.run(request));
+        Assertions.assertNotNull(result.get("authToken"));
+        result.remove("authToken");
+        var requestMap = Map.of("username", "chicken", "code", "200");
+        Assertions.assertEquals(requestMap, result, "Login Positive Failed");
+    }
+
+    @Test
+    public void loginNegative() throws DataAccessException {
+        makeUser();
+        var service = new LoginService();
+        var request = new RequestObj(Map.of("username", "chicken", "password" ,"forge"));
+        var handler = new JsonHandler(service);
+        service.registerHandler(handler);
+        try {
+            service.run(request);
+        }
+        catch (DataAccessException ex) {
+            Assertions.assertEquals("unauthorized", ex.getMessage());
+        }
+    }
+
+    @Test
     public void clearPositive() throws DataAccessException{
         var service = new ClearService();
         var request = new RequestObj(Map.of());
@@ -68,6 +97,14 @@ public class ServiceTests {
         }
         requestMap.put("code", json[0]);
         return requestMap;
+    }
+
+    private void makeUser() throws DataAccessException{
+        var service = new RegisterService();
+        var request = new RequestObj(Map.of("username", "chicken", "password" ,"aslk3sd0%3", "email", "duck@duck.com"));
+        var handler = new JsonHandler(service);
+        service.registerHandler(handler);
+        service.run(request);
     }
 
 
