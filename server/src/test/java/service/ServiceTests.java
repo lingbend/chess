@@ -26,13 +26,14 @@ public class ServiceTests {
     }
 
     @Test
-    public void registerNegative() throws DataAccessException {
+    public void registerNegative() throws DataAccessException, Exception {
         var service = new RegisterService();
         var request = new RequestObj(Map.of("username", "chicken", "password" ,"aslk3sd0%3"));
         var handler = new JsonHandler(service);
         service.registerHandler(handler);
         try {
             service.run(request);
+            throw new Exception("Failed register negative (bad request)");
         }
         catch (DataAccessException ex){
             Assertions.assertEquals("bad request", ex.getMessage(), "Bad request: assertion failed");
@@ -45,6 +46,7 @@ public class ServiceTests {
         service.run(request);
         try {
             service.run(request);
+            throw new Exception("Failed register negative (already taken)");
         }
         catch (DataAccessException ex) {
             Assertions.assertEquals("already taken", ex.getMessage(), "Already taken: assertion failed");
@@ -66,7 +68,7 @@ public class ServiceTests {
     }
 
     @Test
-    public void loginNegative() throws DataAccessException {
+    public void loginNegative() throws DataAccessException, Exception {
         makeUser();
         var service = new LoginService();
         var request = new RequestObj(Map.of("username", "chicken", "password" ,"forge"));
@@ -74,6 +76,7 @@ public class ServiceTests {
         service.registerHandler(handler);
         try {
             service.run(request);
+            throw new Exception("Failed login negative");
         }
         catch (DataAccessException ex) {
             Assertions.assertEquals("unauthorized", ex.getMessage());
