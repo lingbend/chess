@@ -17,10 +17,10 @@ public class LogoutService implements Service{
     public String[] run(ServiceObj serviceObj) throws DataAccessException {
         RequestObj request = (RequestObj) serviceObj;
         var authAccess = new AuthAccess();
-        if (request.GetAuthToken() == null) {
-            throw new DataAccessException("bad request");
-        }
-        if (!authAccess.Find(request.GetAuthToken())) {
+//        if (request.GetAuthToken() == null) {
+//            throw new DataAccessException("bad request");
+//        }
+        if (!authAccess.Find(request.GetAuthToken()) || request.GetAuthToken() == null) {
             throw new DataAccessException("unauthorized");
         }
 
