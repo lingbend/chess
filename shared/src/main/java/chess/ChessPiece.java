@@ -276,7 +276,8 @@ public class ChessPiece {
 
     }
 
-    private static boolean checkDirForEnemy (ChessBoard board, ChessPosition start, int col_mod, int row_mod, ChessGame.TeamColor color, PieceType type) {
+    private static boolean checkDirForEnemy (ChessBoard board, ChessPosition start, int col_mod,
+                                             int row_mod, ChessGame.TeamColor color, PieceType type) {
         int curr_row = start.getRow() + row_mod;
         int curr_col = start.getColumn() + col_mod;
 
