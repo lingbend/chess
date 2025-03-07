@@ -1,6 +1,6 @@
 package service;
 
-import dataAccess.*;
+import dataaccess.*;
 import handler.Handler;
 import handler.JsonHandler;
 import java.util.Map;

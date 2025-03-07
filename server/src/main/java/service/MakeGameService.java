@@ -1,8 +1,8 @@
 package service;
 
-import dataAccess.AuthAccess;
-import dataAccess.DataAccessException;
-import dataAccess.GameAccess;
+import dataaccess.AuthAccess;
+import dataaccess.DataAccessException;
+import dataaccess.GameAccess;
 import handler.Handler;
 import handler.JsonHandler;
 import model.AuthData;

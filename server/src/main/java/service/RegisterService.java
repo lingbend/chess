@@ -1,7 +1,7 @@
 package service;
 
 import model.*;
-import dataAccess.*;
+import dataaccess.*;
 import handler.*;
 
 import java.util.Map;
