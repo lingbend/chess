@@ -4,7 +4,9 @@ import org.junit.jupiter.api.*;
 import java.util.Map;
 import java.util.TreeMap;
 import com.google.gson.Gson;
-import java.lang.reflect.Executable;
+import com.google.gson.internal.LinkedTreeMap;
+import java.util.ArrayList;
+import dataAccess.DB;
 
 
 import handler.JsonHandler;
@@ -231,13 +233,49 @@ public class ServiceTests {
     }
 
     @Test
+    public void findGamesServicePositive() throws DataAccessException {
+        var service = new RegisterService();
+        var request = new RequestObj(Map.of("username", "chicken", "password" ,"aslk3sd0%3", "email", "duck@duck.com"));
+        var handler = new JsonHandler(service);
+        service.registerHandler(handler);
+        Map result = unserialize(service.run(request));
+
+        String gameID = (String) makeGame();
+
+        var service2 = new FindGamesService();
+        service2.registerHandler(handler);
+        request = new RequestObj(Map.of("authToken", result.get("authToken")));
+        result = unserialize(service2.run(request));
+        ArrayList<Map> resultGames = new ArrayList<>();
+        ArrayList<Map> rawArray = (ArrayList<Map>) result.get("games");
+        Map rawGameMap = rawArray.get(0);
+        result.put("games", resultGames.add(new TreeMap(rawGameMap)));
+
+        if (resultGames.get(0).containsKey("gameID")) {
+            resultGames.get(0).put("gameID", Double.valueOf(String.valueOf(resultGames.get(0).get("gameID"))).intValue());
+        }
+
+
+        ArrayList<Map> games = new ArrayList<>();
+        games.add(new TreeMap(Map.of("gameName", "Stinkor", "gameID", gameID)));
+        Map requestMap = Map.of(  "code", "200", "games", games);
+        Assertions.assertEquals(requestMap, result);
+    }
+
+    @Test
     public void clearPositive() throws DataAccessException{
+        makeUser();
+        makeGame();
         var service = new ClearService();
         var request = new RequestObj(Map.of());
         var handler = new JsonHandler(service);
         service.registerHandler(handler);
-        service.run(request);
-
+        Map result = unserialize(service.run(request));
+        Map requestMap = Map.of("code", "200");
+        Assertions.assertEquals(requestMap, result);
+        Assertions.assertEquals(new ArrayList<>(), DB.games);
+        Assertions.assertEquals(new ArrayList<>(), DB.auth);
+        Assertions.assertEquals(new ArrayList<>(), DB.users);
     }
 
     private Map unserialize(String[] json) {
@@ -257,9 +295,9 @@ public class ServiceTests {
         service.run(request);
     }
 
-    private void makeGame() throws DataAccessException {
+    private Object makeGame() throws DataAccessException {
         var service = new RegisterService();
-        var request = new RequestObj(Map.of("username", "chicken", "password" ,"aslk3sd0%3", "email", "duck@duck.com"));
+        var request = new RequestObj(Map.of("username", "bob", "password" ,"asd333gfs%3", "email", "d4uck@duck.com"));
         var handler = new JsonHandler(service);
         service.registerHandler(handler);
         Map result = unserialize(service.run(request));
@@ -267,7 +305,8 @@ public class ServiceTests {
         var service2 = new MakeGameService();
         request = new RequestObj(Map.of("gameName", "Stinkor", "authToken", result.get("authToken")));
         service2.registerHandler(handler);
-        service2.run(request);
+        result = unserialize(service2.run(request));
+        return result.get("gameID");
     }
 
 

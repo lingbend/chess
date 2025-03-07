@@ -29,7 +29,7 @@ public class MakeGameService implements Service{
         }
 
         String gameID = AuthData.makeAuthToken();
-        if (!gameAccess.Create(new GameData(Integer.valueOf(gameID), request.GetGameName()))) {
+        if (!gameAccess.Create(new GameData(Integer.parseInt(gameID), request.GetGameName()))) {
             throw new DataAccessException("unable to create new game");
         }
 
