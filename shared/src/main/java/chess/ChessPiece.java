@@ -79,11 +79,11 @@ public class ChessPiece {
      */
     public Collection<ChessMove> pieceMoves(ChessBoard board, ChessPosition myPosition) {
         ArrayList<ChessPosition> validends = new ArrayList<>();
-        int curr_x = myPosition.getColumn();
-        int curr_y = myPosition.getRow();
+        int currX = myPosition.getColumn();
+        int currY = myPosition.getRow();
         if (this.piecetype == PieceType.PAWN) {
             if (this.teamcolor == ChessGame.TeamColor.WHITE) {
-                if (curr_y == 2) {
+                if (currY == 2) {
                     validends.addAll(checkDirUntil(board, myPosition, 0, 1, 2));
                 }
                 else {
@@ -92,7 +92,7 @@ public class ChessPiece {
                 validends.addAll(checkPawnDiagonals(board, myPosition));
             }
             else {
-                if (curr_y == 7) {
+                if (currY == 7) {
                     validends.addAll(checkDirUntil(board, myPosition, 0, -1, 2));
                 }
                 else {
@@ -170,18 +170,18 @@ public class ChessPiece {
     }
 
     public static boolean isKingChecked(ChessBoard board, ChessPosition kingLoc, ChessGame.TeamColor color) {
-        boolean pawn_check = false;
+        boolean pawnCheck = false;
         if (color == ChessGame.TeamColor.WHITE && (checkOnceForEnemy(board, kingLoc, -1, 1,
                 color, PieceType.PAWN) || checkOnceForEnemy(board, kingLoc, 1, 1, color,
                 PieceType.PAWN))) {
-            pawn_check = true;
+            pawnCheck = true;
         }
         else if (color == ChessGame.TeamColor.BLACK && (checkOnceForEnemy(board, kingLoc, -1, -1,
                 color, PieceType.PAWN) || checkOnceForEnemy(board, kingLoc, 1, -1, color,
                 PieceType.PAWN))) {
-            pawn_check = true;
+            pawnCheck = true;
         }
-        if (pawn_check) {
+        if (pawnCheck) {
             return true;
         }
         else if (checkDirForEnemy(board, kingLoc, 1, 0, color, PieceType.ROOK)
@@ -234,34 +234,34 @@ public class ChessPiece {
 
     private ArrayList<ChessPosition> checkDirUntil (ChessBoard board, ChessPosition start,
                                                     int colMod, int rowMod) {
-        ArrayList<ChessPosition> valid_move = new ArrayList<>();
+        ArrayList<ChessPosition> validMove = new ArrayList<>();
         int currRow = start.getRow() + rowMod;
         int currCol = start.getColumn() + colMod;
 
         while (onBoard(currRow) && onBoard(currCol) && !isOccupied(board, currRow, currCol)){
-            valid_move.add(new ChessPosition(currRow, currCol));
+            validMove.add(new ChessPosition(currRow, currCol));
             currRow += rowMod;
             currCol += colMod;
         }
 
         if (onBoard(currRow) && onBoard(currCol) && isTarget(board, currRow, currCol)) {
-            valid_move.add(new ChessPosition(currRow, currCol));
+            validMove.add(new ChessPosition(currRow, currCol));
         }
 
-        return valid_move;
+        return validMove;
     }
 
     private ArrayList<ChessPosition> checkDirUntil (ChessBoard board, ChessPosition start,
                                                     int colMod, int rowMod, int maxDist) {
 
-        ArrayList<ChessPosition> valid_move = new ArrayList<>();
+        ArrayList<ChessPosition> validMove = new ArrayList<>();
         int currRow = start.getRow() + rowMod;
         int currCol = start.getColumn() + colMod;
         int moved = 1;
 
         while (onBoard(currRow) && onBoard(currCol) && !isOccupied(board, currRow, currCol)
                 && moved <= maxDist) {
-            valid_move.add(new ChessPosition(currRow, currCol));
+            validMove.add(new ChessPosition(currRow, currCol));
             currRow += rowMod;
             currCol += colMod;
             moved += 1;
@@ -269,10 +269,10 @@ public class ChessPiece {
 
         if (onBoard(currRow) && onBoard(currCol) && isTarget(board, currRow, currCol)
                 && this.piecetype != PieceType.PAWN && moved <= maxDist) {
-            valid_move.add(new ChessPosition(currRow, currCol));
+            validMove.add(new ChessPosition(currRow, currCol));
         }
 
-        return valid_move;
+        return validMove;
 
     }
 

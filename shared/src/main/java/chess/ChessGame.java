@@ -12,19 +12,19 @@ import java.util.Objects;
  */
 public class ChessGame {
 
-    private ChessBoard game_board = new ChessBoard();
-    private TeamColor game_turn;
+    private ChessBoard gameBoard = new ChessBoard();
+    private TeamColor gameTurn;
 
     public ChessGame() {
-        game_board.resetBoard();
-        game_turn = TeamColor.WHITE;
+        gameBoard.resetBoard();
+        gameTurn = TeamColor.WHITE;
     }
 
     /**
      * @return Which team's turn it is
      */
     public TeamColor getTeamTurn() {
-        return game_turn;
+        return gameTurn;
     }
 
     /**
@@ -33,7 +33,7 @@ public class ChessGame {
      * @param team the team whose turn it is
      */
     public void setTeamTurn(TeamColor team) {
-        game_turn = team;
+        gameTurn = team;
     }
 
     /**
@@ -52,22 +52,22 @@ public class ChessGame {
      * startPosition
      */
     public Collection<ChessMove> validMoves(ChessPosition startPosition) {
-        ChessPiece piece = game_board.getPiece(startPosition);
+        ChessPiece piece = gameBoard.getPiece(startPosition);
         if (piece == null) {
             return null;
         }
-        ArrayList<ChessMove> raw_moves = (ArrayList<ChessMove>)
-                piece.pieceMoves(game_board, startPosition);
+        ArrayList<ChessMove> rawMoves = (ArrayList<ChessMove>)
+                piece.pieceMoves(gameBoard, startPosition);
         ChessBoard temp;
-        ArrayList<ChessMove> cleaned_moves = new ArrayList<>(8);
-        for (ChessMove i : raw_moves) {
-            temp = new ChessBoard(game_board);
+        ArrayList<ChessMove> cleanedMoves = new ArrayList<>(8);
+        for (ChessMove i : rawMoves) {
+            temp = new ChessBoard(gameBoard);
             makeMoveHelper(i, temp);
             if (!isInCheckHelper(piece.getTeamColor(), temp)) {
-                cleaned_moves.add(i);
+                cleanedMoves.add(i);
             }
         }
-        return cleaned_moves;
+        return cleanedMoves;
     }
 
     private static boolean isInCheckHelper(TeamColor color, ChessBoard board) {
@@ -101,20 +101,20 @@ public class ChessGame {
         ChessPosition start = move.getStartPosition();
         ChessPosition end = move.getEndPosition();
         ChessPiece.PieceType promo = move.getPromotionPiece();
-        ChessPiece piece = game_board.getPiece(start);
+        ChessPiece piece = gameBoard.getPiece(start);
         if (piece != null) {
             TeamColor color = piece.getTeamColor();
-            if (color != game_turn) {
+            if (color != gameTurn) {
                 throw new InvalidMoveException("Not " + color + "'s turn");
             }
             for (ChessMove i : validMoves(start)) {
                 if (move.equals(i)) {
-                    makeMoveHelper(move, game_board);
-                    if (game_turn == TeamColor.WHITE) {
-                        game_turn = TeamColor.BLACK;
+                    makeMoveHelper(move, gameBoard);
+                    if (gameTurn == TeamColor.WHITE) {
+                        gameTurn = TeamColor.BLACK;
                     }
                     else {
-                        game_turn = TeamColor.WHITE;
+                        gameTurn = TeamColor.WHITE;
                     }
                     return;
                 }
@@ -130,7 +130,7 @@ public class ChessGame {
      * @return True if the specified team is in check
      */
     public boolean isInCheck(TeamColor teamColor) {
-        return isInCheckHelper(teamColor, game_board);
+        return isInCheckHelper(teamColor, gameBoard);
     }
 
 
@@ -139,7 +139,7 @@ public class ChessGame {
         ChessPiece piece;
         for (int i = 1; i < 9; i++) {
             for (int j = 1; j < 9; j++) {
-                piece = game_board.getPiece(i, j);
+                piece = gameBoard.getPiece(i, j);
                 if (piece != null && piece.getTeamColor() == color) {
                     count++;
                     if (validMoves(new ChessPosition(i, j)).size() > 0) {
@@ -187,7 +187,7 @@ public class ChessGame {
      * @param board the new board to use
      */
     public void setBoard(ChessBoard board) {
-        game_board = new ChessBoard(board);
+        gameBoard = new ChessBoard(board);
     }
 
     /**
@@ -196,7 +196,7 @@ public class ChessGame {
      * @return the chessboard
      */
     public ChessBoard getBoard() {
-        return game_board;
+        return gameBoard;
     }
 
     @Override
@@ -205,11 +205,11 @@ public class ChessGame {
             return false;
         }
         ChessGame chessGame = (ChessGame) o;
-        return Objects.equals(game_board, chessGame.game_board) && game_turn == chessGame.game_turn;
+        return Objects.equals(gameBoard, chessGame.gameBoard) && gameTurn == chessGame.gameTurn;
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(game_board, game_turn);
+        return Objects.hash(gameBoard, gameTurn);
     }
 }

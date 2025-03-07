@@ -10,29 +10,29 @@ import java.util.Objects;
  */
 public class ChessMove {
 
-    ChessPosition start_position;
-    ChessPosition end_position;
-    ChessPiece.PieceType promotion_type;
+    ChessPosition startPosition;
+    ChessPosition endPosition;
+    ChessPiece.PieceType promotionType;
 
     public ChessMove(ChessPosition startPosition, ChessPosition endPosition,
                      ChessPiece.PieceType promotionPiece) {
-        this.start_position = startPosition;
-        this.end_position = endPosition;
-        this.promotion_type = promotionPiece;
+        this.startPosition = startPosition;
+        this.endPosition = endPosition;
+        this.promotionType = promotionPiece;
     }
 
     /**
      * @return ChessPosition of starting location
      */
     public ChessPosition getStartPosition() {
-        return this.start_position;
+        return this.startPosition;
     }
 
     /**
      * @return ChessPosition of ending location
      */
     public ChessPosition getEndPosition() {
-        return this.end_position;
+        return this.endPosition;
     }
     /**
      * Gets the type of piece to promote a pawn to if pawn promotion is part of this
@@ -41,7 +41,7 @@ public class ChessMove {
      * @return Type of piece to promote a pawn to, or null if no promotion
      */
     public ChessPiece.PieceType getPromotionPiece() {
-        return this.promotion_type;
+        return this.promotionType;
     }
 
     @Override
@@ -50,18 +50,18 @@ public class ChessMove {
             return false;
         }
         ChessMove chessMove = (ChessMove) o;
-        return Objects.equals(this.start_position, chessMove.start_position)
-                && Objects.equals(this.end_position, chessMove.end_position) && this.promotion_type == chessMove.promotion_type;
+        return Objects.equals(this.startPosition, chessMove.startPosition)
+                && Objects.equals(this.endPosition, chessMove.endPosition) && this.promotionType == chessMove.promotionType;
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(this.start_position, this.end_position, this.promotion_type);
+        return Objects.hash(this.startPosition, this.endPosition, this.promotionType);
     }
 
     @Override
     public String toString() {
-        String output = "Start: " + this.start_position + "End: " + this.end_position + "Promo: " + this.promotion_type;
+        String output = "Start: " + this.startPosition + "End: " + this.endPosition + "Promo: " + this.promotionType;
         return output;
     }
 }
