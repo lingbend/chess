@@ -90,9 +90,9 @@ public class ChessBoard {
         return this.board[row][col];
     }
 
-    public ChessPiece getPiece(int curr_row, int curr_col) {
-        int row = curr_row - 1;
-        int col = curr_col - 1;
+    public ChessPiece getPiece(int currRow, int currCol) {
+        int row = currRow - 1;
+        int col = currCol - 1;
         return this.board[row][col];
     }
 
