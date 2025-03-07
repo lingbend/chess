@@ -7,7 +7,6 @@ public interface dataAccess {
     boolean Find(Object index);
     boolean Update(Object index);
     boolean Delete(Object index);
-    boolean Match(Object index);
     Object Read(String index);
     boolean DeleteAll();
 }

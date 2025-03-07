@@ -36,9 +36,6 @@ public class GameAccess implements dataAccess {
     public boolean Delete(Object index){
         return false;
     };
-    public boolean Match(Object index){
-        return false;
-    };
     public Object Read(String gameID){
         for (var i : DB.games) {
             if (String.valueOf(i.GetGameID()).equals(gameID)) {

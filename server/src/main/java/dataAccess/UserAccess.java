@@ -34,9 +34,6 @@ public class UserAccess implements dataAccess {
     public boolean Delete(Object index){
         return false;
     };
-    public boolean Match(Object index){
-        return false;
-    };
 
     public Object Read(String index){
         String username = (String) index;
