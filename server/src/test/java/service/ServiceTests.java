@@ -4,11 +4,11 @@ import org.junit.jupiter.api.*;
 import java.util.Map;
 import java.util.TreeMap;
 import java.util.ArrayList;
-import DataAccess.DB;
+import dataAccess.DB;
 
 
 import handler.JsonHandler;
-import DataAccess.DataAccessException;
+import dataAccess.DataAccessException;
 
 public class ServiceTests {
 

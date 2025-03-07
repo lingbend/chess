@@ -1,4 +1,4 @@
-package DataAccess;
+package dataAccess;
 
 import model.*;
 import java.util.ArrayList;
