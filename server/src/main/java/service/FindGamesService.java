@@ -19,9 +19,6 @@ public class FindGamesService implements Service{
         RequestObj request = (RequestObj) serviceObj;
         var authAccess = new AuthAccess();
         var gameAccess = new GameAccess();
-        if (request.GetAuthToken() == null) {
-            throw new DataAccessException("bad request");
-        }
         if (!authAccess.Find(request.GetAuthToken())) {
             throw new DataAccessException("unauthorized");
         }

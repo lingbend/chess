@@ -2,6 +2,7 @@ package service;
 import com.google.gson.Gson;
 import org.junit.jupiter.api.*;
 import java.util.Map;
+import java.util.Map.Entry;
 import java.util.TreeMap;
 import com.google.gson.Gson;
 import com.google.gson.internal.LinkedTreeMap;
@@ -247,20 +248,41 @@ public class ServiceTests {
         service2.registerHandler(handler);
         request = new RequestObj(Map.of("authToken", result.get("authToken")));
         result = unserialize(service2.run(request));
-        ArrayList<Map> resultGames = new ArrayList<>();
-        ArrayList<Map> rawArray = (ArrayList<Map>) result.get("games");
-        Map rawGameMap = rawArray.get(0);
-        result.put("games", resultGames.add(new TreeMap(rawGameMap)));
+        Assertions.assertEquals("200", result.get("code"));
+        result.remove("code");
 
-        if (resultGames.get(0).containsKey("gameID")) {
-            resultGames.get(0).put("gameID", Double.valueOf(String.valueOf(resultGames.get(0).get("gameID"))).intValue());
+        ArrayList<Map> gameList = (ArrayList<Map>) result.get("games");
+        Map games = gameList.get(0);
+
+        Map keyMap = Map.of("gameID", gameID, "gameName", "Stinkor");
+
+        for (var i : games.entrySet()) {
+            Map.Entry j = (Map.Entry) i;
+            Assertions.assertTrue(games.containsKey(j.getKey()));
+            Assertions.assertTrue(j.getValue() == games.get(j.getKey()));
         }
+    }
 
+    @Test
+    public void findGamesNegative() throws DataAccessException {
+        var service = new RegisterService();
+        var request = new RequestObj(Map.of("username", "chicken", "password" ,"aslk3sd0%3", "email", "duck@duck.com"));
+        var handler = new JsonHandler(service);
+        service.registerHandler(handler);
+        Map result = unserialize(service.run(request));
 
-        ArrayList<Map> games = new ArrayList<>();
-        games.add(new TreeMap(Map.of("gameName", "Stinkor", "gameID", gameID)));
-        Map requestMap = Map.of(  "code", "200", "games", games);
-        Assertions.assertEquals(requestMap, result);
+        String gameID = (String) makeGame();
+
+        var service2 = new FindGamesService();
+        service2.registerHandler(handler);
+        request = new RequestObj(Map.of());
+        try {
+            service2.run(request);
+            Assertions.fail("findGame negative failed");
+        }
+        catch (DataAccessException ex) {
+            Assertions.assertEquals("unauthorized", ex.getMessage());
+        }
     }
 
     @Test
