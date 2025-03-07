@@ -1,8 +1,8 @@
-package dataAccess;
+package DataAccess;
 
 import java.lang.String;
 
-public interface dataAccess {
+public interface DataAccess {
     boolean create(Object obj);
     boolean find(Object index);
     boolean update(Object index);

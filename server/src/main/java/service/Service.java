@@ -1,7 +1,7 @@
 package service;
 
 import handler.*;
-import dataAccess.*;
+import DataAccess.*;
 
 public interface Service {
     String[] run(ServiceObj obj) throws DataAccessException;

@@ -2,16 +2,13 @@ package service;
 import com.google.gson.Gson;
 import org.junit.jupiter.api.*;
 import java.util.Map;
-import java.util.Map.Entry;
 import java.util.TreeMap;
-import com.google.gson.Gson;
-import com.google.gson.internal.LinkedTreeMap;
 import java.util.ArrayList;
-import dataAccess.DB;
+import DataAccess.DB;
 
 
 import handler.JsonHandler;
-import dataAccess.DataAccessException;
+import DataAccess.DataAccessException;
 
 public class ServiceTests {
 

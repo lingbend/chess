@@ -6,7 +6,7 @@ public interface ServiceObj {
     String getGameName();
     void setGameName(String name);
     String getGameID();
-    void setGameID(String ID);
+    void setGameID(String iD);
     String getUsername();
     void setUsername(String username);
 

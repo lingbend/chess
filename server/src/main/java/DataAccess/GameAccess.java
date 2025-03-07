@@ -1,10 +1,10 @@
-package dataAccess;
+package DataAccess;
 
 import model.GameData;
 
 import java.util.ArrayList;
 
-public class GameAccess implements dataAccess {
+public class GameAccess implements DataAccess {
 
     public GameAccess(){}
 

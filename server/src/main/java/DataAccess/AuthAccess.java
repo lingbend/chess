@@ -1,10 +1,10 @@
-package dataAccess;
+package DataAccess;
 
 import model.AuthData;
 
 import java.util.ArrayList;
 
-public class AuthAccess implements dataAccess {
+public class AuthAccess implements DataAccess {
 
     public AuthAccess(){}
 

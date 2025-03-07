@@ -1,10 +1,10 @@
-package dataAccess;
+package DataAccess;
 
 import model.UserData;
 
 import java.util.ArrayList;
 
-public class UserAccess implements dataAccess {
+public class UserAccess implements DataAccess {
 
     public UserAccess(){}
 
