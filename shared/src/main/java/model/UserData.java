@@ -13,27 +13,27 @@ public class UserData {
         email = mail;
     }
 
-    public void SetUsername(String newUsername) {
+    public void setUsername(String newUsername) {
         username = newUsername;
     }
 
-    public String GetUsername(){
+    public String getUsername(){
         return username;
     }
 
-    public void SetPassword(String newPass) {
+    public void setPassword(String newPass) {
         password = newPass;
     }
 
-    public String GetPassword(){
+    public String getPassword(){
         return password;
     }
 
-    public void SetEmail(String newEmail) {
+    public void setEmail(String newEmail) {
         email = newEmail;
     }
 
-    public String GetEmail() {
+    public String getEmail() {
         return email;
     }
 

@@ -21,20 +21,20 @@ public class MakeGameService implements Service{
         RequestObj request = (RequestObj) serviceObj;
         var authAccess = new AuthAccess();
         var gameAccess = new GameAccess();
-        if (request.GetGameName() == null || request.GetAuthToken() == null) {
+        if (request.getGameName() == null || request.getAuthToken() == null) {
             throw new DataAccessException("bad request");
         }
-        if (!authAccess.Find(request.GetAuthToken())) {
+        if (!authAccess.find(request.getAuthToken())) {
             throw new DataAccessException("unauthorized");
         }
 
         String gameID = AuthData.makeAuthToken();
-        if (!gameAccess.Create(new GameData(Integer.parseInt(gameID), request.GetGameName()))) {
+        if (!gameAccess.create(new GameData(Integer.parseInt(gameID), request.getGameName()))) {
             throw new DataAccessException("unable to create new game");
         }
 
         var result = new ResultObj(Map.of("gameID", gameID, "code", "200"));
-        return handler.Serialize(result);
+        return handler.serialize(result);
     }
 
     public void registerHandler(Handler newHandler) {

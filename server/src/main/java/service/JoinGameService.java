@@ -22,36 +22,36 @@ public class JoinGameService implements Service{
         RequestObj request = (RequestObj) serviceObj;
         var authAccess = new AuthAccess();
         var gameAccess = new GameAccess();
-        if (request.GetColor() == null || request.GetGameID() == null
-                || request.GetAuthToken() == null || (!request.GetColor().equals("WHITE")
-                && !request.GetColor().equals("BLACK"))) {
+        if (request.getColor() == null || request.getGameID() == null
+                || request.getAuthToken() == null || (!request.getColor().equals("WHITE")
+                && !request.getColor().equals("BLACK"))) {
             throw new DataAccessException("bad request");
         }
-        if (!authAccess.Find(request.GetAuthToken())) {
+        if (!authAccess.find(request.getAuthToken())) {
             throw new DataAccessException("unauthorized");
         }
-        if (!gameAccess.Find(request.GetGameID())) {
+        if (!gameAccess.find(request.getGameID())) {
             throw new DataAccessException("bad request");
         }
-        var game = (GameData) gameAccess.Read(request.GetGameID());
-        if ((request.GetColor().equals("WHITE") && game.GetWhiteUsername() != null)
-        || (request.GetColor().equals("BLACK") && game.GetBlackUsername() != null)) {
+        var game = (GameData) gameAccess.read(request.getGameID());
+        if ((request.getColor().equals("WHITE") && game.getWhiteUsername() != null)
+        || (request.getColor().equals("BLACK") && game.getBlackUsername() != null)) {
             throw new DataAccessException("already taken");
         }
-        var auth = (AuthData) authAccess.Read(request.GetAuthToken());
+        var auth = (AuthData) authAccess.read(request.getAuthToken());
 
-        if (request.GetColor().equals("WHITE")) {
-            game.SetWhiteUsername(auth.GetUsername());
+        if (request.getColor().equals("WHITE")) {
+            game.setWhiteUsername(auth.getUsername());
         }
         else {
-            game.SetBlackUsername(auth.GetUsername());
+            game.setBlackUsername(auth.getUsername());
         }
-        if (!gameAccess.Update(game)) {
+        if (!gameAccess.update(game)) {
             throw new DataAccessException("unable to alter game");
         };
 
         var result = new ResultObj(Map.of( "code", "200"));
-        return handler.Serialize(result);
+        return handler.serialize(result);
     }
 
     public void registerHandler(Handler newHandler) {

@@ -17,24 +17,24 @@ public class RegisterService implements Service{
         RequestObj request = (RequestObj) serviceObj;
         var authAccess = new AuthAccess();
         var userAccess = new UserAccess();
-        if (request.GetUsername() == null || request.GetPassword() == null || request.GetEmail() == null) {
+        if (request.getUsername() == null || request.getPassword() == null || request.getEmail() == null) {
             throw new DataAccessException("bad request");
         }
-        if (userAccess.Find(request.GetUsername())) {
+        if (userAccess.find(request.getUsername())) {
             throw new DataAccessException("already taken");
         }
-        if (!userAccess.Create(new UserData(request.GetUsername(),
-                request.GetPassword(), request.GetEmail()))) {
+        if (!userAccess.create(new UserData(request.getUsername(),
+                request.getPassword(), request.getEmail()))) {
             throw new DataAccessException("unable to create user");
         }
         String token = AuthData.makeAuthToken();
-        if (!authAccess.Create(new AuthData(request.GetUsername(), token))) {
+        if (!authAccess.create(new AuthData(request.getUsername(), token))) {
             throw new DataAccessException("unable to store authToken");
         }
 
         var result = new ResultObj(Map.of("username",
-                request.GetUsername(), "authToken", token, "code", "200"));
-        return handler.Serialize(result);
+                request.getUsername(), "authToken", token, "code", "200"));
+        return handler.serialize(result);
     }
 
     public void registerHandler(Handler newHandler) {

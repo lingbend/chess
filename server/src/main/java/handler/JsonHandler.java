@@ -13,7 +13,7 @@ public class JsonHandler implements Handler{
         service = serviceType;
     }
 
-    public String[] Deserialize(String json, String auth) {
+    public String[] deserialize(String json, String auth) {
         try {
             TreeMap<String, String> requestMap = new TreeMap();
             if (json != null && !json.isEmpty()) {
@@ -37,13 +37,13 @@ public class JsonHandler implements Handler{
                 code = "401";
             }
             var result = new ResultObj(Map.of("code", code, "message", "Error: " + ex.getMessage()));
-            return Serialize(result);
+            return serialize(result);
         }
     }
 
-    public String[] Serialize(ResultObj obj) {
-        String code = obj.GetCode();
-        obj.SetCode(null);
+    public String[] serialize(ResultObj obj) {
+        String code = obj.getCode();
+        obj.setCode(null);
         String json;
         if (code != null) {
             json = new Gson().toJson(obj);

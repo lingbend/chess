@@ -31,73 +31,73 @@ public class ResultObj implements ServiceObj{
         if (tempGames != null) {
             games = new ArrayList<TreeMap>();
             for (var i : tempGames) {
-                games.add(i.GetMap());
+                games.add(i.getMap());
             }
         }
     }
 
 
-    public void SetCode(String newCode) {
+    public void setCode(String newCode) {
         code = newCode;
     }
 
-    public String GetCode(){
+    public String getCode(){
         return code;
     }
 
-    public void SetMessage(String newMessage){
+    public void setMessage(String newMessage){
         message = newMessage;
     }
 
-    public String GetMessage(){
+    public String getMessage(){
         return message;
     }
 
-    public void SetWhiteUsername(String newUser){
+    public void setWhiteUsername(String newUser){
         whiteUsername = newUser;
     }
 
-    public String GetWhiteUsername(){
+    public String getWhiteUsername(){
         return whiteUsername;
     }
 
-    public void SetBlackUsername(String newUser){
+    public void setBlackUsername(String newUser){
         blackUsername = newUser;
     }
 
-    public String GetBlackUsername(){
+    public String getBlackUsername(){
         return blackUsername;
     }
 
-    public void SetUsername(String newUsername) {
+    public void setUsername(String newUsername) {
         username = newUsername;
     }
 
-    public String GetUsername() {
+    public String getUsername() {
         return username;
     }
 
-    public void SetGameID(String newID) {
+    public void setGameID(String newID) {
         gameID = newID;
     }
 
-    public String GetGameID(){
+    public String getGameID(){
         return gameID;
     }
 
-    public void SetAuthToken(String newAuthToken) {
+    public void setAuthToken(String newAuthToken) {
         authToken = newAuthToken;
     }
 
-    public String GetAuthToken(){
+    public String getAuthToken(){
         return authToken;
     }
 
-    public void SetGameName(String newName) {
+    public void setGameName(String newName) {
         gameName = newName;
     }
 
-    public String GetGameName() {
+    public String getGameName() {
         return gameName;
     }
 }

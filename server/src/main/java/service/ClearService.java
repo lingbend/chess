@@ -17,18 +17,18 @@ public class ClearService implements Service{
         var authAccess = new AuthAccess();
         var userAccess = new UserAccess();
         var gameAccess = new GameAccess();
-        if (!userAccess.DeleteAll()) {
+        if (!userAccess.deleteAll()) {
             throw new DataAccessException("unable to delete user data");
         }
-        if (!gameAccess.DeleteAll()) {
+        if (!gameAccess.deleteAll()) {
             throw new DataAccessException("unable to delete games");
         }
-        if (!authAccess.DeleteAll()) {
+        if (!authAccess.deleteAll()) {
             throw new DataAccessException("unable to delete auth tokens");
         }
 
         var result = new ResultObj(Map.of("code", "200"));
-        return handler.Serialize(result);
+        return handler.serialize(result);
     }
 
     public void registerHandler(Handler newHandler) {

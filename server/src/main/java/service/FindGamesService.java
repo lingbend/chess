@@ -19,12 +19,12 @@ public class FindGamesService implements Service{
         RequestObj request = (RequestObj) serviceObj;
         var authAccess = new AuthAccess();
         var gameAccess = new GameAccess();
-        if (!authAccess.Find(request.GetAuthToken())) {
+        if (!authAccess.find(request.getAuthToken())) {
             throw new DataAccessException("unauthorized");
         }
-        var games = gameAccess.FindAll();
+        var games = gameAccess.findAll();
         var result = new ResultObj(Map.of("games", games, "code", "200"));
-        return handler.Serialize(result);
+        return handler.serialize(result);
     }
 
     public void registerHandler(Handler newHandler) {

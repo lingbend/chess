@@ -15,19 +15,19 @@ public class AuthData {
         authToken = token;
     }
 
-    public void SetAuthToken(String newToken) {
+    public void setAuthToken(String newToken) {
         authToken = newToken;
     }
 
-    public String GetAuthToken() {
+    public String getAuthToken() {
         return authToken;
     }
 
-    public void SetUsername(String name) {
+    public void setUsername(String name) {
         username = name;
     }
 
-    public String GetUsername() {
+    public String getUsername() {
         return username;
     }
 
@@ -35,8 +35,8 @@ public class AuthData {
         Instant time = Instant.now();
         Random rand = new Random();
         int mod = rand.nextInt(10000);
-        long longTime = time.getEpochSecond() / 2;
-        long longRand = rand.nextLong() / 2;
+        long longTime = Long.divideUnsigned(time.getEpochSecond(), 2);
+        long longRand = Long.divideUnsigned(rand.nextLong(), 2);
         long longCat = (longTime + longRand) % mod;
         String auth = String.valueOf(longCat);
         return auth;

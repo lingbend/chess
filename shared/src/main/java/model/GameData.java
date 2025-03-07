@@ -18,47 +18,47 @@ public class GameData {
         game = new ChessGame();
     }
 
-    public void SetGameID(int num) {
+    public void setGameID(int num) {
         gameID = num;
     }
 
-    public int GetGameID() {
+    public int getGameID() {
         return gameID;
     }
 
-    public void SetWhiteUsername(String username) {
+    public void setWhiteUsername(String username) {
         whiteUsername = username;
     }
 
-    public String GetWhiteUsername() {
+    public String getWhiteUsername() {
         return whiteUsername;
     }
 
-    public void SetBlackUsername(String username) {
+    public void setBlackUsername(String username) {
         blackUsername = username;
     }
 
-    public String GetBlackUsername() {
+    public String getBlackUsername() {
         return blackUsername;
     }
 
-    public void SetGameName(String name) {
+    public void setGameName(String name) {
         gameName = name;
     }
 
-    public String GetGameName() {
+    public String getGameName() {
         return gameName;
     }
 
-    public void SetGame(ChessGame newGame) {
+    public void setGame(ChessGame newGame) {
         game = newGame;
     }
 
-    public ChessGame GetGame() {
+    public ChessGame getGame() {
         return game;
     }
 
-    public TreeMap GetMap() {
+    public TreeMap getMap() {
         var map = new TreeMap();
         map.put("gameID", gameID);
         map.put("gameName", gameName);

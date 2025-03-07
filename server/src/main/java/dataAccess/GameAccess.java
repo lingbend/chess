@@ -8,43 +8,43 @@ public class GameAccess implements dataAccess {
 
     public GameAccess(){}
 
-    public boolean Create(Object obj){
+    public boolean create(Object obj){
         GameData data = (GameData) obj;
         return DB.games.add(data);
     };
-    public boolean Find(Object index){
+    public boolean find(Object index){
         String gameID = (String) index;
         for (var i : DB.games) {
-            if (String.valueOf(i.GetGameID()).equals(gameID)) {
+            if (String.valueOf(i.getGameID()).equals(gameID)) {
                 return true;
             }
         }
         return false;
     };
-    public ArrayList<GameData> FindAll(){
+    public ArrayList<GameData> findAll(){
         return DB.games;
     }
-    public boolean Update(Object index){
+    public boolean update(Object index){
         var game = (GameData) index;
-        var gameID = game.GetGameID();
-        var oldGame = Read(String.valueOf(gameID));
+        var gameID = game.getGameID();
+        var oldGame = read(String.valueOf(gameID));
         if (DB.games.remove(oldGame) && DB.games.add(game)) {
             return true;
         }
         return false;
     };
-    public boolean Delete(Object index){
+    public boolean delete(Object index){
         return false;
     };
-    public Object Read(String gameID){
+    public Object read(String gameID){
         for (var i : DB.games) {
-            if (String.valueOf(i.GetGameID()).equals(gameID)) {
+            if (String.valueOf(i.getGameID()).equals(gameID)) {
                 return i;
             }
         }
         return null;
     };
-    public boolean DeleteAll(){
+    public boolean deleteAll(){
         DB.games = new ArrayList<>();
         return true;
     }

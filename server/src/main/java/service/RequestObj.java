@@ -37,59 +37,59 @@ public class RequestObj implements ServiceObj{
         }
     }
 
-    public void SetUsername(String newUsername) {
+    public void setUsername(String newUsername) {
         username = newUsername;
     }
 
-    public String GetUsername() {
+    public String getUsername() {
         return username;
     }
 
-    public void SetPassword(String newPassword) {
+    public void setPassword(String newPassword) {
         password = newPassword;
     }
 
-    public String GetPassword() {
+    public String getPassword() {
         return password;
     }
 
-    public void SetEmail(String newEmail) {
+    public void setEmail(String newEmail) {
         email = newEmail;
     }
 
-    public String GetEmail() {
+    public String getEmail() {
         return email;
     }
 
-    public void SetAuthToken(String newAuthToken) {
+    public void setAuthToken(String newAuthToken) {
         authToken = newAuthToken;
     }
 
-    public String GetAuthToken(){
+    public String getAuthToken(){
         return authToken;
     }
 
-    public void SetGameName(String newName) {
+    public void setGameName(String newName) {
         gameName = newName;
     }
 
-    public String GetGameName() {
+    public String getGameName() {
         return gameName;
     }
 
-    public void SetColor(String newColor) {
+    public void setColor(String newColor) {
         color = newColor;
     }
 
-    public String GetColor(){
+    public String getColor(){
         return color;
     }
 
-    public void SetGameID(String newID) {
+    public void setGameID(String newID) {
         gameID = newID;
     }
 
-    public String GetGameID(){
+    public String getGameID(){
         return gameID;
     }
 }

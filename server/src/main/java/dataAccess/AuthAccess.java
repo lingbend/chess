@@ -8,7 +8,7 @@ public class AuthAccess implements dataAccess {
 
     public AuthAccess(){}
 
-    public boolean Create(Object obj){
+    public boolean create(Object obj){
         var authData = (AuthData) obj;
         if (DB.auth.add(authData)) {
             return true;
@@ -19,37 +19,37 @@ public class AuthAccess implements dataAccess {
     }
 
     //To implement:
-    public boolean Find(Object index){
+    public boolean find(Object index){
         String auth = (String) index;
         for (var i : DB.auth) {
-            if (i.GetAuthToken().equals(auth)) {
+            if (i.getAuthToken().equals(auth)) {
                 return true;
             }
         }
         return false;
     };
-    public boolean Update(Object index){
+    public boolean update(Object index){
         return false;
     };
-    public boolean Delete(Object index){
+    public boolean delete(Object index){
         String auth = (String) index;
         for (var i : DB.auth) {
-            if (i.GetAuthToken().equals(auth)) {
+            if (i.getAuthToken().equals(auth)) {
                 return DB.auth.remove(i);
             }
         }
         return false;
     };
-    public Object Read(String index){
+    public Object read(String index){
         String auth = (String) index;
         for (var i : DB.auth) {
-            if (i.GetAuthToken().equals(auth)) {
+            if (i.getAuthToken().equals(auth)) {
                 return i;
             }
         }
         return null;
     };
-    public boolean DeleteAll(){
+    public boolean deleteAll(){
         DB.auth = new ArrayList<>();
         return true;
     }
