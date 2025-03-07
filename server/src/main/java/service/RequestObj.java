@@ -2,6 +2,7 @@ package service;
 
 import java.lang.String;
 import java.util.Map;
+import java.util.function.ToDoubleFunction;
 
 public class RequestObj implements ServiceObj{
     String username;
@@ -20,9 +21,9 @@ public class RequestObj implements ServiceObj{
             authToken = value(map.get("authToken"));
             gameName = value(map.get("gameName"));
             color = value(map.get("playerColor"));
-            Object tempID = map.get("gameID");
+            String tempID = value(map.get("gameID"));
             if (tempID != null) {
-                gameID = value((int) (double) tempID);
+                gameID = value(Double.valueOf(tempID).intValue());
             }
         }
     }

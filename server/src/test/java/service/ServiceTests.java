@@ -165,6 +165,72 @@ public class ServiceTests {
     }
 
     @Test
+    public void joinGamePositive() throws DataAccessException {
+        var service = new RegisterService();
+        var request = new RequestObj(Map.of("username", "chicken", "password" ,"aslk3sd0%3", "email", "duck@duck.com"));
+        var handler = new JsonHandler(service);
+        service.registerHandler(handler);
+        Map result = unserialize(service.run(request));
+
+        var service2 = new MakeGameService();
+        request = new RequestObj(Map.of("gameName", "Stinkor", "authToken", result.get("authToken")));
+        service2.registerHandler(handler);
+        var authToken = result.get("authToken");
+        result = unserialize(service2.run(request));
+
+        request = new RequestObj(Map.of("playerColor", "WHITE", "gameID", result.get("gameID"), "authToken", authToken));
+        var service3 = new JoinGameService();
+        service3.registerHandler(handler);
+        result = unserialize(service3.run(request));
+
+        var requestMap = Map.of("code", "200");
+        Assertions.assertEquals(requestMap, result);
+    }
+
+    @Test
+    public void joinGameNegative() throws DataAccessException, Exception {
+        var service = new RegisterService();
+        var request = new RequestObj(Map.of("username", "chicken", "password" ,"aslk3sd0%3", "email", "duck@duck.com"));
+        var handler = new JsonHandler(service);
+        service.registerHandler(handler);
+        Map result = unserialize(service.run(request));
+
+        var service2 = new MakeGameService();
+        request = new RequestObj(Map.of("gameName", "Stinkor", "authToken", result.get("authToken")));
+        service2.registerHandler(handler);
+        var authToken = result.get("authToken");
+        result = unserialize(service2.run(request));
+
+        request = new RequestObj(Map.of("gameID", result.get("gameID"), "authToken", authToken));
+        var service3 = new JoinGameService();
+        service3.registerHandler(handler);
+        try {
+            service3.run(request);
+            throw new Exception("join game Negative failed (bad request)");
+        }
+        catch (DataAccessException ex) {
+            Assertions.assertEquals("bad request", ex.getMessage());
+        }
+        request = new RequestObj(Map.of("playerColor", "WHITE", "gameID", result.get("gameID"), "authToken", "14532"));
+        try {
+            service3.run(request);
+            throw new Exception("join game Negative failed (unauthorized)");
+        }
+        catch (DataAccessException ex) {
+            Assertions.assertEquals("unauthorized", ex.getMessage());
+        }
+        request = new RequestObj(Map.of("playerColor","WHITE", "gameID", result.get("gameID"), "authToken", authToken));
+        service3.run(request);
+        try {
+            service3.run(request);
+            throw new Exception("join game Negative failed (already taken)");
+        }
+        catch (DataAccessException ex) {
+            Assertions.assertEquals("already taken", ex.getMessage());
+        }
+    }
+
+    @Test
     public void clearPositive() throws DataAccessException{
         var service = new ClearService();
         var request = new RequestObj(Map.of());
@@ -189,6 +255,19 @@ public class ServiceTests {
         var handler = new JsonHandler(service);
         service.registerHandler(handler);
         service.run(request);
+    }
+
+    private void makeGame() throws DataAccessException {
+        var service = new RegisterService();
+        var request = new RequestObj(Map.of("username", "chicken", "password" ,"aslk3sd0%3", "email", "duck@duck.com"));
+        var handler = new JsonHandler(service);
+        service.registerHandler(handler);
+        Map result = unserialize(service.run(request));
+
+        var service2 = new MakeGameService();
+        request = new RequestObj(Map.of("gameName", "Stinkor", "authToken", result.get("authToken")));
+        service2.registerHandler(handler);
+        service2.run(request);
     }
 
 
