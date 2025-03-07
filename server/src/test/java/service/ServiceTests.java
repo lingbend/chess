@@ -14,6 +14,7 @@ import dataAccess.DataAccessException;
 
 public class ServiceTests {
 
+
     @Test
     public void registerPositive() throws DataAccessException{
         var service = new RegisterService();
@@ -28,14 +29,14 @@ public class ServiceTests {
     }
 
     @Test
-    public void registerNegative() throws DataAccessException, Exception {
+    public void registerNegative() throws DataAccessException {
         var service = new RegisterService();
         var request = new RequestObj(Map.of("username", "chicken", "password" ,"aslk3sd0%3"));
         var handler = new JsonHandler(service);
         service.registerHandler(handler);
         try {
             service.run(request);
-            throw new Exception("Failed register negative (bad request)");
+            Assertions.fail("Failed register negative (bad request)");
         }
         catch (DataAccessException ex){
             Assertions.assertEquals("bad request", ex.getMessage(), "Bad request: assertion failed");
@@ -48,7 +49,7 @@ public class ServiceTests {
         service.run(request);
         try {
             service.run(request);
-            throw new Exception("Failed register negative (already taken)");
+            Assertions.fail("Failed register negative (already taken)");
         }
         catch (DataAccessException ex) {
             Assertions.assertEquals("already taken", ex.getMessage(), "Already taken: assertion failed");
@@ -70,7 +71,7 @@ public class ServiceTests {
     }
 
     @Test
-    public void loginNegative() throws DataAccessException, Exception {
+    public void loginNegative() throws DataAccessException {
         makeUser();
         var service = new LoginService();
         var request = new RequestObj(Map.of("username", "chicken", "password" ,"forge"));
@@ -78,7 +79,7 @@ public class ServiceTests {
         service.registerHandler(handler);
         try {
             service.run(request);
-            throw new Exception("Failed login negative");
+            Assertions.fail("Failed login negative");
         }
         catch (DataAccessException ex) {
             Assertions.assertEquals("unauthorized", ex.getMessage());
@@ -103,14 +104,14 @@ public class ServiceTests {
     }
 
     @Test
-    public void logoutNegative() throws DataAccessException, Exception {
+    public void logoutNegative() throws DataAccessException {
         var service2 = new LogoutService();
         var request = new RequestObj(Map.of());
         var handler = new JsonHandler(service2);
         service2.registerHandler(handler);
         try {
             service2.run(request);
-            throw new Exception("Failed logout negative");
+            Assertions.fail("Failed logout negative");
         }
         catch (DataAccessException ex) {
             Assertions.assertEquals("unauthorized", ex.getMessage());
@@ -118,7 +119,7 @@ public class ServiceTests {
     }
 
     @Test
-    public void createGamePositive() throws DataAccessException{
+    public void createGamePositive() throws DataAccessException {
         var service = new RegisterService();
         var request = new RequestObj(Map.of("username", "chicken", "password" ,"aslk3sd0%3", "email", "duck@duck.com"));
         var handler = new JsonHandler(service);
@@ -138,7 +139,7 @@ public class ServiceTests {
     }
 
     @Test
-    public void createGameNegative() throws DataAccessException, Exception {
+    public void createGameNegative() throws DataAccessException {
         var service = new RegisterService();
         var request = new RequestObj(Map.of("username", "chicken", "password" ,"aslk3sd0%3", "email", "duck@duck.com"));
         var handler = new JsonHandler(service);
@@ -150,7 +151,7 @@ public class ServiceTests {
         service2.registerHandler(handler);
         try {
             service2.run(request);
-            throw new Exception("create Game Negative failed (bad request)");
+            Assertions.fail("create Game Negative failed (bad request)");
         }
         catch (DataAccessException ex) {
             Assertions.assertEquals("bad request", ex.getMessage());
@@ -159,7 +160,7 @@ public class ServiceTests {
         request = new RequestObj(Map.of("gameName", "Stinkor", "authToken", "als"));
         try {
             service2.run(request);
-            throw new Exception("create Game Negative failed (unauthorized)");
+            Assertions.fail("create Game Negative failed (unauthorized)");
         }
         catch (DataAccessException ex) {
             Assertions.assertEquals("unauthorized", ex.getMessage());
@@ -190,7 +191,7 @@ public class ServiceTests {
     }
 
     @Test
-    public void joinGameNegative() throws DataAccessException, Exception {
+    public void joinGameNegative() throws DataAccessException {
         var service = new RegisterService();
         var request = new RequestObj(Map.of("username", "chicken", "password" ,"aslk3sd0%3", "email", "duck@duck.com"));
         var handler = new JsonHandler(service);
@@ -208,7 +209,7 @@ public class ServiceTests {
         service3.registerHandler(handler);
         try {
             service3.run(request);
-            throw new Exception("join game Negative failed (bad request)");
+            Assertions.fail("join game Negative failed (bad request)");
         }
         catch (DataAccessException ex) {
             Assertions.assertEquals("bad request", ex.getMessage());
@@ -216,7 +217,7 @@ public class ServiceTests {
         request = new RequestObj(Map.of("playerColor", "WHITE", "gameID", result.get("gameID"), "authToken", "14532"));
         try {
             service3.run(request);
-            throw new Exception("join game Negative failed (unauthorized)");
+            Assertions.fail("join game Negative failed (unauthorized)");
         }
         catch (DataAccessException ex) {
             Assertions.assertEquals("unauthorized", ex.getMessage());
@@ -225,7 +226,7 @@ public class ServiceTests {
         service3.run(request);
         try {
             service3.run(request);
-            throw new Exception("join game Negative failed (already taken)");
+            Assertions.fail("join game Negative failed (already taken)");
         }
         catch (DataAccessException ex) {
             Assertions.assertEquals("already taken", ex.getMessage());
@@ -307,6 +308,15 @@ public class ServiceTests {
         service2.registerHandler(handler);
         result = unserialize(service2.run(request));
         return result.get("gameID");
+    }
+
+    @AfterEach
+    public void clearDB() throws DataAccessException {
+        var service = new ClearService();
+        var request = new RequestObj(Map.of());
+        var handler = new JsonHandler(service);
+        service.registerHandler(handler);
+        service.run(request);
     }
 
 
