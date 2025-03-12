@@ -33,6 +33,36 @@ public class DatabaseManager {
         }
     }
 
+    static void initializeEntireDatabase() throws DataAccessException{
+        String gameFields = """
+                gameID INT NOT NULL,
+                whiteUsername TEXT,
+                blackUsername TEXT,
+                gameName TEXT NOT NULL,
+                game TEXT NOT NULL,
+                Primary KEY (gameID)
+                """;
+
+        String userFields = """
+                username TEXT NOT NULL,
+                email TEXT NOT NULL,
+                password TEXT NOT NULL,
+                Primary KEY (username)
+                """;
+
+        String authFields = """
+                username TEXT NOT NULL,
+                authToken TEXT NOT NULL,
+                PRIMARY KEY (authToken)
+                """;
+
+        createDatabase();
+        createTable("games", gameFields);
+        createTable("auth", authFields);
+        createTable("users", userFields);
+    }
+
+
     /**
      * Creates the database if it does not already exist.
      */
@@ -45,6 +75,18 @@ public class DatabaseManager {
             }
         } catch (SQLException e) {
             throw new DataAccessException(e.getMessage());
+        }
+    }
+
+    private static void createTable(String name, String fields) throws DataAccessException {
+        try (var conn = DriverManager.getConnection(CONNECTION_URL, USER, PASSWORD)) {
+            var statement = "CREATE TABLE IF NOT EXISTS " + name + " ( " + fields + " ) ";
+            conn.setCatalog(DATABASE_NAME);
+            var preparedStatement = conn.prepareStatement(statement);
+            preparedStatement.executeUpdate();
+        }
+        catch (SQLException ex) {
+            throw new DataAccessException(ex.getMessage());
         }
     }
 
