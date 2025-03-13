@@ -36,6 +36,8 @@ public class SQLAuthAccess implements DataAccess{
 
             var authRecord = preparedStatement.executeQuery();
 
+            authRecord.next();
+
             if (authRecord.getString("authToken").equals(authToken)) {
                 return true;
             }
@@ -82,6 +84,8 @@ public class SQLAuthAccess implements DataAccess{
             preparedStatement.setString(1, authToken);
 
             var readResponse = preparedStatement.executeQuery();
+
+            readResponse.next();
 
             if (readResponse.getString("authToken").equals(authToken)
             && readResponse.getString("username") != null) {
