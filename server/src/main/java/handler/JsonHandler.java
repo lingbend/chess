@@ -15,6 +15,8 @@ public class JsonHandler implements Handler{
 
     public String[] deserialize(String json, String auth) {
         try {
+            initializeDB();
+
             TreeMap<String, String> requestMap = new TreeMap();
             if (json != null && !json.isEmpty()) {
                 requestMap = new Gson().fromJson(json, TreeMap.class);
@@ -53,5 +55,10 @@ public class JsonHandler implements Handler{
         }
         String[] response = {code, json};
         return response;
+    }
+
+    private void initializeDB() throws DataAccessException{
+//        new DB();
+        DatabaseManager.initializeEntireDatabase();
     }
 }

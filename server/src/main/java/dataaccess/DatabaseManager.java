@@ -33,7 +33,7 @@ public class DatabaseManager {
         }
     }
 
-    static void initializeEntireDatabase() throws DataAccessException{
+    public static void initializeEntireDatabase() throws DataAccessException{
         String gameFields = """
                 gameID INT NOT NULL,
                 whiteUsername TEXT,

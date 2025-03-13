@@ -4,14 +4,13 @@ import spark.*;
 import service.*;
 import service.Service;
 import handler.*;
-import dataaccess.DB;
+import dataaccess.*;
 import java.lang.String;
 import java.lang.Integer;
 
 public class Server {
 
     public int run(int desiredPort) {
-        new DB();
         Spark.port(desiredPort);
 
         Spark.staticFiles.location("web");
@@ -76,6 +75,5 @@ public class Server {
         res.type("application/json");
         res.status(Integer.valueOf(handlerRes[0]));
         return handlerRes[1];
-
     }
 }
