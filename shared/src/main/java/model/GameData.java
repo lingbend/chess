@@ -18,6 +18,12 @@ public class GameData {
         game = new ChessGame();
     }
 
+    public GameData(int id, String name, ChessGame inputGame) {
+        gameID = id;
+        gameName = name;
+        game = inputGame;
+    }
+
     public void setGameID(int num) {
         gameID = num;
     }

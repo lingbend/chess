@@ -20,6 +20,11 @@ public class ChessGame {
         gameTurn = TeamColor.WHITE;
     }
 
+    public ChessGame(ChessBoard board, TeamColor color) {
+        gameBoard = board;
+        gameTurn = color;
+    }
+
     /**
      * @return Which team's turn it is
      */
