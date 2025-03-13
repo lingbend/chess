@@ -136,7 +136,7 @@ public class SQLGameAccess implements DataAccess{
         int gameID = Integer.decode(index);
 
         try (var conn = DatabaseManager.getConnection()) {
-            String statement = "SELECT gameID FROM games WHERE gameID=?";
+            String statement = "SELECT gameID, whiteUsername, blackUsername, gameName, game FROM games WHERE gameID=?";
             var preparedStatement = conn.prepareStatement(statement);
 
             preparedStatement.setInt(1, gameID);
