@@ -30,10 +30,6 @@ public class LoginService implements Service{
             throw new DataAccessException("unauthorized");
         }
 
-
-//        if (!user.getPassword().equals(request.getPassword())) {
-//            throw new DataAccessException("unauthorized");
-//        }
         String token = AuthData.makeAuthToken();
         if (!authAccess.create(new AuthData(request.getUsername(), token))) {
             throw new DataAccessException("unable to store authToken");
