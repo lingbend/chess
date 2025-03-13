@@ -57,7 +57,7 @@ public class JsonHandler implements Handler{
         return response;
     }
 
-    private void initializeDB() throws DataAccessException{
+    public static void initializeDB() throws DataAccessException{
 //        new DB();
         DatabaseManager.initializeEntireDatabase();
     }

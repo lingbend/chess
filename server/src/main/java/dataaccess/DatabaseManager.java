@@ -36,23 +36,23 @@ public class DatabaseManager {
     public static void initializeEntireDatabase() throws DataAccessException{
         String gameFields = """
                 gameID INT NOT NULL,
-                whiteUsername TEXT,
-                blackUsername TEXT,
-                gameName TEXT NOT NULL,
-                game TEXT NOT NULL,
+                whiteUsername VARCHAR(255),
+                blackUsername VARCHAR(255),
+                gameName VARCHAR(255) NOT NULL,
+                game VARCHAR(255) NOT NULL,
                 Primary KEY (gameID)
                 """;
 
         String userFields = """
-                username TEXT NOT NULL,
-                email TEXT NOT NULL,
-                password TEXT NOT NULL,
+                username VARCHAR(255) NOT NULL,
+                email VARCHAR(255) NOT NULL,
+                password VARCHAR(255) NOT NULL,
                 Primary KEY (username)
                 """;
 
         String authFields = """
-                username TEXT NOT NULL,
-                authToken TEXT NOT NULL,
+                username VARCHAR(255) NOT NULL,
+                authToken VARCHAR(255) NOT NULL,
                 PRIMARY KEY (authToken)
                 """;
 
