@@ -19,8 +19,8 @@ public class JoinGameService implements Service{
 
     public String[] run(ServiceObj serviceObj) throws DataAccessException {
         RequestObj request = (RequestObj) serviceObj;
-        var authAccess = new AuthAccess();
-        var gameAccess = new GameAccess();
+        var authAccess = new SQLAuthAccess();
+        var gameAccess = new SQLGameAccess();
         if (request.getColor() == null || request.getGameID() == null
                 || request.getAuthToken() == null || (!request.getColor().equals("WHITE")
                 && !request.getColor().equals("BLACK"))) {

@@ -14,9 +14,9 @@ public class ClearService implements Service{
 
     public String[] run(ServiceObj serviceObj) throws DataAccessException {
         RequestObj request = (RequestObj) serviceObj;
-        var authAccess = new AuthAccess();
-        var userAccess = new UserAccess();
-        var gameAccess = new GameAccess();
+        var authAccess = new SQLAuthAccess();
+        var userAccess = new SQLUserAccess();
+        var gameAccess = new SQLGameAccess();
         if (!userAccess.deleteAll()) {
             throw new DataAccessException("unable to delete user data");
         }

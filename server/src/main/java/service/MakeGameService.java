@@ -1,8 +1,6 @@
 package service;
 
-import dataaccess.AuthAccess;
-import dataaccess.DataAccessException;
-import dataaccess.GameAccess;
+import dataaccess.*;
 import handler.Handler;
 import handler.JsonHandler;
 import model.AuthData;
@@ -19,8 +17,8 @@ public class MakeGameService implements Service{
 
     public String[] run(ServiceObj serviceObj) throws DataAccessException {
         RequestObj request = (RequestObj) serviceObj;
-        var authAccess = new AuthAccess();
-        var gameAccess = new GameAccess();
+        var authAccess = new SQLAuthAccess();
+        var gameAccess = new SQLGameAccess();
         if (request.getGameName() == null || request.getAuthToken() == null) {
             throw new DataAccessException("bad request");
         }

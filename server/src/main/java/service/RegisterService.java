@@ -15,8 +15,8 @@ public class RegisterService implements Service{
 
     public String[] run(ServiceObj serviceObj) throws DataAccessException {
         RequestObj request = (RequestObj) serviceObj;
-        var authAccess = new AuthAccess();
-        var userAccess = new UserAccess();
+        var authAccess = new SQLAuthAccess();
+        var userAccess = new SQLUserAccess();
         if (request.getUsername() == null || request.getPassword() == null || request.getEmail() == null) {
             throw new DataAccessException("bad request");
         }

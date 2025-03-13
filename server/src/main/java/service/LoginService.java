@@ -1,8 +1,6 @@
 package service;
 
-import dataaccess.AuthAccess;
-import dataaccess.DataAccessException;
-import dataaccess.UserAccess;
+import dataaccess.*;
 import handler.Handler;
 import handler.JsonHandler;
 import model.AuthData;
@@ -19,8 +17,8 @@ public class LoginService implements Service{
 
     public String[] run(ServiceObj serviceObj) throws DataAccessException {
         RequestObj request = (RequestObj) serviceObj;
-        var authAccess = new AuthAccess();
-        var userAccess = new UserAccess();
+        var authAccess = new SQLAuthAccess();
+        var userAccess = new SQLUserAccess();
         if (request.getUsername() == null || request.getPassword() == null) {
             throw new DataAccessException("bad request");
         }

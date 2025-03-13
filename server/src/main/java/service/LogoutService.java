@@ -1,7 +1,6 @@
 package service;
 
-import dataaccess.AuthAccess;
-import dataaccess.DataAccessException;
+import dataaccess.*;
 import handler.Handler;
 import handler.JsonHandler;
 
@@ -16,7 +15,7 @@ public class LogoutService implements Service{
 
     public String[] run(ServiceObj serviceObj) throws DataAccessException {
         RequestObj request = (RequestObj) serviceObj;
-        var authAccess = new AuthAccess();
+        var authAccess = new SQLAuthAccess();
         if (!authAccess.find(request.getAuthToken()) || request.getAuthToken() == null) {
             throw new DataAccessException("unauthorized");
         }
