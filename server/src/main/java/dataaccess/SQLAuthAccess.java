@@ -102,7 +102,7 @@ public class SQLAuthAccess implements DataAccess{
 
     public boolean deleteAll() throws DataAccessException {
         try (var conn = DatabaseManager.getConnection()) {
-            String statement = "DROP TABLE auth";
+            String statement = "TRUNCATE TABLE auth";
             var preparedStatement = conn.prepareStatement(statement);
 
             preparedStatement.executeUpdate();

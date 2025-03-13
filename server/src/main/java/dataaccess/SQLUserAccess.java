@@ -91,7 +91,7 @@ public class SQLUserAccess implements DataAccess{
     };
     public boolean deleteAll() throws DataAccessException {
         try (var conn = DatabaseManager.getConnection()) {
-            String statement = "DROP TABLE users";
+            String statement = "TRUNCATE TABLE users";
             var preparedStatement = conn.prepareStatement(statement);
 
             preparedStatement.executeUpdate();

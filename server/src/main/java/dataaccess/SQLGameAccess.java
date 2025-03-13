@@ -163,7 +163,7 @@ public class SQLGameAccess implements DataAccess{
 
     public boolean deleteAll() throws DataAccessException {
         try (var conn = DatabaseManager.getConnection()) {
-            String statement = "DROP TABLE games";
+            String statement = "TRUNCATE TABLE games";
             var preparedStatement = conn.prepareStatement(statement);
 
             preparedStatement.executeUpdate();
