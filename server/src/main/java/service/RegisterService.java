@@ -3,7 +3,7 @@ package service;
 import model.*;
 import dataaccess.*;
 import handler.*;
-
+import org.mindrot.jbcrypt.BCrypt;
 import java.util.Map;
 
 
@@ -23,8 +23,11 @@ public class RegisterService implements Service{
         if (userAccess.find(request.getUsername())) {
             throw new DataAccessException("already taken");
         }
+
+        String hashedPassword = BCrypt.hashpw(request.getPassword(), BCrypt.gensalt());
+
         if (!userAccess.create(new UserData(request.getUsername(),
-                request.getPassword(), request.getEmail()))) {
+                hashedPassword, request.getEmail()))) {
             throw new DataAccessException("unable to create user");
         }
         String token = AuthData.makeAuthToken();

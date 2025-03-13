@@ -5,7 +5,7 @@ import handler.Handler;
 import handler.JsonHandler;
 import model.AuthData;
 import model.UserData;
-
+import org.mindrot.jbcrypt.BCrypt;
 import java.util.Map;
 
 
@@ -26,9 +26,14 @@ public class LoginService implements Service{
             throw new DataAccessException("unauthorized");
         }
         var user = (UserData) userAccess.read(request.getUsername());
-        if (!user.getPassword().equals(request.getPassword())) {
+        if (!BCrypt.checkpw(request.getPassword(), user.getPassword())) {
             throw new DataAccessException("unauthorized");
         }
+
+
+//        if (!user.getPassword().equals(request.getPassword())) {
+//            throw new DataAccessException("unauthorized");
+//        }
         String token = AuthData.makeAuthToken();
         if (!authAccess.create(new AuthData(request.getUsername(), token))) {
             throw new DataAccessException("unable to store authToken");
