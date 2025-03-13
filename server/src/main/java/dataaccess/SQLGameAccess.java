@@ -9,7 +9,7 @@ import java.util.ArrayList;
 
 import com.google.gson.Gson;
 
-public class SQLGameAccess implements DataAccess{
+public class SQLGameAccess implements DataAccess, GameAccessInter {
 
     public SQLGameAccess(){}
 

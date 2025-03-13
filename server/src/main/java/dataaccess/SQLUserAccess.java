@@ -56,14 +56,6 @@ public class SQLUserAccess implements DataAccess{
 
     };
 
-    public boolean update(Object index) throws DataAccessException {
-        return false;
-    };
-
-    public boolean delete(Object index) throws DataAccessException {
-        return false;
-    };
-
     public Object read(String index) throws DataAccessException {
         String username = (String) index;
 

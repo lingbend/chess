@@ -4,7 +4,7 @@ import model.AuthData;
 
 import java.util.ArrayList;
 
-public class AuthAccess implements DataAccess {
+public class AuthAccess implements DataAccess, AuthAccessInter {
 
     public AuthAccess(){}
 
@@ -26,9 +26,6 @@ public class AuthAccess implements DataAccess {
                 return true;
             }
         }
-        return false;
-    };
-    public boolean update(Object index) throws DataAccessException {
         return false;
     };
     public boolean delete(Object index) throws DataAccessException {

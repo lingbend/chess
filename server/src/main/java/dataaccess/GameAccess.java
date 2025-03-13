@@ -4,7 +4,7 @@ import model.GameData;
 
 import java.util.ArrayList;
 
-public class GameAccess implements DataAccess {
+public class GameAccess implements DataAccess, GameAccessInter {
 
     public GameAccess(){}
 

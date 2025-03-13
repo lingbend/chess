@@ -3,7 +3,7 @@ package dataaccess;
 import model.AuthData;
 import java.sql.*;
 
-public class SQLAuthAccess implements DataAccess{
+public class SQLAuthAccess implements DataAccess, AuthAccessInter {
 
     public SQLAuthAccess(){}
 
@@ -51,8 +51,6 @@ public class SQLAuthAccess implements DataAccess{
 
 
     };
-
-    public boolean update(Object index) throws DataAccessException {return false;};
 
     public boolean delete(Object index) throws DataAccessException {
         String authToken = (String) index;

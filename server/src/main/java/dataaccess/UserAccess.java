@@ -27,14 +27,6 @@ public class UserAccess implements DataAccess {
         return false;
     };
 
-    //To implement:
-    public boolean update(Object index) throws DataAccessException {
-        return false;
-    };
-    public boolean delete(Object index) throws DataAccessException {
-        return false;
-    };
-
     public Object read(String index) throws DataAccessException {
         String username = (String) index;
         for (var i : DB.users) {
