@@ -36,9 +36,7 @@ public class SQLAuthAccess implements DataAccess{
 
             var authRecord = preparedStatement.executeQuery();
 
-            authRecord.next();
-
-            if (authRecord.getString("authToken").equals(authToken)) {
+            if (authRecord.next() && authRecord.getString("authToken").equals(authToken)) {
                 return true;
             }
             else {
