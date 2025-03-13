@@ -42,7 +42,7 @@ public class SQLGameAccess implements DataAccess{
     }
 
     public boolean find(Object index) throws DataAccessException {
-        int gameID = (int) index;
+        int gameID = Integer.decode((String) index);
 
         try (var conn = DatabaseManager.getConnection()) {
             String statement = "SELECT gameID FROM games WHERE gameID=?";
