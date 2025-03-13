@@ -18,17 +18,22 @@ public class SQLGameAccess implements DataAccess{
         int gameID = gameData.getGameID();
         String gameName = gameData.getGameName();
         ChessGame game = gameData.getGame();
+        String whiteUsername = gameData.getWhiteUsername();
+        String blackUsername = gameData.getBlackUsername();
 
         //needs to be refined to actually work here
         String jsonGame = new Gson().toJson(game);
 
         try (var conn = DatabaseManager.getConnection()) {
-            String statement = "INSERT games (gameID, gameName, game) VALUES(?, ?, ?)";
+            String statement = "INSERT games (gameID, gameName, game, whiteUsername, blackUsername)" +
+                    " VALUES(?, ?, ?, ?, ?)";
             var preparedStatement = conn.prepareStatement(statement);
 
             preparedStatement.setInt(1, gameID);
             preparedStatement.setString(2, gameName);
             preparedStatement.setString(3, jsonGame);
+            preparedStatement.setString(4, whiteUsername);
+            preparedStatement.setString(5, blackUsername);
 
             preparedStatement.executeUpdate();
 
