@@ -13,7 +13,7 @@ public class SQLGameAccess implements DataAccess{
 
     public SQLGameAccess(){}
 
-    public boolean create(Object obj){
+    public boolean create(Object obj) throws DataAccessException {
         GameData gameData = (GameData) obj;
         int gameID = gameData.getGameID();
         String gameName = gameData.getGameName();
@@ -36,12 +36,12 @@ public class SQLGameAccess implements DataAccess{
 
         }
 
-        catch (Exception ex) {
-            return false;
+        catch (SQLException ex) {
+            throw new DataAccessException(ex.getMessage());
         }
     }
 
-    public boolean find(Object index){
+    public boolean find(Object index) throws DataAccessException {
         int gameID = (int) index;
 
         try (var conn = DatabaseManager.getConnection()) {
@@ -60,12 +60,12 @@ public class SQLGameAccess implements DataAccess{
             }
         }
 
-        catch (Exception ex) {
-            return false;
+        catch (SQLException ex) {
+            throw new DataAccessException(ex.getMessage());
         }
     }
 
-    public ArrayList<GameData> findAll(){
+    public ArrayList<GameData> findAll() throws DataAccessException{
         try (var conn = DatabaseManager.getConnection()) {
             String statement = "SELECT gameID, whiteUsername, blackUsername, gameName, game FROM games";
             var preparedStatement = conn.prepareStatement(statement);
@@ -83,8 +83,8 @@ public class SQLGameAccess implements DataAccess{
             return gameList;
         }
 
-        catch (Exception ex) {
-            return new ArrayList<GameData>();
+        catch (SQLException ex) {
+            throw new DataAccessException(ex.getMessage());
         }
     }
 
@@ -101,7 +101,7 @@ public class SQLGameAccess implements DataAccess{
         return gameDataEntry;
     }
 
-    public boolean update(Object index){
+    public boolean update(Object index) throws DataAccessException {
         GameData gameData = (GameData) index;
         int gameID = gameData.getGameID();
 
@@ -113,7 +113,7 @@ public class SQLGameAccess implements DataAccess{
         return false;
     }
 
-    public boolean delete(Object index){
+    public boolean delete(Object index) throws DataAccessException {
         int gameID = (int) index;
 
         try (var conn = DatabaseManager.getConnection()) {
@@ -127,12 +127,12 @@ public class SQLGameAccess implements DataAccess{
             return true;
         }
 
-        catch (Exception ex) {
-            return false;
+        catch (SQLException ex) {
+            throw new DataAccessException(ex.getMessage());
         }
     }
 
-    public Object read(String index){
+    public Object read(String index) throws DataAccessException {
         int gameID = Integer.decode(index);
 
         try (var conn = DatabaseManager.getConnection()) {
@@ -151,12 +151,12 @@ public class SQLGameAccess implements DataAccess{
             }
         }
 
-        catch (Exception ex) {
-            return null;
+        catch (SQLException ex) {
+            throw new DataAccessException(ex.getMessage());
         }
     };
 
-    public boolean deleteAll(){
+    public boolean deleteAll() throws DataAccessException {
         try (var conn = DatabaseManager.getConnection()) {
             String statement = "DROP TABLE games";
             var preparedStatement = conn.prepareStatement(statement);
@@ -166,8 +166,8 @@ public class SQLGameAccess implements DataAccess{
             return true;
         }
 
-        catch (Exception ex) {
-            return false;
+        catch (SQLException ex) {
+            throw new DataAccessException(ex.getMessage());
         }
     }
 }

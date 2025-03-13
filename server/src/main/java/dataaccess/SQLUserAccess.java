@@ -2,11 +2,13 @@ package dataaccess;
 
 import model.UserData;
 
+import java.sql.SQLException;
+
 public class SQLUserAccess implements DataAccess{
 
     public SQLUserAccess(){}
 
-    public boolean create(Object obj){
+    public boolean create(Object obj) throws DataAccessException {
         UserData userData = (UserData) obj;
 
         try (var conn = DatabaseManager.getConnection()) {
@@ -21,13 +23,13 @@ public class SQLUserAccess implements DataAccess{
 
             return true;
         }
-        catch (Exception ex) {
-            return false;
+        catch (SQLException ex) {
+            throw new DataAccessException(ex.getMessage());
         }
 
 
     };
-    public boolean find(Object index){
+    public boolean find(Object index) throws DataAccessException {
         String username = (String) index;
 
         try (var conn = DatabaseManager.getConnection()) {
@@ -47,22 +49,22 @@ public class SQLUserAccess implements DataAccess{
             return false;
         }
 
-        catch (Exception ex) {
-            return false;
+        catch (SQLException ex) {
+            throw new DataAccessException(ex.getMessage());
         }
 
 
     };
 
-    public boolean update(Object index){
+    public boolean update(Object index) throws DataAccessException {
         return false;
     };
 
-    public boolean delete(Object index){
+    public boolean delete(Object index) throws DataAccessException {
         return false;
     };
 
-    public Object read(String index){
+    public Object read(String index) throws DataAccessException {
         String username = (String) index;
 
         try (var conn = DatabaseManager.getConnection()) {
@@ -82,12 +84,12 @@ public class SQLUserAccess implements DataAccess{
             }
         }
 
-        catch (Exception ex) {
-            return null;
+        catch (SQLException ex) {
+            throw new DataAccessException(ex.getMessage());
         }
 
     };
-    public boolean deleteAll(){
+    public boolean deleteAll() throws DataAccessException {
         try (var conn = DatabaseManager.getConnection()) {
             String statement = "DROP TABLE users";
             var preparedStatement = conn.prepareStatement(statement);
@@ -98,8 +100,8 @@ public class SQLUserAccess implements DataAccess{
 
         }
 
-        catch (Exception ex) {
-            return false;
+        catch (SQLException ex) {
+            throw new DataAccessException(ex.getMessage());
         }
     };
 }

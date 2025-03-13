@@ -8,7 +8,7 @@ public class UserAccess implements DataAccess {
 
     public UserAccess(){}
 
-    public boolean create(Object obj){
+    public boolean create(Object obj) throws DataAccessException {
         var userData = (UserData) obj;
         if (DB.users.add(userData)) {
             return true;
@@ -17,7 +17,7 @@ public class UserAccess implements DataAccess {
             return false;
         }
     };
-    public boolean find(Object index){
+    public boolean find(Object index) throws DataAccessException {
         String username = (String) index;
         for (var i : DB.users) {
             if (i.getUsername().equals(username)) {
@@ -28,14 +28,14 @@ public class UserAccess implements DataAccess {
     };
 
     //To implement:
-    public boolean update(Object index){
+    public boolean update(Object index) throws DataAccessException {
         return false;
     };
-    public boolean delete(Object index){
+    public boolean delete(Object index) throws DataAccessException {
         return false;
     };
 
-    public Object read(String index){
+    public Object read(String index) throws DataAccessException {
         String username = (String) index;
         for (var i : DB.users) {
             if (i.getUsername().equals(username)) {
@@ -45,7 +45,7 @@ public class UserAccess implements DataAccess {
         return null;
     }
 
-    public boolean deleteAll(){
+    public boolean deleteAll() throws DataAccessException {
         DB.users = new ArrayList<>();
         return true;
     }

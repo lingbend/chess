@@ -8,7 +8,7 @@ public class AuthAccess implements DataAccess {
 
     public AuthAccess(){}
 
-    public boolean create(Object obj){
+    public boolean create(Object obj) throws DataAccessException {
         var authData = (AuthData) obj;
         if (DB.auth.add(authData)) {
             return true;
@@ -19,7 +19,7 @@ public class AuthAccess implements DataAccess {
     }
 
     //To implement:
-    public boolean find(Object index){
+    public boolean find(Object index) throws DataAccessException {
         String auth = (String) index;
         for (var i : DB.auth) {
             if (i.getAuthToken().equals(auth)) {
@@ -28,10 +28,10 @@ public class AuthAccess implements DataAccess {
         }
         return false;
     };
-    public boolean update(Object index){
+    public boolean update(Object index) throws DataAccessException {
         return false;
     };
-    public boolean delete(Object index){
+    public boolean delete(Object index) throws DataAccessException {
         String auth = (String) index;
         for (var i : DB.auth) {
             if (i.getAuthToken().equals(auth)) {
@@ -40,7 +40,7 @@ public class AuthAccess implements DataAccess {
         }
         return false;
     };
-    public Object read(String index){
+    public Object read(String index) throws DataAccessException {
         String auth = (String) index;
         for (var i : DB.auth) {
             if (i.getAuthToken().equals(auth)) {
@@ -49,7 +49,7 @@ public class AuthAccess implements DataAccess {
         }
         return null;
     };
-    public boolean deleteAll(){
+    public boolean deleteAll() throws DataAccessException {
         DB.auth = new ArrayList<>();
         return true;
     }

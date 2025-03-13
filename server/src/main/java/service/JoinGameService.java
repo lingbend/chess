@@ -1,6 +1,5 @@
 package service;
 
-import dataaccess.AuthAccess;
 import dataaccess.DataAccessException;
 import dataaccess.*;
 import handler.Handler;

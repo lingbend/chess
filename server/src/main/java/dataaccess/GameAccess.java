@@ -8,11 +8,11 @@ public class GameAccess implements DataAccess {
 
     public GameAccess(){}
 
-    public boolean create(Object obj){
+    public boolean create(Object obj) throws DataAccessException {
         GameData data = (GameData) obj;
         return DB.games.add(data);
     };
-    public boolean find(Object index){
+    public boolean find(Object index) throws DataAccessException {
         String gameID = (String) index;
         for (var i : DB.games) {
             if (String.valueOf(i.getGameID()).equals(gameID)) {
@@ -24,7 +24,7 @@ public class GameAccess implements DataAccess {
     public ArrayList<GameData> findAll(){
         return DB.games;
     }
-    public boolean update(Object index){
+    public boolean update(Object index) throws DataAccessException {
         var game = (GameData) index;
         var gameID = game.getGameID();
         var oldGame = read(String.valueOf(gameID));
@@ -33,10 +33,10 @@ public class GameAccess implements DataAccess {
         }
         return false;
     };
-    public boolean delete(Object index){
+    public boolean delete(Object index) throws DataAccessException {
         return false;
     };
-    public Object read(String gameID){
+    public Object read(String gameID) throws DataAccessException {
         for (var i : DB.games) {
             if (String.valueOf(i.getGameID()).equals(gameID)) {
                 return i;
@@ -44,7 +44,7 @@ public class GameAccess implements DataAccess {
         }
         return null;
     };
-    public boolean deleteAll(){
+    public boolean deleteAll() throws DataAccessException {
         DB.games = new ArrayList<>();
         return true;
     }

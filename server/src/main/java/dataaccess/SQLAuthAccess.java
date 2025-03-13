@@ -7,7 +7,7 @@ public class SQLAuthAccess implements DataAccess{
 
     public SQLAuthAccess(){}
 
-    public boolean create(Object obj) {
+    public boolean create(Object obj) throws DataAccessException {
         var authData = (AuthData) obj;
         try (var conn = DatabaseManager.getConnection()) {
             var statement = "INSERT INTO auth (username, authToken) VALUES (?, ?)";
@@ -20,12 +20,12 @@ public class SQLAuthAccess implements DataAccess{
 
             return true;
         }
-        catch (Exception ex) {
-            return false;
+        catch (SQLException ex) {
+            throw new DataAccessException(ex.getMessage());
         }
     };
 
-    public boolean find(Object index) {
+    public boolean find(Object index) throws DataAccessException {
         String authToken = (String) index;
 
         try (var conn = DatabaseManager.getConnection()) {
@@ -46,16 +46,17 @@ public class SQLAuthAccess implements DataAccess{
             }
 
         }
-        catch (Exception ex) {
-            return false;
+        catch (SQLException ex) {
+            throw new DataAccessException(ex.getMessage());
         }
+
 
 
     };
 
-    public boolean update(Object index){return false;};
+    public boolean update(Object index) throws DataAccessException {return false;};
 
-    public boolean delete(Object index) {
+    public boolean delete(Object index) throws DataAccessException {
         String authToken = (String) index;
 
         try (var conn = DatabaseManager.getConnection()) {
@@ -68,13 +69,13 @@ public class SQLAuthAccess implements DataAccess{
 
             return true;
         }
-        catch (Exception ex) {
-            return false;
+        catch (SQLException ex) {
+            throw new DataAccessException(ex.getMessage());
         }
 
     };
 
-    public Object read(String index) {
+    public Object read(String index) throws DataAccessException {
         String authToken = (String) index;
 
         try (var conn = DatabaseManager.getConnection()) {
@@ -95,13 +96,13 @@ public class SQLAuthAccess implements DataAccess{
                 return null;
             }
         }
-        catch (Exception ex) {
-            return null;
+        catch (SQLException ex) {
+            throw new DataAccessException(ex.getMessage());
         }
 
     };
 
-    public boolean deleteAll() {
+    public boolean deleteAll() throws DataAccessException {
         try (var conn = DatabaseManager.getConnection()) {
             String statement = "DROP TABLE auth";
             var preparedStatement = conn.prepareStatement(statement);
@@ -110,8 +111,8 @@ public class SQLAuthAccess implements DataAccess{
 
             return true;
         }
-        catch (Exception ex) {
-            return false;
+        catch (SQLException ex) {
+            throw new DataAccessException(ex.getMessage());
         }
     };
 }

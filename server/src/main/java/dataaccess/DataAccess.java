@@ -3,10 +3,10 @@ package dataaccess;
 import java.lang.String;
 
 public interface DataAccess {
-    boolean create(Object obj);
-    boolean find(Object index);
-    boolean update(Object index);
-    boolean delete(Object index);
-    Object read(String index);
-    boolean deleteAll();
+    boolean create(Object obj) throws DataAccessException;
+    boolean find(Object index) throws DataAccessException;
+    boolean update(Object index) throws DataAccessException;
+    boolean delete(Object index) throws DataAccessException;
+    Object read(String index) throws DataAccessException;
+    boolean deleteAll() throws DataAccessException;
 }
