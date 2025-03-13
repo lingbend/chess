@@ -12,8 +12,8 @@ import dataaccess.DataAccessException;
 
 public class ServiceTests {
 
-    @BeforeAll
-    public static void initialize() throws DataAccessException{
+    @BeforeEach
+    public void initialize() throws DataAccessException{
         JsonHandler.initializeDB();
     }
 

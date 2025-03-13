@@ -80,7 +80,7 @@ public class DatabaseManager {
 
     private static void createTable(String name, String fields) throws DataAccessException {
         try (var conn = DriverManager.getConnection(CONNECTION_URL, USER, PASSWORD)) {
-            var statement = "CREATE TABLE IF NOT EXISTS " + name + " ( " + fields + " ) ";
+            var statement = "CREATE TABLE IF NOT EXISTS " + name + " (" + fields + ") ";
             conn.setCatalog(DATABASE_NAME);
             var preparedStatement = conn.prepareStatement(statement);
             preparedStatement.executeUpdate();
@@ -102,7 +102,7 @@ public class DatabaseManager {
      * }
      * </code>
      */
-    static Connection getConnection() throws DataAccessException {
+    public static Connection getConnection() throws DataAccessException {
         try {
             var conn = DriverManager.getConnection(CONNECTION_URL, USER, PASSWORD);
             conn.setCatalog(DATABASE_NAME);
