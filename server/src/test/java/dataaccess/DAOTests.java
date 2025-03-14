@@ -20,7 +20,7 @@ public class DAOTests {
     private final AuthData goodAuthData = new AuthData("bobby", "123456");
     String goodAuthToken = "123456";
     private final GameData goodGameData = new GameData(789, "bobby's game");
-    int goodGameID = 789;
+    String goodGameID = "789";
     private final UserData goodUserData = new UserData("bobby", "froggy9", "bob@cratchet.com");
     String goodUsername = "bobby";
 
@@ -52,8 +52,12 @@ public class DAOTests {
     @ValueSource(classes = {AuthAccess.class, SQLAuthAccess.class, GameAccess.class,
             SQLGameAccess.class, UserAccess.class, SQLUserAccess.class})
     public void createPositive(Class<?> accessClass) throws Exception {
-        var dataAccess =(DataAccess) (accessClass.getDeclaredConstructor().newInstance());
+        var dataAccess = (DataAccess) (accessClass.getDeclaredConstructor().newInstance());
 
+        Assertions.assertTrue(goodCreations(accessClass, dataAccess));
+    }
+
+    private boolean goodCreations(Class<?> accessClass, DataAccess dataAccess) throws DataAccessException {
         boolean result = false;
 
         if (isInterfaceOf(accessClass, AuthAccessInter.class)) {
@@ -65,8 +69,7 @@ public class DAOTests {
         else if (isInterfaceOf(accessClass, UserAccessInter.class)) {
             result = dataAccess.create(goodUserData);
         }
-
-        Assertions.assertTrue(result);
+        return result;
     }
 
     @Test
@@ -74,9 +77,25 @@ public class DAOTests {
 
     }
 
-    @Test
-    public void findPositive(){
+    @ParameterizedTest
+    @ValueSource(classes = {AuthAccess.class, SQLAuthAccess.class, GameAccess.class,
+            SQLGameAccess.class, UserAccess.class, SQLUserAccess.class})
+    public void findPositive(Class<?> accessClass) throws Exception {
+        var dataAccess = (DataAccess) (accessClass.getDeclaredConstructor().newInstance());
+        goodCreations(accessClass, dataAccess);
+        boolean result = false;
 
+        if (isInterfaceOf(accessClass, AuthAccessInter.class)) {
+            result = dataAccess.find(goodAuthToken);
+        }
+        else if (isInterfaceOf(accessClass, GameAccessInter.class)) {
+            result = dataAccess.find(goodGameID);
+        }
+        else if (isInterfaceOf(accessClass, UserAccessInter.class)) {
+            result = dataAccess.find(goodUsername);
+        }
+
+        Assertions.assertTrue(result);
     }
 
     @Test
