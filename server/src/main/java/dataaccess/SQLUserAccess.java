@@ -9,6 +9,9 @@ public class SQLUserAccess implements DataAccess, UserAccessInter {
     public SQLUserAccess(){}
 
     public boolean create(Object obj) throws DataAccessException {
+        if (obj == null) {
+            return false;
+        }
         UserData userData = (UserData) obj;
 
         try (var conn = DatabaseManager.getConnection()) {

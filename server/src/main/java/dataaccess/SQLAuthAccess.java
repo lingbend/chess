@@ -8,6 +8,9 @@ public class SQLAuthAccess implements DataAccess, AuthAccessInter {
     public SQLAuthAccess(){}
 
     public boolean create(Object obj) throws DataAccessException {
+        if (obj == null) {
+            return false;
+        }
         var authData = (AuthData) obj;
         try (var conn = DatabaseManager.getConnection()) {
             var statement = "INSERT INTO auth (username, authToken) VALUES (?, ?)";

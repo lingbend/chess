@@ -11,8 +11,6 @@ import service.ClearService;
 import service.RequestObj;
 
 import java.util.ArrayList;
-import java.util.Arrays;
-import dataaccess.*;
 import model.*;
 
 import java.util.Map;
@@ -81,9 +79,15 @@ public class DAOTests {
         Assertions.assertTrue(goodCreations(accessClass, dataAccess));
     }
 
-    @Test
-    public void createNegative(){
+    @ParameterizedTest
+    @ValueSource(classes = {AuthAccess.class, SQLAuthAccess.class, GameAccess.class,
+            SQLGameAccess.class, UserAccess.class, SQLUserAccess.class})
+    public void createNegative(Class<?> accessClass) throws Exception {
+        var dataAccess = (DataAccess) (accessClass.getDeclaredConstructor().newInstance());
 
+        boolean result = dataAccess.create(null);
+
+        Assertions.assertFalse(result);
     }
 
     @ParameterizedTest

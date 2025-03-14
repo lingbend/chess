@@ -9,6 +9,9 @@ public class AuthAccess implements DataAccess, AuthAccessInter {
     public AuthAccess(){}
 
     public boolean create(Object obj) throws DataAccessException {
+        if (obj == null) {
+            return false;
+        }
         var authData = (AuthData) obj;
         if (DB.auth.add(authData)) {
             return true;

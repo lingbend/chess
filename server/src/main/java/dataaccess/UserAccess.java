@@ -9,6 +9,9 @@ public class UserAccess implements DataAccess, UserAccessInter {
     public UserAccess(){}
 
     public boolean create(Object obj) throws DataAccessException {
+        if (obj == null) {
+            return false;
+        }
         var userData = (UserData) obj;
         if (DB.users.add(userData)) {
             return true;

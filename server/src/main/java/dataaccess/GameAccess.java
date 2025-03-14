@@ -9,6 +9,9 @@ public class GameAccess implements DataAccess, GameAccessInter {
     public GameAccess(){}
 
     public boolean create(Object obj) throws DataAccessException {
+        if (obj == null) {
+            return false;
+        }
         GameData data = (GameData) obj;
         return DB.games.add(data);
     };

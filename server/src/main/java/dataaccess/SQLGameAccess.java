@@ -14,6 +14,9 @@ public class SQLGameAccess implements DataAccess, GameAccessInter {
     public SQLGameAccess(){}
 
     public boolean create(Object obj) throws DataAccessException {
+        if (obj == null) {
+            return false;
+        }
         GameData gameData = (GameData) obj;
         int gameID = gameData.getGameID();
         String gameName = gameData.getGameName();
