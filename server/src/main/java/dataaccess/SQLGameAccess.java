@@ -47,7 +47,14 @@ public class SQLGameAccess implements DataAccess, GameAccessInter {
     }
 
     public boolean find(Object index) throws DataAccessException {
-        int gameID = Integer.decode((String) index);
+        int gameID;
+        if (index.getClass() == String.class) {
+            gameID = Integer.decode((String) index);
+        }
+        else {
+            gameID = (int) index;
+
+        }
 
         try (var conn = DatabaseManager.getConnection()) {
             String statement = "SELECT gameID FROM games WHERE gameID=?";
@@ -110,7 +117,7 @@ public class SQLGameAccess implements DataAccess, GameAccessInter {
         GameData gameData = (GameData) index;
         int gameID = gameData.getGameID();
 
-        if (delete(gameID)) {
+        if (find(gameID) && delete(gameID)) {
             if (create(gameData)) {
                 return true;
             }
