@@ -98,9 +98,24 @@ public class DAOTests {
         Assertions.assertTrue(result);
     }
 
-    @Test
-    public void findNegative(){
+    @ParameterizedTest
+    @ValueSource(classes = {AuthAccess.class, SQLAuthAccess.class, GameAccess.class,
+            SQLGameAccess.class, UserAccess.class, SQLUserAccess.class})
+    public void findNegative(Class<?> accessClass) throws Exception {
+        var dataAccess = (DataAccess) (accessClass.getDeclaredConstructor().newInstance());
+        boolean result = false;
 
+        if (isInterfaceOf(accessClass, AuthAccessInter.class)) {
+            result = dataAccess.find(goodAuthToken);
+        }
+        else if (isInterfaceOf(accessClass, GameAccessInter.class)) {
+            result = dataAccess.find(goodGameID);
+        }
+        else if (isInterfaceOf(accessClass, UserAccessInter.class)) {
+            result = dataAccess.find(goodUsername);
+        }
+
+        Assertions.assertFalse(result);
     }
 
     @Test
