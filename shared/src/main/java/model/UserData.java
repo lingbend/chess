@@ -1,6 +1,7 @@
 package model;
 
 import java.lang.String;
+import java.util.Objects;
 
 public class UserData {
     String username = null;
@@ -11,6 +12,15 @@ public class UserData {
         username = user;
         password = pass;
         email = mail;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
+        UserData userData = (UserData) o;
+        return Objects.equals(username, userData.username) && Objects.equals(password, userData.password) && Objects.equals(email, userData.email);
     }
 
     public void setUsername(String newUsername) {

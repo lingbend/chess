@@ -2,6 +2,7 @@ package model;
 
 import java.lang.String;
 import java.time.Instant;
+import java.util.Objects;
 import java.util.Random;
 import java.io.Console;
 
@@ -13,6 +14,15 @@ public class AuthData {
     public AuthData(String name, String token){
         username = name;
         authToken = token;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
+        AuthData authData = (AuthData) o;
+        return Objects.equals(authToken, authData.authToken) && Objects.equals(username, authData.username);
     }
 
     public void setAuthToken(String newToken) {

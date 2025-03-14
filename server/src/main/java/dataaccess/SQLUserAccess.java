@@ -75,7 +75,7 @@ public class SQLUserAccess implements DataAccess, UserAccessInter {
                         userRecord.getString("email"));
             }
             else {
-                return false;
+                return null;
             }
         }
 

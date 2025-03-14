@@ -161,14 +161,51 @@ public class DAOTests {
         Assertions.assertTrue(result);
     }
 
-    @Test
-    public void readPositive(){
+    @ParameterizedTest
+    @ValueSource(classes = {AuthAccess.class, SQLAuthAccess.class, GameAccess.class,
+            SQLGameAccess.class, UserAccess.class, SQLUserAccess.class})
+    public void readPositive(Class<?> accessClass) throws Exception {
+        var dataAccess = (DataAccess) (accessClass.getDeclaredConstructor().newInstance());
+        goodCreations(accessClass, dataAccess);
 
+        if (isInterfaceOf(accessClass, AuthAccessInter.class)) {
+            var result = (AuthData) dataAccess.read(goodAuthToken);
+            Assertions.assertEquals(goodAuthData, result);
+        }
+        else if (isInterfaceOf(accessClass, GameAccessInter.class)) {
+            var result = (GameData) dataAccess.read(goodGameID);
+            Assertions.assertEquals(goodGameData, result);
+        }
+        else if (isInterfaceOf(accessClass, UserAccessInter.class)) {
+            var result = (UserData) dataAccess.read(goodUsername);
+            Assertions.assertEquals(goodUserData, result);
+        }
+        else {
+            Assertions.fail();
+        }
     }
 
-    @Test
-    public void readNegative(){
+    @ParameterizedTest
+    @ValueSource(classes = {AuthAccess.class, SQLAuthAccess.class, GameAccess.class,
+            SQLGameAccess.class, UserAccess.class, SQLUserAccess.class})
+    public void readNegative(Class<?> accessClass) throws Exception {
+        var dataAccess = (DataAccess) (accessClass.getDeclaredConstructor().newInstance());
 
+        if (isInterfaceOf(accessClass, AuthAccessInter.class)) {
+            var result = (AuthData) dataAccess.read(goodAuthToken);
+            Assertions.assertNull(result);
+        }
+        else if (isInterfaceOf(accessClass, GameAccessInter.class)) {
+            var result = (GameData) dataAccess.read(goodGameID);
+            Assertions.assertNull(result);
+        }
+        else if (isInterfaceOf(accessClass, UserAccessInter.class)) {
+            var result = (UserData) dataAccess.read(goodUsername);
+            Assertions.assertNull(result);
+        }
+        else {
+            Assertions.fail();
+        }
     }
 
     @Test

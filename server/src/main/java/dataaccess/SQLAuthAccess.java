@@ -85,9 +85,7 @@ public class SQLAuthAccess implements DataAccess, AuthAccessInter {
 
             var readResponse = preparedStatement.executeQuery();
 
-            readResponse.next();
-
-            if (readResponse.getString("authToken").equals(authToken)
+            if (readResponse.next() && readResponse.getString("authToken").equals(authToken)
             && readResponse.getString("username") != null) {
                 return new AuthData(readResponse.getString("username"), authToken);
             }

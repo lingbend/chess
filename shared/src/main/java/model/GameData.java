@@ -2,6 +2,8 @@ package model;
 
 import java.lang.String;
 import chess.ChessGame;
+
+import java.util.Objects;
 import java.util.TreeMap;
 
 public class GameData {
@@ -22,6 +24,15 @@ public class GameData {
         gameID = id;
         gameName = name;
         game = inputGame;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
+        GameData gameData = (GameData) o;
+        return gameID == gameData.gameID && Objects.equals(whiteUsername, gameData.whiteUsername) && Objects.equals(blackUsername, gameData.blackUsername) && Objects.equals(gameName, gameData.gameName) && Objects.equals(game, gameData.game);
     }
 
     public void setGameID(int num) {

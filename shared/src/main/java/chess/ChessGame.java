@@ -25,6 +25,15 @@ public class ChessGame {
         gameTurn = color;
     }
 
+    @Override
+    public boolean equals(Object o) {
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
+        ChessGame chessGame = (ChessGame) o;
+        return Objects.equals(gameBoard, chessGame.gameBoard) && gameTurn == chessGame.gameTurn;
+    }
+
     /**
      * @return Which team's turn it is
      */
@@ -204,17 +213,4 @@ public class ChessGame {
         return gameBoard;
     }
 
-    @Override
-    public boolean equals(Object o) {
-        if (o == null || getClass() != o.getClass()) {
-            return false;
-        }
-        ChessGame chessGame = (ChessGame) o;
-        return Objects.equals(gameBoard, chessGame.gameBoard) && gameTurn == chessGame.gameTurn;
-    }
-
-    @Override
-    public int hashCode() {
-        return Objects.hash(gameBoard, gameTurn);
-    }
 }
