@@ -168,9 +168,17 @@ public class DAOTests {
 
     }
 
-    @Test
-    public void updatePositive(){
+    @ParameterizedTest
+    @ValueSource(classes = {GameAccess.class, SQLGameAccess.class})
+    public void updatePositive(Class<?> accessClass) throws Exception {
+        var dataAccess = (GameAccessInter) (accessClass.getDeclaredConstructor().newInstance());
+        goodCreations(accessClass, (DataAccess) dataAccess);
 
+        GameData updatedGameData = new GameData(789, "frodo's game");
+        updatedGameData.setWhiteUsername("homo habilus");
+        boolean result = dataAccess.update(updatedGameData);
+
+        Assertions.assertTrue(result);
     }
 
     @Test
