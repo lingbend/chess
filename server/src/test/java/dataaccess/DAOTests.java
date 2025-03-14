@@ -118,14 +118,34 @@ public class DAOTests {
         Assertions.assertFalse(result);
     }
 
-    @Test
-    public void deletePositive(){
+    @ParameterizedTest
+    @ValueSource(classes = {AuthAccess.class, SQLAuthAccess.class, GameAccess.class,
+            SQLGameAccess.class})
+    public void deletePositive(Class<?> accessClass) throws Exception{
+        var dataAccess = (DataAccess) (accessClass.getDeclaredConstructor().newInstance());
+        goodCreations(accessClass, dataAccess);
+        boolean result = false;
 
+        if (isInterfaceOf(accessClass, AuthAccessInter.class)) {
+            result = dataAccess.find(goodAuthToken);
+        }
+        else if (isInterfaceOf(accessClass, GameAccessInter.class)) {
+            result = dataAccess.find(goodGameID);
+        }
+
+        Assertions.assertTrue(result);
     }
 
-    @Test
-    public void deleteAllPositive(){
+    @ParameterizedTest
+    @ValueSource(classes = {AuthAccess.class, SQLAuthAccess.class, GameAccess.class,
+            SQLGameAccess.class, UserAccess.class, SQLUserAccess.class})
+    public void deleteAllPositive(Class<?> accessClass) throws Exception {
+        var dataAccess = (DataAccess) (accessClass.getDeclaredConstructor().newInstance());
+        goodCreations(accessClass, dataAccess);
 
+        boolean result = dataAccess.deleteAll();
+
+        Assertions.assertTrue(result);
     }
 
     @Test
