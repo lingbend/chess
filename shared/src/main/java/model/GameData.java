@@ -32,7 +32,9 @@ public class GameData {
             return false;
         }
         GameData gameData = (GameData) o;
-        return gameID == gameData.gameID && Objects.equals(whiteUsername, gameData.whiteUsername) && Objects.equals(blackUsername, gameData.blackUsername) && Objects.equals(gameName, gameData.gameName) && Objects.equals(game, gameData.game);
+        return gameID == gameData.gameID && Objects.equals(whiteUsername,
+                gameData.whiteUsername) && Objects.equals(blackUsername, gameData.blackUsername)
+                && Objects.equals(gameName, gameData.gameName) && Objects.equals(game, gameData.game);
     }
 
     public void setGameID(int num) {
