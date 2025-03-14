@@ -208,14 +208,34 @@ public class DAOTests {
         }
     }
 
-    @Test
-    public void findAllPositive(){
+    @ParameterizedTest
+    @ValueSource(classes = {GameAccess.class, SQLGameAccess.class})
+    public void findAllPositive(Class<?> accessClass) throws Exception {
+        var dataAccess = (GameAccessInter) (accessClass.getDeclaredConstructor().newInstance());
+        goodCreations(accessClass, (DataAccess) dataAccess);
 
+        GameData otherGoodGameData = new GameData(8205, "Poker");
+        ((DataAccess) dataAccess).create(otherGoodGameData);
+
+        ArrayList<GameData> result = dataAccess.findAll();
+
+        ArrayList<GameData> expectedResult = new ArrayList<>();
+        expectedResult.add(goodGameData);
+        expectedResult.add(otherGoodGameData);
+
+        Assertions.assertEquals(expectedResult, result);
     }
 
-    @Test
-    public void findAllNegative(){
+    @ParameterizedTest
+    @ValueSource(classes = {GameAccess.class, SQLGameAccess.class})
+    public void findAllNegative(Class<?> accessClass) throws Exception {
+        var dataAccess = (GameAccessInter) (accessClass.getDeclaredConstructor().newInstance());
 
+        ArrayList<GameData> result = dataAccess.findAll();
+
+        ArrayList<GameData> expectedResult = new ArrayList<>();
+
+        Assertions.assertEquals(expectedResult, result);
     }
 
     @ParameterizedTest
