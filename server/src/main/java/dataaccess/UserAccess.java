@@ -4,7 +4,7 @@ import model.UserData;
 
 import java.util.ArrayList;
 
-public class UserAccess implements DataAccess {
+public class UserAccess implements DataAccess, UserAccessInter {
 
     public UserAccess(){}
 

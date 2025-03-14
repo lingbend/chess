@@ -4,7 +4,7 @@ import model.UserData;
 
 import java.sql.SQLException;
 
-public class SQLUserAccess implements DataAccess{
+public class SQLUserAccess implements DataAccess, UserAccessInter {
 
     public SQLUserAccess(){}
 
