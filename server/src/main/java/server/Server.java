@@ -71,7 +71,15 @@ public class Server {
     private Object passToHandler(Request req, Response res, Service service) {
         var handler = new JsonHandler(service);
         service.registerHandler(handler);
-        String[] handlerRes = handler.deserialize(req.body(), req.headers("authorization"));
+        String auth;
+        if (req.headers("authorization") != null) {
+            auth = req.headers("authorization");
+        }
+        else {
+            auth = req.headers("authToken");
+        }
+
+        String[] handlerRes = handler.deserialize(req.body(), auth);
         res.type("application/json");
         res.status(Integer.valueOf(handlerRes[0]));
         return handlerRes[1];

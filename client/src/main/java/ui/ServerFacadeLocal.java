@@ -240,13 +240,18 @@ public class ServerFacadeLocal implements ServerFacadeInterface{
         HttpURLConnection newConnection = (HttpURLConnection) (new URI(baseUri + path)).toURL().openConnection();
         newConnection.setRequestMethod(method);
         newConnection.setDoOutput(true);
+        newConnection.setDoInput(true);
         for (var entry : header.entrySet()) {
             newConnection.addRequestProperty(entry.getKey(), entry.getValue());
         }
-        var outStream = newConnection.getOutputStream();
-        var json = new Gson().toJson(body);
-        outStream.write(json.getBytes());
-        outStream.close();
+
+        if (!body.isEmpty()) {
+            var outStream = newConnection.getOutputStream();
+            String json = new Gson().toJson(body);
+            outStream.write(json.getBytes());
+            outStream.close();
+        }
+
         newConnection.connect();
         connection = newConnection;
     }
