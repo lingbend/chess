@@ -123,8 +123,12 @@ public class ServerFacadeLocal implements ServerFacadeInterface{
                     listGames();
                     System.out.println("Current Games: ");
                     for (int i = 1; i < existingGames.size() + 1; i++) {
-                        System.out.printf("Game %s: %s || White: %s Black: %s\n", i, existingGames.get(i - 1).getGameName(),
-                                existingGames.get(i - 1).getWhiteUsername(), existingGames.get(i - 1).getBlackUsername());
+                        String white = existingGames.get(i-1).getWhiteUsername();
+                        String black = existingGames.get(i-1).getBlackUsername();
+                        System.out.printf("Game %s: %s | White's username: %s | Black's username: %s\n",
+                                i, existingGames.get(i - 1).getGameName(),
+                                white != null ? white : "none",
+                                black != null ? black : "none");
                     }
                 }
                 else if (input.equalsIgnoreCase("quit")) {
@@ -174,7 +178,7 @@ public class ServerFacadeLocal implements ServerFacadeInterface{
         if (currentState == State.LoggedOut) {
             return
                 """
-                Available Commands:
+                Available Commands:              Format:
                 Log in to Chess System           | login username password
                 Register a new account for Chess | register username password email
                 Close the Chess program          | quit
@@ -184,13 +188,13 @@ public class ServerFacadeLocal implements ServerFacadeInterface{
         else {
             return
                     """
-                    Available Commands:
-                    Log out of the Chess System                     | logout
-                    Create a new chess game by naming it            | create gameName
-                    Get a list of all chess games currently ongoing | list
-                    Join a chess game to start playing              | join gameNumber color
-                    Watch a chess game                              | observe gameNumber
-                    View currently available options                | help
+                    Available Commands:                                               Format:
+                    Log out of the Chess System                                       | logout
+                    Create a new chess game by naming it                              | create (game name)
+                    Get a list of all chess games currently ongoing and their numbers | list
+                    Join a chess game to start playing                                | join (game number) color
+                    Watch a chess game                                                | observe (game number)
+                    View currently available options                                  | help
                     """;
         }
 
