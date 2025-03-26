@@ -44,11 +44,16 @@ public class ServerFacadeLocal implements ServerFacadeInterface{
     }
 
     public static void main(String[] args) throws Exception {
-        var server = new Server();
-        var port = server.run(0);
-        System.out.println(port);
-        new ServerFacadeLocal().run(port);
-        server.stop();
+        try {
+            var server = new Server();
+            var port = server.run(0);
+            System.out.println(port);
+            new ServerFacadeLocal().run(port);
+            server.stop();
+        }
+        catch (Exception ex) {
+            System.out.println(ex.getMessage());
+        }
     }
 
 
@@ -59,10 +64,10 @@ public class ServerFacadeLocal implements ServerFacadeInterface{
         String input = "";
         ArrayList<String> parameters = new ArrayList<>();
 
-        while (!input.equalsIgnoreCase("quit")) {
+        while (true) {
             try {
                 if (input.equalsIgnoreCase("help")) {
-                    getHelp();
+                    System.out.print(getHelp());
                 }
                 else if (input.equalsIgnoreCase("login")) {
                     if (currentState != State.LoggedOut) {
@@ -72,6 +77,9 @@ public class ServerFacadeLocal implements ServerFacadeInterface{
                     login(parameters.get(0), parameters.get(1));
                 }
                 else if (input.equalsIgnoreCase("register")) {
+                    if (currentState != State.LoggedOut) {
+                        throw new Exception("Logout before registering a new account");
+                    }
                     System.out.println("Registering user...");
                     register(parameters.get(0), parameters.get(1), parameters.get(2));
                 }
@@ -115,10 +123,16 @@ public class ServerFacadeLocal implements ServerFacadeInterface{
                     System.out.println("Retrieving current games...");
                     listGames();
                     System.out.println("Current Games: ");
-                    for (int i = 0; i < existingGames.size(); i++) {
-                        System.out.printf("Game %s: %s || White: %s Black: %s\n", i, existingGames.get(i).getGameName(),
-                                existingGames.get(i).getWhiteUsername(), existingGames.get(i).getBlackUsername());
+                    for (int i = 1; i < existingGames.size() + 1; i++) {
+                        System.out.printf("Game %s: %s || White: %s Black: %s\n", i, existingGames.get(i - 1).getGameName(),
+                                existingGames.get(i - 1).getWhiteUsername(), existingGames.get(i - 1).getBlackUsername());
                     }
+                }
+                else if (input.equalsIgnoreCase("quit")) {
+                    if (currentState != State.LoggedOut) {
+                        throw new Exception("Logout before quitting");
+                    }
+                    break;
                 }
                 else if (input.equals("")) {}
                 else {
@@ -139,9 +153,11 @@ public class ServerFacadeLocal implements ServerFacadeInterface{
                     header.clear();
                     body.clear();
                     parameters.clear();
-                    parameters = getInput();
-                    input = parameters.get(0);
-                    parameters.remove(0);
+                    if (!input.equalsIgnoreCase("quit")) {
+                        parameters = getInput();
+                        input = parameters.get(0);
+                        parameters.remove(0);
+                    }
                 }
                 catch (IndexOutOfBoundsException ex) {
                     System.out.println("Please input properly formatted commands. Print help for more information.");
@@ -149,13 +165,36 @@ public class ServerFacadeLocal implements ServerFacadeInterface{
 
             }
         }
-        logout();
         System.out.println("...Disconnected");
-        connection.disconnect();
+        if (connection != null) {
+            connection.disconnect();
+        }
     }
 
     public String getHelp() {
-        return "";
+        if (currentState == State.LoggedOut) {
+            return
+                """
+                Available Commands:
+                Log in to Chess System           | login username password
+                Register a new account for Chess | register username password email
+                Close the Chess program          | quit
+                View currently available options | help
+                """;
+        }
+        else {
+            return
+                    """
+                    Available Commands:
+                    Log out of the Chess System                     | logout
+                    Create a new chess game by naming it            | create gameName
+                    Get a list of all chess games currently ongoing | list
+                    Join a chess game to start playing              | join gameNumber color
+                    Watch a chess game                              | observe gameNumber
+                    View currently available options                | help
+                    """;
+        }
+
     }
 
     public void login(String username, String password) throws Exception {
@@ -180,7 +219,6 @@ public class ServerFacadeLocal implements ServerFacadeInterface{
 
     public void logout() throws Exception {
         header = new TreeMap(Map.of("authToken", String.valueOf(authToken)));
-        System.out.println(authToken);
         body = new TreeMap();
         getConnection("/session", "DELETE");
         getResponse();
@@ -208,21 +246,33 @@ public class ServerFacadeLocal implements ServerFacadeInterface{
     }
 
     public void playGame(int gameNumber, ChessGame.TeamColor color) throws Exception {
-        String id = String.valueOf(existingGames.get(gameNumber).getGameID());
+        String id;
+
+        try {
+            id = String.valueOf(existingGames.get(gameNumber - 1).getGameID());
+        }
+        catch (IndexOutOfBoundsException ex) {
+            throw new FacadeException("Game doesn't exist. Choose a different number");
+        }
         header = new TreeMap(Map.of("authToken", String.valueOf(authToken)));
         body = new TreeMap(Map.of("playerColor", color, "gameID", id));
         getConnection("/game", "PUT");
         getResponse();
 
         currentGameID = id;
-        currentGame = existingGames.get(gameNumber);
+        currentGame = existingGames.get(gameNumber - 1);
         currentState = State.InGame;
 
         System.out.printf("...Joined game #%s: %s\n", currentGameID, currentGame.getGameName());
     }
 
-    public void observeGame(int gameNumber) {
-        currentGame = existingGames.get(gameNumber);
+    public void observeGame(int gameNumber) throws Exception {
+        try {
+            currentGame = existingGames.get(gameNumber - 1);
+        }
+        catch (IndexOutOfBoundsException ex) {
+            throw new FacadeException("Game doesn't exist. Choose a different number");
+        }
         currentGameID = String.valueOf(currentGame.getGameID());
         currentState = State.Observing;
 
