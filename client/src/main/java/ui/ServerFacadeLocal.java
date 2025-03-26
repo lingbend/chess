@@ -58,6 +58,9 @@ public class ServerFacadeLocal implements ServerFacadeInterface{
                     getHelp();
                 }
                 else if (input.equals("login")) {
+                    if (currentState != State.LoggedOut) {
+                        throw new Exception("Already logged in. Logout first");
+                    }
                     System.out.println("Logging in...");
                     login(parameters.get(0), parameters.get(1));
                 }
@@ -66,14 +69,23 @@ public class ServerFacadeLocal implements ServerFacadeInterface{
                     register(parameters.get(0), parameters.get(1), parameters.get(2));
                 }
                 else if (input.equals("logout")) {
+                    if (currentState == State.LoggedOut) {
+                        throw new Exception("Not logged in. Login first");
+                    }
                     System.out.println("Logging out...");
                     logout();
                 }
                 else if (input.equals("create")) {
+                    if (currentState == State.LoggedOut) {
+                        throw new Exception("Not logged in. Login first");
+                    }
                     System.out.println("Creating game...");
                     createGame(parameters.get(0));
                 }
                 else if (input.equals("join")) {
+                    if (currentState == State.LoggedOut) {
+                        throw new Exception("Not logged in. Login first");
+                    }
                     System.out.println("Joining game...");
                     if (existingGames.isEmpty()) {
                         throw new Exception("Game not found. Make sure to list" +
@@ -82,10 +94,16 @@ public class ServerFacadeLocal implements ServerFacadeInterface{
                     playGame(Integer.parseInt(parameters.get(0)), Enum.valueOf(ChessGame.TeamColor.class, parameters.get(1)));
                 }
                 else if (input.equals("observe")) {
+                    if (currentState == State.LoggedOut) {
+                        throw new Exception("Not logged in. Login first");
+                    }
                     System.out.println("Loading game as observer...");
                     observeGame(Integer.parseInt(parameters.get(0)));
                 }
                 else if (input.equals("list")) {
+                    if (currentState == State.LoggedOut) {
+                        throw new Exception("Not logged in. Login first");
+                    }
                     System.out.println("Retrieving current games...");
                     listGames();
                     System.out.println("Current Games: ");
