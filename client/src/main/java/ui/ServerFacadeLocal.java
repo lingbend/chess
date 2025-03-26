@@ -148,7 +148,8 @@ public class ServerFacadeLocal implements ServerFacadeInterface{
 
             }
         }
-        System.out.println("Quitting Chess...");
+        logout();
+        System.out.println("...Disconnected");
         connection.disconnect();
     }
 
@@ -200,8 +201,8 @@ public class ServerFacadeLocal implements ServerFacadeInterface{
         header = new TreeMap(Map.of("authToken", String.valueOf(authToken)));
         body = new TreeMap();
         getConnection("/game", "GET");
-        TreeMap response = getResponse();
-        existingGames = (ArrayList<GameData>) response.get("games");
+        existingGames = getArrayResponse();
+//        existingGames = (ArrayList<GameData>) response.get("games");
         System.out.println("...Created list of games successfully");
     }
 
@@ -224,7 +225,7 @@ public class ServerFacadeLocal implements ServerFacadeInterface{
         currentGameID = String.valueOf(currentGame.getGameID());
         currentState = State.Observing;
 
-        System.out.printf("...Observing game #%s: %s\n", currentGameID, currentGame.getGameName());
+        System.out.printf("...Observing game %s\n", currentGame.getGameName());
     }
 
     private ArrayList<String> getInput(){
@@ -266,7 +267,6 @@ public class ServerFacadeLocal implements ServerFacadeInterface{
         else {
             responseStream = connection.getInputStream();
         }
-        var responseError = connection.getResponseMessage();
         InputStreamReader reader = new InputStreamReader(responseStream);
 
         TreeMap responseMap = new Gson().fromJson(reader, TreeMap.class);
@@ -280,5 +280,35 @@ public class ServerFacadeLocal implements ServerFacadeInterface{
         responseMap.put("code", Integer.toString(responseCode));
 
         return responseMap;
+    }
+
+    private ArrayList<GameData> getArrayResponse() throws Exception {
+        int responseCode = connection.getResponseCode();
+        InputStream responseStream;
+        if (responseCode != 200) {
+            responseStream = connection.getErrorStream();
+
+        }
+        else {
+            responseStream = connection.getInputStream();
+        }
+        InputStreamReader reader = new InputStreamReader(responseStream);
+
+        TreeMap responseMap = new Gson().fromJson(reader, TreeMap.class);
+
+        reader.close();
+        responseStream.close();
+        if (responseCode != 200) {
+            throw new FacadeException(responseCode + ": " + responseMap.get("message"));
+        }
+
+        ArrayList rawArray = (ArrayList) responseMap.get("games");
+        ArrayList<GameData> arrayResponse = new ArrayList<>();
+
+        for (var i : rawArray) {
+            arrayResponse.add(new Gson().fromJson((String) (new Gson().toJson(i)), GameData.class));
+        }
+
+        return arrayResponse;
     }
 }
