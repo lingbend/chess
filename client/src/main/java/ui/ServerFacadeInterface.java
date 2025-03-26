@@ -7,15 +7,14 @@ import java.util.ArrayList;
 
 public interface ServerFacadeInterface {
     void run() throws Exception;
-    String getHelp();
-    void quit();
+    String getHelp() throws Exception;
     void login(String username, String password) throws Exception;
-    String register(String username, String password, String email);
-    boolean logout();
-    String createGame(String gameName);
-    ArrayList<GameData> listGames();
-    String playGame(int gameNumber, ChessGame.TeamColor color);
-    boolean observeGame(int gameNumber);
+    void register(String username, String password, String email) throws Exception;
+    void logout() throws Exception;
+    String createGame(String gameName) throws Exception;
+    void listGames() throws Exception;
+    void playGame(int gameNumber, ChessGame.TeamColor color) throws Exception;
+    void observeGame(int gameNumber) throws Exception;
 
     enum State {
         LoggedOut,

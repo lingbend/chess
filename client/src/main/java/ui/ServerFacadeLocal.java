@@ -10,12 +10,8 @@ import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URI;
 import java.net.URISyntaxException;
-import java.util.ArrayList;
+import java.util.*;
 import java.net.http.*;
-import java.util.List;
-import java.util.TreeMap;
-import java.util.Scanner;
-
 
 
 public class ServerFacadeLocal implements ServerFacadeInterface{
@@ -25,6 +21,7 @@ public class ServerFacadeLocal implements ServerFacadeInterface{
     String authToken;
     String currentGameID;
     ArrayList<GameData> existingGames;
+    GameData currentGame;
     String baseUri;
     HttpURLConnection connection;
     TreeMap<String, String> header;
@@ -66,31 +63,40 @@ public class ServerFacadeLocal implements ServerFacadeInterface{
                 }
                 else if (input.equals("register")) {
                     System.out.println("Registering user...");
-                    connection.setRequestMethod("POST");
+                    register(parameters.get(0), parameters.get(1), parameters.get(2));
                 }
                 else if (input.equals("logout")) {
                     System.out.println("Logging out...");
-                    connection.setRequestMethod("DELETE");
+                    logout();
                 }
                 else if (input.equals("create")) {
                     System.out.println("Creating game...");
-                    connection.setRequestMethod("POST");
+                    createGame(parameters.get(0));
                 }
                 else if (input.equals("join")) {
                     System.out.println("Joining game...");
-                    connection.setRequestMethod("PUT");
+                    if (existingGames.isEmpty()) {
+                        throw new Exception("Game not found. Make sure to list" +
+                                " existing games and create one if none exist");
+                    }
+                    playGame(Integer.parseInt(parameters.get(0)), Enum.valueOf(ChessGame.TeamColor.class, parameters.get(1)));
                 }
                 else if (input.equals("observe")) {
                     System.out.println("Loading game as observer...");
-                    connection.setRequestMethod("GET");
+                    observeGame(Integer.parseInt(parameters.get(0)));
                 }
                 else if (input.equals("list")) {
                     System.out.println("Retrieving current games...");
-                    connection.setRequestMethod("GET");
+                    listGames();
+                    System.out.println("Current Games: ");
+                    for (int i = 0; i < existingGames.size(); i++) {
+                        System.out.printf("Game %s: %s || White: %s Black: %s\n", i, existingGames.get(i).getGameName(),
+                                existingGames.get(i).getWhiteUsername(), existingGames.get(i).getBlackUsername());
+                    }
                 }
                 else if (input.equals("")) {}
                 else {
-                    System.out.println("Bad input");
+                    System.out.println("Error: Bad input");
                 }
             }
             catch (FacadeException ex) {
@@ -117,8 +123,8 @@ public class ServerFacadeLocal implements ServerFacadeInterface{
 
             }
         }
-        connection.disconnect();
         System.out.println("Quitting Chess...");
+        connection.disconnect();
     }
 
     public String getHelp() {
@@ -130,41 +136,76 @@ public class ServerFacadeLocal implements ServerFacadeInterface{
     }
 
     public void login(String username, String password) throws Exception {
+        header = new TreeMap();
+        body = new TreeMap(Map.of("username", username, "password", password));
         getConnection("/session", "POST");
         TreeMap response = getResponse();
         authToken = (String) response.get("authToken");
         currentState = State.LoggedIn;
         System.out.println("...Logged in successfully");
-        // message user they are logged in
     }
 
-    public String register(String username, String password, String email) {
-        return "";
+    public void register(String username, String password, String email) throws Exception {
+        header = new TreeMap();
+        body = new TreeMap(Map.of("username", username, "password", password, "email", email));
+        getConnection("/user", "POST");
+        TreeMap response = getResponse();
+        authToken = (String) response.get("authToken");
+        currentState = State.LoggedIn;
+        System.out.println("...Registered and logged in successfully");
     }
 
-    public boolean logout() {
-        return false;
+    public void logout() throws Exception {
+        header = new TreeMap(Map.of("authToken", authToken));
+        body = new TreeMap();
+        getConnection("/session", "DELETE");
+        getResponse();
+        currentState = State.LoggedOut;
+        System.out.println("...Logged out successfully");
     }
 
-    public String createGame(String gameName) {
-        return "";
+    public String createGame(String gameName) throws Exception {
+        header = new TreeMap(Map.of("authToken", authToken));
+        body = new TreeMap(Map.of("gameName", gameName));
+        getConnection("/game", "POST");
+        TreeMap response = getResponse();
+        String gameID = (String) response.get("gameID");
+        System.out.println("...Created game successfully");
+        return gameID;
     }
 
-    public ArrayList<GameData> listGames() {
-        return null;
+    public void listGames() throws Exception {
+        header = new TreeMap(Map.of("authToken", authToken));
+        body = new TreeMap();
+        getConnection("/game", "GET");
+        TreeMap response = getResponse();
+        existingGames = (ArrayList<GameData>) response.get("games");
+        System.out.println("...Created list of games successfully");
     }
 
-    public String playGame(int gameNumber, ChessGame.TeamColor color) {
-        return "";
+    public void playGame(int gameNumber, ChessGame.TeamColor color) throws Exception {
+        String id = String.valueOf(existingGames.get(gameNumber).getGameID());
+        header = new TreeMap(Map.of("authToken", authToken));
+        body = new TreeMap(Map.of("playerColor", color, "gameID", id));
+        getConnection("/game", "PUT");
+        getResponse();
+
+        currentGameID = id;
+        currentGame = existingGames.get(gameNumber);
+        currentState = State.InGame;
+
+        System.out.printf("...Joined game #%s: %s\n", currentGameID, currentGame.getGameName());
     }
 
-    public boolean observeGame(int gameNumber) {
-        return false;
+    public void observeGame(int gameNumber) {
+        currentGame = existingGames.get(gameNumber);
+        currentGameID = String.valueOf(currentGame.getGameID());
+        currentState = State.Observing;
+
+        System.out.printf("...Observing game #%s: %s\n", currentGameID, currentGame.getGameName());
     }
 
     private ArrayList<String> getInput(){
-//        while (!input.hasNext()) {
-//        }
         String line = input.nextLine();
         ArrayList<String> output = new ArrayList<>((List.of(line.split(" "))));
         return output;
