@@ -131,10 +131,6 @@ public class ServerFacadeLocal implements ServerFacadeInterface{
         return "";
     }
 
-    public void quit() {
-
-    }
-
     public void login(String username, String password) throws Exception {
         header = new TreeMap();
         body = new TreeMap(Map.of("username", username, "password", password));
@@ -208,6 +204,9 @@ public class ServerFacadeLocal implements ServerFacadeInterface{
     private ArrayList<String> getInput(){
         String line = input.nextLine();
         ArrayList<String> output = new ArrayList<>((List.of(line.split(" "))));
+        for (int i=0;i < output.size();i++) {
+            output.set(i, output.get(i).toLowerCase(Locale.ROOT));
+        }
         return output;
     }
 
