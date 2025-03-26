@@ -47,7 +47,6 @@ public class ServerFacadeLocal implements ServerFacadeInterface{
         try {
             var server = new Server();
             var port = server.run(0);
-            System.out.println(port);
             new ServerFacadeLocal().run(port);
             server.stop();
         }
