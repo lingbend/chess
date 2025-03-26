@@ -6,10 +6,10 @@ import chess.ChessGame;
 import java.util.ArrayList;
 
 public interface ServerFacadeInterface {
-    void run();
+    void run() throws Exception;
     String getHelp();
     void quit();
-    String login(String username, String password);
+    void login(String username, String password) throws Exception;
     String register(String username, String password, String email);
     boolean logout();
     String createGame(String gameName);
