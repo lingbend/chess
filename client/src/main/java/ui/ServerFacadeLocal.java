@@ -12,7 +12,9 @@ import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.ArrayList;
 import java.net.http.*;
+import java.util.List;
 import java.util.TreeMap;
+import java.util.Scanner;
 
 
 
@@ -27,6 +29,7 @@ public class ServerFacadeLocal implements ServerFacadeInterface{
     HttpURLConnection connection;
     TreeMap<String, String> header;
     TreeMap<String, String> body;
+    Scanner input;
 
 
     public ServerFacadeLocal() throws URISyntaxException {
@@ -38,82 +41,84 @@ public class ServerFacadeLocal implements ServerFacadeInterface{
         baseUri = "http://localhost://8080";
         header = new TreeMap<>();
         body = new TreeMap<>();
+        input = new Scanner(System.in);
     }
 
-    public static void main(String[] args) {
-
+    public static void main(String[] args) throws Exception {
+        new ServerFacadeLocal().run();
     }
 
 
     public void run() throws Exception {
+        System.out.println("Welcome to Chess!");
+
         String input = "";
         ArrayList<String> parameters = new ArrayList<>();
 
-
-        while (input != "quit") {
+        while (!input.equals("quit")) {
             try {
-
-                if (input == "help") {
+                if (input.equals("help")) {
                     getHelp();
                 }
-                else if (input == "login") {
+                else if (input.equals("login")) {
+                    System.out.println("Logging in...");
                     login(parameters.get(0), parameters.get(1));
-
                 }
-                else if (input == "register") {
+                else if (input.equals("register")) {
+                    System.out.println("Registering user...");
                     connection.setRequestMethod("POST");
-
-
                 }
-                else if (input == "logout") {
+                else if (input.equals("logout")) {
+                    System.out.println("Logging out...");
                     connection.setRequestMethod("DELETE");
-
-
                 }
-                else if (input == "create") {
+                else if (input.equals("create")) {
+                    System.out.println("Creating game...");
                     connection.setRequestMethod("POST");
-
-
                 }
-                else if (input == "join") {
+                else if (input.equals("join")) {
+                    System.out.println("Joining game...");
                     connection.setRequestMethod("PUT");
-
-
                 }
-                else if (input == "observe") {
+                else if (input.equals("observe")) {
+                    System.out.println("Loading game as observer...");
                     connection.setRequestMethod("GET");
-
-
                 }
-                else if (input == "list") {
+                else if (input.equals("list")) {
+                    System.out.println("Retrieving current games...");
                     connection.setRequestMethod("GET");
-
-
                 }
+                else if (input.equals("")) {}
                 else {
-                    // bad param(s)
-                    continue;
+                    System.out.println("Bad input");
                 }
-            }
-            catch (IndexOutOfBoundsException ex) {
-                //check your parameters user!
             }
             catch (FacadeException ex) {
-                //Server error
+                System.out.println("Server Connection Error: " + ex.getMessage());
+            }
+            catch (IndexOutOfBoundsException ex) {
+                System.out.println("Need more information to be inputted. Try again. Print help for more information.");
             }
             catch (Exception ex) {
-
+                System.out.println("General Error: " + ex.getMessage());
             }
             finally {
-                header.clear();
-                body.clear();
-                parameters.clear();
-                parameters = getInput();
-                input = parameters.get(0);
-                parameters.remove(0);
+                try {
+                    header.clear();
+                    body.clear();
+                    parameters.clear();
+                    parameters = getInput();
+                    input = parameters.get(0);
+                    parameters.remove(0);
+                }
+                catch (IndexOutOfBoundsException ex) {
+                    System.out.println("Please input properly formatted commands. Print help for more information.");
+                }
+
             }
         }
         connection.disconnect();
+        System.out.println("Quitting Chess...");
     }
 
     public String getHelp() {
@@ -129,7 +134,8 @@ public class ServerFacadeLocal implements ServerFacadeInterface{
         TreeMap response = getResponse();
         authToken = (String) response.get("authToken");
         currentState = State.LoggedIn;
-        //message user they are logged in
+        System.out.println("...Logged in successfully");
+        // message user they are logged in
     }
 
     public String register(String username, String password, String email) {
@@ -157,8 +163,11 @@ public class ServerFacadeLocal implements ServerFacadeInterface{
     }
 
     private ArrayList<String> getInput(){
-
-        return null;
+//        while (!input.hasNext()) {
+//        }
+        String line = input.nextLine();
+        ArrayList<String> output = new ArrayList<>((List.of(line.split(" "))));
+        return output;
     }
 
     private void getConnection(String path, String method) throws Exception {
