@@ -59,37 +59,37 @@ public class ServerFacadeLocal implements ServerFacadeInterface{
         String input = "";
         ArrayList<String> parameters = new ArrayList<>();
 
-        while (!input.equals("quit")) {
+        while (!input.equalsIgnoreCase("quit")) {
             try {
-                if (input.equals("help")) {
+                if (input.equalsIgnoreCase("help")) {
                     getHelp();
                 }
-                else if (input.equals("login")) {
+                else if (input.equalsIgnoreCase("login")) {
                     if (currentState != State.LoggedOut) {
                         throw new Exception("Already logged in. Logout first");
                     }
                     System.out.println("Logging in...");
                     login(parameters.get(0), parameters.get(1));
                 }
-                else if (input.equals("register")) {
+                else if (input.equalsIgnoreCase("register")) {
                     System.out.println("Registering user...");
                     register(parameters.get(0), parameters.get(1), parameters.get(2));
                 }
-                else if (input.equals("logout")) {
+                else if (input.equalsIgnoreCase("logout")) {
                     if (currentState == State.LoggedOut) {
                         throw new Exception("Not logged in. Login first");
                     }
                     System.out.println("Logging out...");
                     logout();
                 }
-                else if (input.equals("create")) {
+                else if (input.equalsIgnoreCase("create")) {
                     if (currentState == State.LoggedOut) {
                         throw new Exception("Not logged in. Login first");
                     }
                     System.out.println("Creating game...");
                     createGame(parameters.get(0));
                 }
-                else if (input.equals("join")) {
+                else if (input.equalsIgnoreCase("join")) {
                     if (currentState == State.LoggedOut) {
                         throw new Exception("Not logged in. Login first");
                     }
@@ -98,16 +98,17 @@ public class ServerFacadeLocal implements ServerFacadeInterface{
                         throw new Exception("Game not found. Make sure to list" +
                                 " existing games and create one if none exist");
                     }
-                    playGame(Integer.parseInt(parameters.get(0)), Enum.valueOf(ChessGame.TeamColor.class, parameters.get(1)));
+                    playGame(Integer.parseInt(parameters.get(0)),
+                            Enum.valueOf(ChessGame.TeamColor.class, parameters.get(1).toUpperCase()));
                 }
-                else if (input.equals("observe")) {
+                else if (input.equalsIgnoreCase("observe")) {
                     if (currentState == State.LoggedOut) {
                         throw new Exception("Not logged in. Login first");
                     }
                     System.out.println("Loading game as observer...");
                     observeGame(Integer.parseInt(parameters.get(0)));
                 }
-                else if (input.equals("list")) {
+                else if (input.equalsIgnoreCase("list")) {
                     if (currentState == State.LoggedOut) {
                         throw new Exception("Not logged in. Login first");
                     }
@@ -232,7 +233,7 @@ public class ServerFacadeLocal implements ServerFacadeInterface{
         String line = input.nextLine();
         ArrayList<String> output = new ArrayList<>((List.of(line.split(" "))));
         for (int i=0;i < output.size();i++) {
-            output.set(i, output.get(i).toLowerCase(Locale.ROOT));
+            output.set(i, output.get(i));
         }
         return output;
     }
@@ -306,7 +307,7 @@ public class ServerFacadeLocal implements ServerFacadeInterface{
         ArrayList<GameData> arrayResponse = new ArrayList<>();
 
         for (var i : rawArray) {
-            arrayResponse.add(new Gson().fromJson((String) (new Gson().toJson(i)), GameData.class));
+            arrayResponse.add(new Gson().fromJson((new Gson().toJson(i)), GameData.class));
         }
 
         return arrayResponse;
