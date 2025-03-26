@@ -6,7 +6,7 @@ import chess.ChessGame;
 import java.util.ArrayList;
 
 public interface ServerFacadeInterface {
-    void run() throws Exception;
+    void run(int port) throws Exception;
     String getHelp() throws Exception;
     void login(String username, String password) throws Exception;
     void register(String username, String password, String email) throws Exception;

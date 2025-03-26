@@ -2,9 +2,11 @@ package ui;
 
 import chess.ChessGame;
 import model.GameData;
+import server.Server;
 
 import com.google.gson.Gson;
 
+import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
@@ -18,7 +20,7 @@ public class ServerFacadeLocal implements ServerFacadeInterface{
 
     State currentState;
     String username;
-    String authToken;
+    int authToken;
     String currentGameID;
     ArrayList<GameData> existingGames;
     GameData currentGame;
@@ -31,22 +33,27 @@ public class ServerFacadeLocal implements ServerFacadeInterface{
 
     public ServerFacadeLocal() throws URISyntaxException {
         currentState = State.LoggedOut;
-        authToken = "";
+        authToken = 0;
         username = "";
         currentGameID = "";
         existingGames = new ArrayList<GameData>();
-        baseUri = "http://localhost://8080";
+        baseUri = "http://localhost:";
         header = new TreeMap<>();
         body = new TreeMap<>();
         input = new Scanner(System.in);
     }
 
     public static void main(String[] args) throws Exception {
-        new ServerFacadeLocal().run();
+        var server = new Server();
+        var port = server.run(0);
+        System.out.println(port);
+        new ServerFacadeLocal().run(port);
+        server.stop();
     }
 
 
-    public void run() throws Exception {
+    public void run(int port) throws Exception {
+        baseUri += String.valueOf(port);
         System.out.println("Welcome to Chess!");
 
         String input = "";
@@ -118,13 +125,13 @@ public class ServerFacadeLocal implements ServerFacadeInterface{
                 }
             }
             catch (FacadeException ex) {
-                System.out.println("Server Connection Error: " + ex.getMessage());
+                System.out.println(ex.getMessage());
             }
             catch (IndexOutOfBoundsException ex) {
                 System.out.println("Need more information to be inputted. Try again. Print help for more information.");
             }
             catch (Exception ex) {
-                System.out.println("General Error: " + ex.getMessage());
+                System.out.println("Error: " + ex.getMessage());
             }
             finally {
                 try {
@@ -154,7 +161,7 @@ public class ServerFacadeLocal implements ServerFacadeInterface{
         body = new TreeMap(Map.of("username", username, "password", password));
         getConnection("/session", "POST");
         TreeMap response = getResponse();
-        authToken = (String) response.get("authToken");
+        authToken = Integer.parseInt((String) response.get("authToken"));
         currentState = State.LoggedIn;
         System.out.println("...Logged in successfully");
     }
@@ -164,13 +171,14 @@ public class ServerFacadeLocal implements ServerFacadeInterface{
         body = new TreeMap(Map.of("username", username, "password", password, "email", email));
         getConnection("/user", "POST");
         TreeMap response = getResponse();
-        authToken = (String) response.get("authToken");
+        authToken = Integer.parseInt((String) response.get("authToken"));
         currentState = State.LoggedIn;
         System.out.println("...Registered and logged in successfully");
     }
 
     public void logout() throws Exception {
-        header = new TreeMap(Map.of("authToken", authToken));
+        header = new TreeMap(Map.of("authToken", String.valueOf(authToken)));
+        System.out.println(authToken);
         body = new TreeMap();
         getConnection("/session", "DELETE");
         getResponse();
@@ -179,7 +187,7 @@ public class ServerFacadeLocal implements ServerFacadeInterface{
     }
 
     public String createGame(String gameName) throws Exception {
-        header = new TreeMap(Map.of("authToken", authToken));
+        header = new TreeMap(Map.of("authToken", String.valueOf(authToken)));
         body = new TreeMap(Map.of("gameName", gameName));
         getConnection("/game", "POST");
         TreeMap response = getResponse();
@@ -189,7 +197,7 @@ public class ServerFacadeLocal implements ServerFacadeInterface{
     }
 
     public void listGames() throws Exception {
-        header = new TreeMap(Map.of("authToken", authToken));
+        header = new TreeMap(Map.of("authToken", String.valueOf(authToken)));
         body = new TreeMap();
         getConnection("/game", "GET");
         TreeMap response = getResponse();
@@ -199,7 +207,7 @@ public class ServerFacadeLocal implements ServerFacadeInterface{
 
     public void playGame(int gameNumber, ChessGame.TeamColor color) throws Exception {
         String id = String.valueOf(existingGames.get(gameNumber).getGameID());
-        header = new TreeMap(Map.of("authToken", authToken));
+        header = new TreeMap(Map.of("authToken", String.valueOf(authToken)));
         body = new TreeMap(Map.of("playerColor", color, "gameID", id));
         getConnection("/game", "PUT");
         getResponse();
@@ -245,14 +253,21 @@ public class ServerFacadeLocal implements ServerFacadeInterface{
 
     private TreeMap getResponse() throws Exception {
         int responseCode = connection.getResponseCode();
-        var responseStream = connection.getInputStream();
+        InputStream responseStream;
+        if (responseCode != 200) {
+            responseStream = connection.getErrorStream();
+
+        }
+        else {
+            responseStream = connection.getInputStream();
+        }
+        var responseError = connection.getResponseMessage();
         InputStreamReader reader = new InputStreamReader(responseStream);
 
         TreeMap responseMap = new Gson().fromJson(reader, TreeMap.class);
 
         reader.close();
         responseStream.close();
-
         if (responseCode != 200) {
             throw new FacadeException(responseCode + ": " + responseMap.get("message"));
         }
