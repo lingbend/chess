@@ -73,12 +73,18 @@ public class ServerFacadeLocal implements ServerFacadeInterface{
                     if (currentState != State.LoggedOut) {
                         throw new Exception("Already logged in. Logout first");
                     }
+                    else if (parameters.size() != 2) {
+                        throw new FacadeException("Error: Wrong number of inputs");
+                    }
                     System.out.println("Logging in...");
                     login(parameters.get(0), parameters.get(1));
                 }
                 else if (input.equalsIgnoreCase("register")) {
                     if (currentState != State.LoggedOut) {
                         throw new Exception("Logout before registering a new account");
+                    }
+                    else if (parameters.size() != 3) {
+                        throw new FacadeException("Error: Wrong number of inputs");
                     }
                     System.out.println("Registering user...");
                     register(parameters.get(0), parameters.get(1), parameters.get(2));
@@ -87,6 +93,9 @@ public class ServerFacadeLocal implements ServerFacadeInterface{
                     if (currentState == State.LoggedOut) {
                         throw new Exception("Not logged in. Login first");
                     }
+                    else if (parameters.size() != 0) {
+                        throw new FacadeException("Error: Wrong number of inputs");
+                    }
                     System.out.println("Logging out...");
                     logout();
                 }
@@ -94,12 +103,18 @@ public class ServerFacadeLocal implements ServerFacadeInterface{
                     if (currentState == State.LoggedOut) {
                         throw new Exception("Not logged in. Login first");
                     }
+                    else if (parameters.size() != 1) {
+                        throw new FacadeException("Error: Wrong number of inputs");
+                    }
                     System.out.println("Creating game...");
                     createGame(parameters.get(0));
                 }
                 else if (input.equalsIgnoreCase("join")) {
                     if (currentState == State.LoggedOut) {
                         throw new Exception("Not logged in. Login first");
+                    }
+                    else if (parameters.size() != 2) {
+                        throw new FacadeException("Error: Wrong number of inputs");
                     }
                     System.out.println("Joining game...");
                     if (existingGames.isEmpty()) {
@@ -113,12 +128,18 @@ public class ServerFacadeLocal implements ServerFacadeInterface{
                     if (currentState == State.LoggedOut) {
                         throw new Exception("Not logged in. Login first");
                     }
+                    else if (parameters.size() != 1) {
+                        throw new FacadeException("Error: Wrong number of inputs");
+                    }
                     System.out.println("Loading game as observer...");
                     observeGame(Integer.parseInt(parameters.get(0)));
                 }
                 else if (input.equalsIgnoreCase("list")) {
                     if (currentState == State.LoggedOut) {
                         throw new Exception("Not logged in. Login first");
+                    }
+                    else if (parameters.size() != 0) {
+                        throw new FacadeException("Error: Wrong number of inputs");
                     }
                     System.out.println("Retrieving current games...");
                     listGames();
@@ -140,8 +161,14 @@ public class ServerFacadeLocal implements ServerFacadeInterface{
                 }
                 else if (input.equals("")) {}
                 else {
-                    System.out.println("Error: Bad input");
+                    System.out.println("Error: Not a valid input");
                 }
+            }
+            catch (NumberFormatException ex) {
+                System.out.println("Error: " + ex.getMessage() + ". Not a number");
+            }
+            catch (IllegalArgumentException ex) {
+                System.out.println("Error: one or more of your data fields is the wrong type");
             }
             catch (FacadeException ex) {
                 System.out.println(ex.getMessage());
@@ -259,7 +286,7 @@ public class ServerFacadeLocal implements ServerFacadeInterface{
             id = String.valueOf(existingGames.get(gameNumber - 1).getGameID());
         }
         catch (IndexOutOfBoundsException ex) {
-            throw new FacadeException("Game doesn't exist. Choose a different number");
+            throw new FacadeException("Error: Game doesn't exist. Choose a different number");
         }
         header = new TreeMap(Map.of("authToken", String.valueOf(authToken)));
         body = new TreeMap(Map.of("playerColor", color, "gameID", id));
