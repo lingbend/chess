@@ -18,20 +18,26 @@ import java.util.*;
 import java.net.http.*;
 
 
-public class ServerFacadeLocal implements ServerFacadeInterface{
+public class ServerFacadeLocal {
 
-    State currentState;
-    String username;
-    int authToken;
-    String currentGameID;
-    ArrayList<GameData> existingGames;
-    GameData currentGame;
-    String baseUri;
-    HttpURLConnection connection;
-    TreeMap<String, String> header;
-    TreeMap<String, String> body;
-    Scanner input;
+    private State currentState;
+    private String username;
+    private int authToken;
+    private String currentGameID;
+    private ArrayList<GameData> existingGames;
+    private GameData currentGame;
+    private String baseUri;
+    private HttpURLConnection connection;
+    private TreeMap<String, String> header;
+    private TreeMap<String, String> body;
+    private Scanner input;
 
+    public enum State {
+        LoggedOut,
+        LoggedIn,
+        InGame,
+        Observing
+    }
 
     public ServerFacadeLocal() throws URISyntaxException {
         currentState = State.LoggedOut;
@@ -205,7 +211,7 @@ public class ServerFacadeLocal implements ServerFacadeInterface{
         }
     }
 
-    public String getHelp() {
+    private String getHelp() {
         if (currentState == State.LoggedOut) {
             return
                 """
@@ -231,7 +237,7 @@ public class ServerFacadeLocal implements ServerFacadeInterface{
 
     }
 
-    public void login(String username, String password) throws Exception {
+    private void login(String username, String password) throws Exception {
         header = new TreeMap();
         body = new TreeMap(Map.of("username", username, "password", password));
         getConnection("/session", "POST");
@@ -243,7 +249,7 @@ public class ServerFacadeLocal implements ServerFacadeInterface{
         this.username = username;
     }
 
-    public void register(String username, String password, String email) throws Exception {
+    private void register(String username, String password, String email) throws Exception {
         header = new TreeMap();
         body = new TreeMap(Map.of("username", username, "password", password, "email", email));
         getConnection("/user", "POST");
@@ -255,7 +261,7 @@ public class ServerFacadeLocal implements ServerFacadeInterface{
         this.username = username;
     }
 
-    public void logout() throws Exception {
+    private void logout() throws Exception {
         header = new TreeMap(Map.of("authToken", String.valueOf(authToken)));
         body = new TreeMap();
         getConnection("/session", "DELETE");
@@ -267,7 +273,7 @@ public class ServerFacadeLocal implements ServerFacadeInterface{
 
     }
 
-    public String createGame(String gameName) throws Exception {
+    private String createGame(String gameName) throws Exception {
         header = new TreeMap(Map.of("authToken", String.valueOf(authToken)));
         body = new TreeMap(Map.of("gameName", gameName));
         getConnection("/game", "POST");
@@ -277,7 +283,7 @@ public class ServerFacadeLocal implements ServerFacadeInterface{
         return gameID;
     }
 
-    public void listGames() throws Exception {
+    private void listGames() throws Exception {
         header = new TreeMap(Map.of("authToken", String.valueOf(authToken)));
         body = new TreeMap();
         getConnection("/game", "GET");
@@ -285,7 +291,7 @@ public class ServerFacadeLocal implements ServerFacadeInterface{
         System.out.println("...Created list of games successfully");
     }
 
-    public void playGame(int gameNumber, ChessGame.TeamColor color) throws Exception {
+    private void playGame(int gameNumber, ChessGame.TeamColor color) throws Exception {
         String id;
 
         try {
@@ -316,7 +322,7 @@ public class ServerFacadeLocal implements ServerFacadeInterface{
 
     }
 
-    public void observeGame(int gameNumber) throws Exception {
+    private void observeGame(int gameNumber) throws Exception {
         try {
             currentGame = existingGames.get(gameNumber - 1);
         }
