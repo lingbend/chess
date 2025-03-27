@@ -1,6 +1,8 @@
 package ui;
 
+import chess.ChessBoard;
 import chess.ChessGame;
+import chess.ChessPiece;
 import model.GameData;
 import server.Server;
 
@@ -153,7 +155,7 @@ public class ServerFacadeLocal implements ServerFacadeInterface{
                                 black != null ? black : "none");
                     }
                 }
-                else if (input.equalsIgnoreCase("quit")) {
+                else if (input.equalsIgnoreCase("quit") || input.equalsIgnoreCase("exit")) {
                     if (currentState != State.LoggedOut) {
                         throw new Exception("Logout before quitting");
                     }
@@ -184,7 +186,8 @@ public class ServerFacadeLocal implements ServerFacadeInterface{
                     header.clear();
                     body.clear();
                     parameters.clear();
-                    if ((!input.equalsIgnoreCase("quit")) || currentState != State.LoggedOut) {
+                    if ((!input.equalsIgnoreCase("quit") && !input.equalsIgnoreCase("exit"))
+                            || currentState != State.LoggedOut) {
                         parameters = getInput();
                         input = parameters.get(0);
                         parameters.remove(0);
@@ -209,7 +212,7 @@ public class ServerFacadeLocal implements ServerFacadeInterface{
                 Available Commands:              Format:
                 Log in to Chess System           | login username password
                 Register a new account for Chess | register username password email
-                Close the Chess program          | quit
+                Close the Chess program          | quit OR exit
                 View currently available options | help
                 """;
         }
@@ -275,7 +278,6 @@ public class ServerFacadeLocal implements ServerFacadeInterface{
         body = new TreeMap();
         getConnection("/game", "GET");
         existingGames = getArrayResponse();
-//        existingGames = (ArrayList<GameData>) response.get("games");
         System.out.println("...Created list of games successfully");
     }
 
@@ -286,7 +288,7 @@ public class ServerFacadeLocal implements ServerFacadeInterface{
             id = String.valueOf(existingGames.get(gameNumber - 1).getGameID());
         }
         catch (IndexOutOfBoundsException ex) {
-            throw new FacadeException("Error: Game doesn't exist. Choose a different number");
+            throw new FacadeException("Error: Game doesn't exist. Choose a different number or use list to load games");
         }
         header = new TreeMap(Map.of("authToken", String.valueOf(authToken)));
         body = new TreeMap(Map.of("playerColor", color, "gameID", id));
@@ -298,6 +300,10 @@ public class ServerFacadeLocal implements ServerFacadeInterface{
         currentState = State.InGame;
 
         System.out.printf("...Joined game #%s: %s\n", currentGameID, currentGame.getGameName());
+        System.out.print(drawBoard("107", "40", "35", "34",
+                new ChessGame()));
+        System.out.print("\u001b[34;49m");
+
     }
 
     public void observeGame(int gameNumber) throws Exception {
@@ -311,6 +317,10 @@ public class ServerFacadeLocal implements ServerFacadeInterface{
         currentState = State.Observing;
 
         System.out.printf("...Observing game %s\n", currentGame.getGameName());
+        System.out.print(drawBoard("107", "40", "35", "34",
+                new ChessGame()));
+        System.out.print("\u001b[34;49m");
+
     }
 
     private ArrayList<String> getInput(){
@@ -395,5 +405,117 @@ public class ServerFacadeLocal implements ServerFacadeInterface{
         }
 
         return arrayResponse;
+    }
+
+    private String drawBoard(String backColor1, String backColor2, String frontColor1,
+                           String frontColor2, ChessGame chess) {
+        ChessBoard board = chess.getBoard();
+        String currentBackColor = backColor2;
+        String currentFrontColor = "";
+        StringBuilder result = new StringBuilder();
+        ChessGame.TeamColor startingColor;
+
+
+
+        if (username.equals(currentGame.getBlackUsername())) {
+            startingColor = ChessGame.TeamColor.BLACK;
+        }
+        else {
+            startingColor = ChessGame.TeamColor.WHITE;
+        }
+
+        for (int row=1; row < 9; row++) {
+            for (int col=1; col<9; col++) {
+                if (startingColor == ChessGame.TeamColor.WHITE) {
+                    currentFrontColor = getPieceColor(9-row, col, board, frontColor1, frontColor2);
+                    result.append("\u001b[").append(currentBackColor).append(";").append(currentFrontColor)
+                            .append("m").append(getPieceCode(9-row, col, board));
+                }
+                else {
+                    currentFrontColor = getPieceColor(row, 9-col, board, frontColor1, frontColor2);
+                    result.append("\u001b[").append(currentBackColor).append(";").append(currentFrontColor).
+                            append("m").append(getPieceCode(row, 9-col, board));
+
+                }
+                if (currentBackColor.equals(backColor1)) {
+                    currentBackColor = backColor2;
+                }
+                else {
+                    currentBackColor = backColor1;
+                }
+            }
+            result.append("\u001b[49m");
+            result.append("\n");
+            if (currentBackColor.equals(backColor1)) {
+                currentBackColor = backColor2;
+            }
+            else {
+                currentBackColor = backColor1;
+            }
+            result.append("\u001b[").append(currentBackColor).append("m");
+
+        }
+        return result.toString();
+    }
+
+    private String getPieceColor(int row, int col, ChessBoard board, String whiteColor, String blackColor) {
+        ChessPiece piece = board.getPiece(row, col);
+        if (piece == null || piece.getTeamColor() == ChessGame.TeamColor.WHITE) {
+            return whiteColor;
+        }
+        else {
+            return blackColor;
+        }
+    }
+
+    private String getPieceCode(int row, int col, ChessBoard board) {
+        ChessPiece piece = board.getPiece(row, col);
+
+        if (piece == null) {
+            return EscapeSequences.EMPTY;
+        }
+
+        ChessPiece.PieceType type = piece.getPieceType();
+        ChessGame.TeamColor color = piece.getTeamColor();
+
+        if (type == ChessPiece.PieceType.KING && color == ChessGame.TeamColor.WHITE) {
+            return  EscapeSequences.WHITE_KING;
+        }
+        else if(type == ChessPiece.PieceType.KING && color == ChessGame.TeamColor.BLACK) {
+            return EscapeSequences.BLACK_KING;
+        }
+        else if(type == ChessPiece.PieceType.KNIGHT && color == ChessGame.TeamColor.WHITE) {
+            return EscapeSequences.WHITE_KNIGHT;
+        }
+        else if(type == ChessPiece.PieceType.KNIGHT && color == ChessGame.TeamColor.BLACK) {
+            return EscapeSequences.BLACK_KNIGHT;
+        }
+        else if(type == ChessPiece.PieceType.BISHOP && color == ChessGame.TeamColor.WHITE) {
+            return EscapeSequences.WHITE_BISHOP;
+        }
+        else if(type == ChessPiece.PieceType.BISHOP && color == ChessGame.TeamColor.BLACK) {
+            return EscapeSequences.BLACK_BISHOP;
+        }
+        else if(type == ChessPiece.PieceType.ROOK && color == ChessGame.TeamColor.WHITE) {
+            return EscapeSequences.WHITE_ROOK;
+        }
+        else if(type == ChessPiece.PieceType.ROOK && color == ChessGame.TeamColor.BLACK) {
+            return EscapeSequences.BLACK_ROOK;
+        }
+        else if(type == ChessPiece.PieceType.QUEEN && color == ChessGame.TeamColor.WHITE) {
+            return EscapeSequences.WHITE_QUEEN;
+        }
+        else if(type == ChessPiece.PieceType.QUEEN && color == ChessGame.TeamColor.BLACK) {
+            return EscapeSequences.BLACK_QUEEN;
+        }
+        else if(type == ChessPiece.PieceType.PAWN && color == ChessGame.TeamColor.WHITE) {
+            return EscapeSequences.WHITE_PAWN;
+        }
+        else if(type == ChessPiece.PieceType.PAWN && color == ChessGame.TeamColor.BLACK) {
+            return EscapeSequences.BLACK_PAWN;
+        }
+        else {
+            return EscapeSequences.EMPTY;
+        }
     }
 }

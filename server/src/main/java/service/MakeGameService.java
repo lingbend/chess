@@ -1,5 +1,6 @@
 package service;
 
+import chess.ChessGame;
 import dataaccess.*;
 import handler.Handler;
 import handler.JsonHandler;
@@ -27,7 +28,9 @@ public class MakeGameService implements Service{
         }
 
         String gameID = AuthData.makeAuthToken();
-        if (!gameAccess.create(new GameData(Integer.parseInt(gameID), request.getGameName()))) {
+        GameData newGame = new GameData(Integer.parseInt(gameID), request.getGameName());
+        newGame.setGame(new ChessGame());
+        if (!gameAccess.create(newGame)) {
             throw new DataAccessException("unable to create new game");
         }
 
