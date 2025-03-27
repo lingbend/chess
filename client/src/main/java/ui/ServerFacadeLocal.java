@@ -157,7 +157,7 @@ public class ServerFacadeLocal implements ServerFacadeInterface{
                     header.clear();
                     body.clear();
                     parameters.clear();
-                    if (!input.equalsIgnoreCase("quit")) {
+                    if ((!input.equalsIgnoreCase("quit")) || currentState != State.LoggedOut) {
                         parameters = getInput();
                         input = parameters.get(0);
                         parameters.remove(0);
@@ -332,7 +332,7 @@ public class ServerFacadeLocal implements ServerFacadeInterface{
         reader.close();
         responseStream.close();
         if (responseCode != 200) {
-            throw new FacadeException(responseCode + ": " + responseMap.get("message"));
+            throw new FacadeException((String) responseMap.get("message"));
         }
 
         responseMap.put("code", Integer.toString(responseCode));
@@ -357,7 +357,7 @@ public class ServerFacadeLocal implements ServerFacadeInterface{
         reader.close();
         responseStream.close();
         if (responseCode != 200) {
-            throw new FacadeException(responseCode + ": " + responseMap.get("message"));
+            throw new FacadeException((String) responseMap.get("message"));
         }
 
         ArrayList rawArray = (ArrayList) responseMap.get("games");
