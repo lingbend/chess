@@ -16,7 +16,6 @@ import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.*;
 
-
 public class ServerFacadeLocal {
 
     public State currentState;
@@ -190,7 +189,6 @@ public class ServerFacadeLocal {
                 catch (IndexOutOfBoundsException ex) {
                     System.out.println("Please input properly formatted commands. Print help for more information.");
                 }
-
             }
         }
         System.out.println("...Disconnected");
@@ -401,7 +399,6 @@ public class ServerFacadeLocal {
         return responseMap;
     }
 
-
     private String drawBoard(String backColor1, String backColor2, String frontColor1,
                            String frontColor2, ChessGame chess) throws Exception {
         ChessBoard board = chess.getBoard();
@@ -413,8 +410,6 @@ public class ServerFacadeLocal {
         StringBuilder alpha = new StringBuilder("    " + "a" + em + "b" + em + "c" +
                 em + "d" + em + "e" + em + "f" + em + "g" + em + "h" + "    ");
         StringBuilder beta = new StringBuilder(alpha).reverse();
-
-
 
         if (username.equals(currentGame.getBlackUsername())) {
             startingColor = ChessGame.TeamColor.BLACK;
@@ -465,8 +460,6 @@ public class ServerFacadeLocal {
             else {
                 currentBackColor = backColor1;
             }
-//            result.append("\u001b[").append(currentBackColor).append("m");
-
         }
         if (username.equals(currentGame.getBlackUsername())) {
             result.append(beta).append(EscapeSequences.EMPTY).append("\n");
