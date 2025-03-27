@@ -59,83 +59,55 @@ public class ServerFacadeLocal {
         command = "";
         parameters = new ArrayList<>();
 
+        runLoop();
+        System.out.println("...Disconnected");
+        if (connection != null) {
+            connection.disconnect();
+        }
+    }
+
+    private void runLoop() {
         while (true) {
             try {
                 if (command.equalsIgnoreCase("help")) {
                     System.out.print(getHelp());
                 }
                 else if (command.equalsIgnoreCase("login")) {
-                    if (currentState != State.LoggedOut) {
-                        throw new Exception("Already logged in. Logout first");
-                    }
-                    else if (parameters.size() != 2) {
-                        throw new FacadeException("Error: Wrong number of inputs");
-                    }
+                    checkState(State.LoggedOut, 2);
                     System.out.println("Logging in...");
                     login(parameters.get(0), parameters.get(1));
                 }
                 else if (command.equalsIgnoreCase("register")) {
-                    if (currentState != State.LoggedOut) {
-                        throw new Exception("Logout before registering a new account");
-                    }
-                    else if (parameters.size() != 3) {
-                        throw new FacadeException("Error: Wrong number of inputs");
-                    }
+                    checkState(State.LoggedOut, 3);
                     System.out.println("Registering user...");
                     register(parameters.get(0), parameters.get(1), parameters.get(2));
                 }
                 else if (command.equalsIgnoreCase("logout")) {
-                    if (currentState == State.LoggedOut) {
-                        throw new Exception("Not logged in. Login first");
-                    }
-                    else if (parameters.size() != 0) {
-                        throw new FacadeException("Error: Wrong number of inputs");
-                    }
+                    checkState(State.LoggedIn, 0);
                     System.out.println("Logging out...");
                     logout();
                 }
                 else if (command.equalsIgnoreCase("create")) {
-                    if (currentState == State.LoggedOut) {
-                        throw new Exception("Not logged in. Login first");
-                    }
-                    else if (parameters.size() != 1) {
-                        throw new FacadeException("Error: Wrong number of inputs");
-                    }
+                    checkState(State.LoggedIn, 1);
                     System.out.println("Creating game...");
                     createGame(parameters.get(0));
                 }
                 else if (command.equalsIgnoreCase("join")) {
-                    if (currentState == State.LoggedOut) {
-                        throw new Exception("Not logged in. Login first");
-                    }
-                    else if (parameters.size() != 2) {
-                        throw new FacadeException("Error: Wrong number of inputs");
-                    }
+                    checkState(State.LoggedIn, 2);
                     System.out.println("Joining game...");
                     if (existingGames.isEmpty()) {
-                        throw new Exception("Game not found. Make sure to list" +
-                                " existing games and create one if none exist");
+                        throw new Exception("Game not found. Use 'list' to find games and 'create' if none exist");
                     }
                     playGame(Integer.parseInt(parameters.get(0)),
                             Enum.valueOf(ChessGame.TeamColor.class, parameters.get(1).toUpperCase()));
                 }
                 else if (command.equalsIgnoreCase("observe")) {
-                    if (currentState == State.LoggedOut) {
-                        throw new Exception("Not logged in. Login first");
-                    }
-                    else if (parameters.size() != 1) {
-                        throw new FacadeException("Error: Wrong number of inputs");
-                    }
+                    checkState(State.LoggedIn, 1);
                     System.out.println("Loading game as observer...");
                     observeGame(Integer.parseInt(parameters.get(0)));
                 }
                 else if (command.equalsIgnoreCase("list")) {
-                    if (currentState == State.LoggedOut) {
-                        throw new Exception("Not logged in. Login first");
-                    }
-                    else if (parameters.size() != 0) {
-                        throw new FacadeException("Error: Wrong number of inputs");
-                    }
+                    checkState(State.LoggedIn, 0);
                     System.out.println("Retrieving current games...");
                     listGames();
                 }
@@ -169,9 +141,17 @@ public class ServerFacadeLocal {
                 cleanUp();
             }
         }
-        System.out.println("...Disconnected");
-        if (connection != null) {
-            connection.disconnect();
+    }
+
+    private void checkState(State state, int size) throws Exception {
+        if (state == State.LoggedOut && currentState != state) {
+            throw new Exception("Must logout first");
+        }
+        else if (state == State.LoggedIn && currentState == State.LoggedOut) {
+            throw new Exception("Not logged in. Login first");
+        }
+        else if (parameters.size() != size) {
+            throw new FacadeException("Error: Wrong number of inputs");
         }
     }
 

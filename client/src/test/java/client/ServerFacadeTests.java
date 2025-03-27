@@ -269,7 +269,6 @@ public class ServerFacadeTests {
         }
     }
 
-
     @Test
     public void runPositive() {
         facade.baseUri = "http://localhost:";
