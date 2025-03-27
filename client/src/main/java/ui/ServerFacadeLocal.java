@@ -20,17 +20,18 @@ import java.net.http.*;
 
 public class ServerFacadeLocal {
 
-    private State currentState;
-    private String username;
-    private int authToken;
-    private String currentGameID;
-    private ArrayList<GameData> existingGames;
-    private GameData currentGame;
-    private String baseUri;
-    private HttpURLConnection connection;
-    private TreeMap<String, String> header;
-    private TreeMap<String, String> body;
-    private Scanner input;
+    public State currentState;
+    public String username;
+    public int authToken;
+    public String currentGameID;
+    public ArrayList<GameData> existingGames;
+    public GameData currentGame;
+    public String baseUri;
+    public HttpURLConnection connection;
+    public TreeMap<String, String> header;
+    public TreeMap<String, String> body;
+    public Scanner input;
+    public int port;
 
     public enum State {
         LoggedOut,
@@ -39,7 +40,7 @@ public class ServerFacadeLocal {
         Observing
     }
 
-    public ServerFacadeLocal() throws URISyntaxException {
+    public ServerFacadeLocal(int portNum) throws URISyntaxException {
         currentState = State.LoggedOut;
         authToken = 0;
         username = "";
@@ -49,22 +50,10 @@ public class ServerFacadeLocal {
         header = new TreeMap<>();
         body = new TreeMap<>();
         input = new Scanner(System.in);
+        port = portNum;
     }
 
-    public static void main(String[] args) throws Exception {
-        try {
-            var server = new Server();
-            var port = server.run(0);
-            new ServerFacadeLocal().run(port);
-            server.stop();
-        }
-        catch (Exception ex) {
-            System.out.println(ex.getMessage());
-        }
-    }
-
-
-    public void run(int port) throws Exception {
+    public void run() throws Exception {
         baseUri += String.valueOf(port);
         System.out.print("\u001b[95m");
         System.out.println("Welcome to Chess!");
@@ -237,7 +226,7 @@ public class ServerFacadeLocal {
 
     }
 
-    private void login(String username, String password) throws Exception {
+    public void login(String username, String password) throws Exception {
         header = new TreeMap();
         body = new TreeMap(Map.of("username", username, "password", password));
         getConnection("/session", "POST");
@@ -247,9 +236,10 @@ public class ServerFacadeLocal {
         System.out.print("\u001b[34m");
         System.out.println("...Logged in successfully");
         this.username = username;
+
     }
 
-    private void register(String username, String password, String email) throws Exception {
+    public void register(String username, String password, String email) throws Exception {
         header = new TreeMap();
         body = new TreeMap(Map.of("username", username, "password", password, "email", email));
         getConnection("/user", "POST");
@@ -261,7 +251,7 @@ public class ServerFacadeLocal {
         this.username = username;
     }
 
-    private void logout() throws Exception {
+    public void logout() throws Exception {
         header = new TreeMap(Map.of("authToken", String.valueOf(authToken)));
         body = new TreeMap();
         getConnection("/session", "DELETE");
@@ -273,7 +263,7 @@ public class ServerFacadeLocal {
 
     }
 
-    private String createGame(String gameName) throws Exception {
+    public String createGame(String gameName) throws Exception {
         header = new TreeMap(Map.of("authToken", String.valueOf(authToken)));
         body = new TreeMap(Map.of("gameName", gameName));
         getConnection("/game", "POST");
@@ -283,7 +273,7 @@ public class ServerFacadeLocal {
         return gameID;
     }
 
-    private void listGames() throws Exception {
+    public void listGames() throws Exception {
         header = new TreeMap(Map.of("authToken", String.valueOf(authToken)));
         body = new TreeMap();
         getConnection("/game", "GET");
@@ -291,7 +281,7 @@ public class ServerFacadeLocal {
         System.out.println("...Created list of games successfully");
     }
 
-    private void playGame(int gameNumber, ChessGame.TeamColor color) throws Exception {
+    public void playGame(int gameNumber, ChessGame.TeamColor color) throws Exception {
         String id;
 
         try {
@@ -322,7 +312,7 @@ public class ServerFacadeLocal {
 
     }
 
-    private void observeGame(int gameNumber) throws Exception {
+    public void observeGame(int gameNumber) throws Exception {
         try {
             currentGame = existingGames.get(gameNumber - 1);
         }
