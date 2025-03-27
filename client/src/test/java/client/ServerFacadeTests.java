@@ -3,8 +3,6 @@ package client;
 import chess.ChessGame;
 import dataaccess.DataAccessException;
 import dataaccess.DatabaseManager;
-import dataaccess.SQLAuthAccess;
-import dataaccess.SQLUserAccess;
 import handler.JsonHandler;
 import org.junit.jupiter.api.*;
 import org.junit.jupiter.api.Assertions;
@@ -14,7 +12,6 @@ import service.RequestObj;
 import ui.FacadeException;
 import ui.ServerFacadeLocal;
 
-import java.sql.SQLException;
 import java.util.Map;
 import java.util.Scanner;
 
