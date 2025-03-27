@@ -29,6 +29,8 @@ public class ServerFacadeLocal {
     public TreeMap<String, String> body;
     public Scanner input;
     public int port;
+    public String command;
+    public ArrayList<String> parameters;
 
     public enum State {
         LoggedOut,
@@ -54,15 +56,15 @@ public class ServerFacadeLocal {
         baseUri += String.valueOf(port);
         System.out.println("\u001b[95mWelcome to Chess!");
 
-        String input = "";
-        ArrayList<String> parameters = new ArrayList<>();
+        command = "";
+        parameters = new ArrayList<>();
 
         while (true) {
             try {
-                if (input.equalsIgnoreCase("help")) {
+                if (command.equalsIgnoreCase("help")) {
                     System.out.print(getHelp());
                 }
-                else if (input.equalsIgnoreCase("login")) {
+                else if (command.equalsIgnoreCase("login")) {
                     if (currentState != State.LoggedOut) {
                         throw new Exception("Already logged in. Logout first");
                     }
@@ -72,7 +74,7 @@ public class ServerFacadeLocal {
                     System.out.println("Logging in...");
                     login(parameters.get(0), parameters.get(1));
                 }
-                else if (input.equalsIgnoreCase("register")) {
+                else if (command.equalsIgnoreCase("register")) {
                     if (currentState != State.LoggedOut) {
                         throw new Exception("Logout before registering a new account");
                     }
@@ -82,7 +84,7 @@ public class ServerFacadeLocal {
                     System.out.println("Registering user...");
                     register(parameters.get(0), parameters.get(1), parameters.get(2));
                 }
-                else if (input.equalsIgnoreCase("logout")) {
+                else if (command.equalsIgnoreCase("logout")) {
                     if (currentState == State.LoggedOut) {
                         throw new Exception("Not logged in. Login first");
                     }
@@ -92,7 +94,7 @@ public class ServerFacadeLocal {
                     System.out.println("Logging out...");
                     logout();
                 }
-                else if (input.equalsIgnoreCase("create")) {
+                else if (command.equalsIgnoreCase("create")) {
                     if (currentState == State.LoggedOut) {
                         throw new Exception("Not logged in. Login first");
                     }
@@ -102,7 +104,7 @@ public class ServerFacadeLocal {
                     System.out.println("Creating game...");
                     createGame(parameters.get(0));
                 }
-                else if (input.equalsIgnoreCase("join")) {
+                else if (command.equalsIgnoreCase("join")) {
                     if (currentState == State.LoggedOut) {
                         throw new Exception("Not logged in. Login first");
                     }
@@ -117,7 +119,7 @@ public class ServerFacadeLocal {
                     playGame(Integer.parseInt(parameters.get(0)),
                             Enum.valueOf(ChessGame.TeamColor.class, parameters.get(1).toUpperCase()));
                 }
-                else if (input.equalsIgnoreCase("observe")) {
+                else if (command.equalsIgnoreCase("observe")) {
                     if (currentState == State.LoggedOut) {
                         throw new Exception("Not logged in. Login first");
                     }
@@ -127,7 +129,7 @@ public class ServerFacadeLocal {
                     System.out.println("Loading game as observer...");
                     observeGame(Integer.parseInt(parameters.get(0)));
                 }
-                else if (input.equalsIgnoreCase("list")) {
+                else if (command.equalsIgnoreCase("list")) {
                     if (currentState == State.LoggedOut) {
                         throw new Exception("Not logged in. Login first");
                     }
@@ -137,13 +139,13 @@ public class ServerFacadeLocal {
                     System.out.println("Retrieving current games...");
                     listGames();
                 }
-                else if (input.equalsIgnoreCase("quit") || input.equalsIgnoreCase("exit")) {
+                else if (command.equalsIgnoreCase("quit") || command.equalsIgnoreCase("exit")) {
                     if (currentState != State.LoggedOut) {
                         throw new Exception("Logout before quitting");
                     }
                     break;
                 }
-                else if (input.equals("")) {}
+                else if (command.equals("")) {}
                 else {
                     System.out.println("Error: Not a valid input");
                 }
@@ -164,7 +166,7 @@ public class ServerFacadeLocal {
                 System.out.println("Error: " + ex.getMessage());
             }
             finally {
-                cleanUp(parameters, input);
+                cleanUp();
             }
         }
         System.out.println("...Disconnected");
@@ -173,15 +175,15 @@ public class ServerFacadeLocal {
         }
     }
 
-    private void cleanUp(ArrayList<String> parameters, String input) {
+    private void cleanUp() {
         try {
             header.clear();
             body.clear();
             parameters.clear();
-            if ((!input.equalsIgnoreCase("quit") && !input.equalsIgnoreCase("exit"))
+            if ((!command.equalsIgnoreCase("quit") && !command.equalsIgnoreCase("exit"))
                     || currentState != State.LoggedOut) {
                 parameters = getInput();
-                input = parameters.get(0);
+                command = parameters.get(0);
                 parameters.remove(0);
             }
         }
