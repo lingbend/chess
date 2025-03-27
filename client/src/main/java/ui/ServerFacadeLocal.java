@@ -7,8 +7,10 @@ import model.GameData;
 
 import com.google.gson.Gson;
 
+import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.lang.reflect.Field;
 import java.net.HttpURLConnection;
 import java.net.URI;
 import java.net.URISyntaxException;
@@ -357,23 +359,7 @@ public class ServerFacadeLocal {
 
     private TreeMap getResponse() throws Exception {
         int responseCode = connection.getResponseCode();
-        InputStream responseStream;
-        if (responseCode != 200) {
-            responseStream = connection.getErrorStream();
-
-        }
-        else {
-            responseStream = connection.getInputStream();
-        }
-        InputStreamReader reader = new InputStreamReader(responseStream);
-
-        TreeMap responseMap = new Gson().fromJson(reader, TreeMap.class);
-
-        reader.close();
-        responseStream.close();
-        if (responseCode != 200) {
-            throw new FacadeException((String) responseMap.get("message"));
-        }
+        TreeMap responseMap = getResponseHelper();
 
         responseMap.put("code", Integer.toString(responseCode));
 
@@ -381,6 +367,19 @@ public class ServerFacadeLocal {
     }
 
     private ArrayList<GameData> getArrayResponse() throws Exception {
+        TreeMap responseMap = getResponseHelper();
+
+        ArrayList rawArray = (ArrayList) responseMap.get("games");
+        ArrayList<GameData> arrayResponse = new ArrayList<>();
+
+        for (var i : rawArray) {
+            arrayResponse.add(new Gson().fromJson((new Gson().toJson(i)), GameData.class));
+        }
+
+        return arrayResponse;
+    }
+
+    private TreeMap getResponseHelper() throws IOException, FacadeException {
         int responseCode = connection.getResponseCode();
         InputStream responseStream;
         if (responseCode != 200) {
@@ -399,19 +398,12 @@ public class ServerFacadeLocal {
         if (responseCode != 200) {
             throw new FacadeException((String) responseMap.get("message"));
         }
-
-        ArrayList rawArray = (ArrayList) responseMap.get("games");
-        ArrayList<GameData> arrayResponse = new ArrayList<>();
-
-        for (var i : rawArray) {
-            arrayResponse.add(new Gson().fromJson((new Gson().toJson(i)), GameData.class));
-        }
-
-        return arrayResponse;
+        return responseMap;
     }
 
+
     private String drawBoard(String backColor1, String backColor2, String frontColor1,
-                           String frontColor2, ChessGame chess) {
+                           String frontColor2, ChessGame chess) throws Exception {
         ChessBoard board = chess.getBoard();
         String currentBackColor = backColor2;
         String currentFrontColor = "";
@@ -495,7 +487,7 @@ public class ServerFacadeLocal {
         }
     }
 
-    private String getPieceCode(int row, int col, ChessBoard board) {
+    private String getPieceCode(int row, int col, ChessBoard board) throws Exception{
         ChessPiece piece = board.getPiece(row, col);
 
         if (piece == null) {
@@ -505,44 +497,11 @@ public class ServerFacadeLocal {
         ChessPiece.PieceType type = piece.getPieceType();
         ChessGame.TeamColor color = piece.getTeamColor();
 
-        if (type == ChessPiece.PieceType.KING && color == ChessGame.TeamColor.WHITE) {
-            return  EscapeSequences.WHITE_KING;
-        }
-        else if(type == ChessPiece.PieceType.KING && color == ChessGame.TeamColor.BLACK) {
-            return EscapeSequences.BLACK_KING;
-        }
-        else if(type == ChessPiece.PieceType.KNIGHT && color == ChessGame.TeamColor.WHITE) {
-            return EscapeSequences.WHITE_KNIGHT;
-        }
-        else if(type == ChessPiece.PieceType.KNIGHT && color == ChessGame.TeamColor.BLACK) {
-            return EscapeSequences.BLACK_KNIGHT;
-        }
-        else if(type == ChessPiece.PieceType.BISHOP && color == ChessGame.TeamColor.WHITE) {
-            return EscapeSequences.WHITE_BISHOP;
-        }
-        else if(type == ChessPiece.PieceType.BISHOP && color == ChessGame.TeamColor.BLACK) {
-            return EscapeSequences.BLACK_BISHOP;
-        }
-        else if(type == ChessPiece.PieceType.ROOK && color == ChessGame.TeamColor.WHITE) {
-            return EscapeSequences.WHITE_ROOK;
-        }
-        else if(type == ChessPiece.PieceType.ROOK && color == ChessGame.TeamColor.BLACK) {
-            return EscapeSequences.BLACK_ROOK;
-        }
-        else if(type == ChessPiece.PieceType.QUEEN && color == ChessGame.TeamColor.WHITE) {
-            return EscapeSequences.WHITE_QUEEN;
-        }
-        else if(type == ChessPiece.PieceType.QUEEN && color == ChessGame.TeamColor.BLACK) {
-            return EscapeSequences.BLACK_QUEEN;
-        }
-        else if(type == ChessPiece.PieceType.PAWN && color == ChessGame.TeamColor.WHITE) {
-            return EscapeSequences.WHITE_PAWN;
-        }
-        else if(type == ChessPiece.PieceType.PAWN && color == ChessGame.TeamColor.BLACK) {
-            return EscapeSequences.BLACK_PAWN;
-        }
-        else {
-            return EscapeSequences.EMPTY;
-        }
+        EscapeSequences escapeSequences = new EscapeSequences();
+        Field chessField = escapeSequences.getClass().getDeclaredField((color.toString() + "_" + type.toString()));
+        chessField.setAccessible(true);
+        Object obj2 = chessField.get(escapeSequences);
+
+        return obj2.toString();
     }
 }

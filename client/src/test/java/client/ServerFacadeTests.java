@@ -38,11 +38,11 @@ public class ServerFacadeTests {
     }
 
     @AfterEach
-    public void clearDB() throws DataAccessException {
-        var service = new ClearService();
+    public void fixDB() throws DataAccessException {
+        ClearService service = new ClearService();
         var request = new RequestObj(Map.of());
-        var handler = new JsonHandler(service);
-        service.registerHandler(handler);
+        JsonHandler jsonHandler = new JsonHandler(service);
+        service.registerHandler(jsonHandler);
         service.run(request);
     }
 
