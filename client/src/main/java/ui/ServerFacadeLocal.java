@@ -53,8 +53,7 @@ public class ServerFacadeLocal {
 
     public void run() throws Exception {
         baseUri += String.valueOf(port);
-        System.out.print("\u001b[95m");
-        System.out.println("Welcome to Chess!");
+        System.out.println("\u001b[95mWelcome to Chess!");
 
         String input = "";
         ArrayList<String> parameters = new ArrayList<>();
@@ -138,15 +137,6 @@ public class ServerFacadeLocal {
                     }
                     System.out.println("Retrieving current games...");
                     listGames();
-                    System.out.println("Current Games: ");
-                    for (int i = 1; i < existingGames.size() + 1; i++) {
-                        String white = existingGames.get(i-1).getWhiteUsername();
-                        String black = existingGames.get(i-1).getBlackUsername();
-                        System.out.printf("Game %s: %s | White's username: %s | Black's username: %s\n",
-                                i, existingGames.get(i - 1).getGameName(),
-                                white != null ? white : "none",
-                                black != null ? black : "none");
-                    }
                 }
                 else if (input.equalsIgnoreCase("quit") || input.equalsIgnoreCase("exit")) {
                     if (currentState != State.LoggedOut) {
@@ -175,25 +165,29 @@ public class ServerFacadeLocal {
                 System.out.println("Error: " + ex.getMessage());
             }
             finally {
-                try {
-                    header.clear();
-                    body.clear();
-                    parameters.clear();
-                    if ((!input.equalsIgnoreCase("quit") && !input.equalsIgnoreCase("exit"))
-                            || currentState != State.LoggedOut) {
-                        parameters = getInput();
-                        input = parameters.get(0);
-                        parameters.remove(0);
-                    }
-                }
-                catch (IndexOutOfBoundsException ex) {
-                    System.out.println("Please input properly formatted commands. Print help for more information.");
-                }
+                cleanUp(parameters, input);
             }
         }
         System.out.println("...Disconnected");
         if (connection != null) {
             connection.disconnect();
+        }
+    }
+
+    private void cleanUp(ArrayList<String> parameters, String input) {
+        try {
+            header.clear();
+            body.clear();
+            parameters.clear();
+            if ((!input.equalsIgnoreCase("quit") && !input.equalsIgnoreCase("exit"))
+                    || currentState != State.LoggedOut) {
+                parameters = getInput();
+                input = parameters.get(0);
+                parameters.remove(0);
+            }
+        }
+        catch (IndexOutOfBoundsException ex) {
+            System.out.println("Please input properly formatted commands. Print help for more information.");
         }
     }
 
@@ -220,7 +214,6 @@ public class ServerFacadeLocal {
                     View currently available options                                  | help
                     """;
         }
-
     }
 
     public void login(String username, String password) throws Exception {
@@ -233,7 +226,6 @@ public class ServerFacadeLocal {
         System.out.print("\u001b[34m");
         System.out.println("...Logged in successfully");
         this.username = username;
-
     }
 
     public void register(String username, String password, String email) throws Exception {
@@ -257,7 +249,6 @@ public class ServerFacadeLocal {
         System.out.print("\u001b[95m");
         System.out.println("...Logged out successfully");
         this.username = "";
-
     }
 
     public String createGame(String gameName) throws Exception {
@@ -276,6 +267,15 @@ public class ServerFacadeLocal {
         getConnection("/game", "GET");
         existingGames = getArrayResponse();
         System.out.println("...Created list of games successfully");
+        System.out.println("Current Games: ");
+        for (int i = 1; i < existingGames.size() + 1; i++) {
+            String white = existingGames.get(i-1).getWhiteUsername();
+            String black = existingGames.get(i-1).getBlackUsername();
+            System.out.printf("Game %s: %s | White's username: %s | Black's username: %s\n",
+                    i, existingGames.get(i - 1).getGameName(),
+                    white != null ? white : "none",
+                    black != null ? black : "none");
+        }
     }
 
     public void playGame(int gameNumber, ChessGame.TeamColor color) throws Exception {
@@ -306,7 +306,6 @@ public class ServerFacadeLocal {
         System.out.print(drawBoard("107", "40", "35", "34",
                 new ChessGame()));
         System.out.print("\u001b[34;49m");
-
     }
 
     public void observeGame(int gameNumber) throws Exception {
@@ -323,7 +322,6 @@ public class ServerFacadeLocal {
         System.out.print(drawBoard("107", "40", "35", "34",
                 new ChessGame()));
         System.out.print("\u001b[34;49m");
-
     }
 
     private ArrayList<String> getInput(){
@@ -382,7 +380,6 @@ public class ServerFacadeLocal {
         InputStream responseStream;
         if (responseCode != 200) {
             responseStream = connection.getErrorStream();
-
         }
         else {
             responseStream = connection.getInputStream();
@@ -437,7 +434,6 @@ public class ServerFacadeLocal {
                     currentFrontColor = getPieceColor(row, 9-col, board, frontColor1, frontColor2);
                     result.append("\u001b[").append(currentBackColor).append(";").append(currentFrontColor).
                             append("m").append(getPieceCode(row, 9-col, board));
-
                 }
                 if (currentBackColor.equals(backColor1)) {
                     currentBackColor = backColor2;
