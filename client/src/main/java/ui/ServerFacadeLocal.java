@@ -240,6 +240,7 @@ public class ServerFacadeLocal implements ServerFacadeInterface{
         currentState = State.LoggedIn;
         System.out.print("\u001b[34m");
         System.out.println("...Logged in successfully");
+        this.username = username;
     }
 
     public void register(String username, String password, String email) throws Exception {
@@ -251,6 +252,7 @@ public class ServerFacadeLocal implements ServerFacadeInterface{
         currentState = State.LoggedIn;
         System.out.print("\u001b[34m");
         System.out.println("...Registered and logged in successfully");
+        this.username = username;
     }
 
     public void logout() throws Exception {
@@ -261,6 +263,8 @@ public class ServerFacadeLocal implements ServerFacadeInterface{
         currentState = State.LoggedOut;
         System.out.print("\u001b[95m");
         System.out.println("...Logged out successfully");
+        this.username = "";
+
     }
 
     public String createGame(String gameName) throws Exception {
@@ -295,11 +299,17 @@ public class ServerFacadeLocal implements ServerFacadeInterface{
         getConnection("/game", "PUT");
         getResponse();
 
+        if (color == ChessGame.TeamColor.WHITE) {
+            existingGames.get(gameNumber - 1).setWhiteUsername(username);
+        }
+        else {
+            existingGames.get(gameNumber - 1).setBlackUsername(username);
+        }
         currentGameID = id;
         currentGame = existingGames.get(gameNumber - 1);
         currentState = State.InGame;
 
-        System.out.printf("...Joined game #%s: %s\n", currentGameID, currentGame.getGameName());
+        System.out.printf("...Joined game %s\n", currentGame.getGameName());
         System.out.print(drawBoard("107", "40", "35", "34",
                 new ChessGame()));
         System.out.print("\u001b[34;49m");
@@ -414,17 +424,29 @@ public class ServerFacadeLocal implements ServerFacadeInterface{
         String currentFrontColor = "";
         StringBuilder result = new StringBuilder();
         ChessGame.TeamColor startingColor;
+        String em = "\u2004".repeat(3) + "\u2006" + "\u2009".repeat(3);
+        StringBuilder alpha = new StringBuilder("    " + "a" + em + "b" + em + "c" +
+                em + "d" + em + "e" + em + "f" + em + "g" + em + "h" + "    ");
+        StringBuilder beta = new StringBuilder(alpha).reverse();
 
 
 
         if (username.equals(currentGame.getBlackUsername())) {
             startingColor = ChessGame.TeamColor.BLACK;
+            result.append("\u001b[39m").append(beta).append(EscapeSequences.EMPTY).append("\n");
         }
         else {
             startingColor = ChessGame.TeamColor.WHITE;
+            result.append("\u001b[39m").append(alpha).append(EscapeSequences.EMPTY).append("\n");
         }
 
         for (int row=1; row < 9; row++) {
+            if (startingColor == ChessGame.TeamColor.WHITE) {
+                result.append(" ").append(9-row).append(" ");
+            }
+            else {
+                result.append(" ").append(row).append(" ");
+            }
             for (int col=1; col<9; col++) {
                 if (startingColor == ChessGame.TeamColor.WHITE) {
                     currentFrontColor = getPieceColor(9-row, col, board, frontColor1, frontColor2);
@@ -444,7 +466,13 @@ public class ServerFacadeLocal implements ServerFacadeInterface{
                     currentBackColor = backColor1;
                 }
             }
-            result.append("\u001b[49m");
+            result.append("\u001b[49;39m");
+            if (startingColor == ChessGame.TeamColor.WHITE) {
+                result.append(" ").append(9-row).append(" ");
+            }
+            else {
+                result.append(" ").append(row).append(" ");
+            }
             result.append("\n");
             if (currentBackColor.equals(backColor1)) {
                 currentBackColor = backColor2;
@@ -452,8 +480,14 @@ public class ServerFacadeLocal implements ServerFacadeInterface{
             else {
                 currentBackColor = backColor1;
             }
-            result.append("\u001b[").append(currentBackColor).append("m");
+//            result.append("\u001b[").append(currentBackColor).append("m");
 
+        }
+        if (username.equals(currentGame.getBlackUsername())) {
+            result.append(beta).append(EscapeSequences.EMPTY).append("\n");
+        }
+        else {
+            result.append(alpha).append(EscapeSequences.EMPTY).append("\n");
         }
         return result.toString();
     }
