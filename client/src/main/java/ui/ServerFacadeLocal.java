@@ -58,6 +58,7 @@ public class ServerFacadeLocal implements ServerFacadeInterface{
 
     public void run(int port) throws Exception {
         baseUri += String.valueOf(port);
+        System.out.print("\u001b[95m");
         System.out.println("Welcome to Chess!");
 
         String input = "";
@@ -207,6 +208,7 @@ public class ServerFacadeLocal implements ServerFacadeInterface{
         TreeMap response = getResponse();
         authToken = Integer.parseInt((String) response.get("authToken"));
         currentState = State.LoggedIn;
+        System.out.print("\u001b[34m");
         System.out.println("...Logged in successfully");
     }
 
@@ -217,6 +219,7 @@ public class ServerFacadeLocal implements ServerFacadeInterface{
         TreeMap response = getResponse();
         authToken = Integer.parseInt((String) response.get("authToken"));
         currentState = State.LoggedIn;
+        System.out.print("\u001b[34m");
         System.out.println("...Registered and logged in successfully");
     }
 
@@ -226,6 +229,7 @@ public class ServerFacadeLocal implements ServerFacadeInterface{
         getConnection("/session", "DELETE");
         getResponse();
         currentState = State.LoggedOut;
+        System.out.print("\u001b[95m");
         System.out.println("...Logged out successfully");
     }
 
