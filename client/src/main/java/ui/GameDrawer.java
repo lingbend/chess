@@ -1,11 +1,10 @@
 package ui;
 
-import chess.ChessBoard;
-import chess.ChessGame;
-import chess.ChessPiece;
+import chess.*;
 import model.GameData;
 
 import java.lang.reflect.Field;
+import java.util.ArrayList;
 
 public class GameDrawer {
 
@@ -40,15 +39,20 @@ public class GameDrawer {
     }
 
 
-    public String drawBoard(ChessGame chess) throws Exception {
+    public String drawBoard(ChessGame chess, ChessPosition start) throws Exception {
         updateStates();
-
 
         ChessBoard board = chess.getBoard();
         String currentBackColor = backColor2;
         String currentFrontColor = "";
+        String tileColor = backColor2;
         StringBuilder result = new StringBuilder();
         ChessGame.TeamColor startingColor;
+        ArrayList<ChessMove> validMoves = new ArrayList<>();
+
+        if (start != null) {
+            validMoves = (ArrayList<ChessMove>) chess.validMoves(start);
+        }
 
         StringBuilder horizLabel;
 
@@ -73,7 +77,6 @@ public class GameDrawer {
 
         result.append("\u001b[39m").append(horizLabel).append(EscapeSequences.EMPTY).append("\n");
 
-
         while (row < 9 && row > 0) {
             result.append(" ").append(row).append(" ");
 
@@ -81,23 +84,16 @@ public class GameDrawer {
                 currentFrontColor = getPieceColor(row, col, board, frontColor1, frontColor2);
                 result.append("\u001b[").append(currentBackColor).append(";").append(currentFrontColor)
                         .append("m").append(getPieceCode(row, col, board));
-                if (currentBackColor.equals(backColor1)) {
-                    currentBackColor = backColor2;
-                }
-                else {
-                    currentBackColor = backColor1;
-                }
+                tileColor = getTileColor(tileColor);
+                currentBackColor = getCurrentBackColor(start, validMoves, row, col, tileColor);
+
                 col -= inc;
             }
 
             result.append("\u001b[49;39m").append(" ").append(row).append(" ").append("\n");
 
-            if (currentBackColor.equals(backColor1)) {
-                currentBackColor = backColor2;
-            }
-            else {
-                currentBackColor = backColor1;
-            }
+            tileColor = getTileColor(tileColor);
+            currentBackColor = getCurrentBackColor(start, validMoves, row, col, tileColor);
 
             row += inc;
             if (startingColor == ChessGame.TeamColor.WHITE) {
@@ -111,6 +107,45 @@ public class GameDrawer {
         result.append(horizLabel).append(EscapeSequences.EMPTY).append("\n");
 
         return result.toString();
+    }
+
+    private String getCurrentBackColor(ChessPosition start, ArrayList<ChessMove> validMoves,
+                                       int row, int col, String tileColor) {
+        String currentBackColor;
+        if (start.equals(new ChessPosition(row, col))) {
+            currentBackColor = highlightColorPiece;
+        }
+        else if (checkIsMove(validMoves, start, row, col)) {
+            currentBackColor = highlightColorMove;
+        }
+        else {
+            currentBackColor = tileColor;
+        }
+        return currentBackColor;
+    }
+
+    private String getTileColor(String tileColor) {
+        if (tileColor.equals(backColor1)) {
+            tileColor = backColor2;
+        }
+        else {
+            tileColor = backColor1;
+        }
+        return tileColor;
+    }
+
+
+    private boolean checkIsMove(ArrayList<ChessMove> validMoves, ChessPosition start, int row, int col) {
+        ChessPosition endPos = new ChessPosition(row, col);
+        if (validMoves.contains(new ChessMove(start, endPos, null))) {
+            return true;
+        }
+        else if (validMoves.contains(new ChessMove(start, endPos, ChessPiece.PieceType.KNIGHT))) {
+            return true;
+        }
+        else {
+            return false;
+        }
     }
 
     private String getPieceColor(int row, int col, ChessBoard board, String whiteColor, String blackColor) {

@@ -286,7 +286,7 @@ public class ServerFacadeLocal {
         currentState = State.InGame;
 
         System.out.printf("...Joined game %s\n", currentGame.getGameName());
-        System.out.print(drawer.drawBoard(new ChessGame()));
+        System.out.print(drawer.drawBoard(new ChessGame(), null));
         System.out.print("\u001b[34;49m");
     }
 
@@ -301,7 +301,7 @@ public class ServerFacadeLocal {
         currentState = State.Observing;
 
         System.out.printf("...Observing game %s\n", currentGame.getGameName());
-        System.out.print(drawer.drawBoard(new ChessGame()));
+        System.out.print(drawer.drawBoard(new ChessGame(), null));
         System.out.print("\u001b[34;49m");
     }
 
