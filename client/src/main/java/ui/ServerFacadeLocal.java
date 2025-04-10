@@ -123,7 +123,7 @@ public class ServerFacadeLocal {
                 }
             }
             catch (NumberFormatException ex) {
-                System.out.println("Error: " + ex.getMessage() + ". Not a number");
+                System.out.println("Error: Not a number");
             }
             catch (IllegalArgumentException ex) {
                 System.out.println("Error: one or more of your data fields is the wrong type");
@@ -135,7 +135,7 @@ public class ServerFacadeLocal {
                 System.out.println("Need more information to be inputted. Try again. Print help for more information.");
             }
             catch (Exception ex) {
-                System.out.println("Error: " + ex.getMessage());
+                System.out.println("Error");
             }
             finally {
                 cleanUp();
@@ -389,13 +389,13 @@ public class ServerFacadeLocal {
                 em + "d" + em + "e" + em + "f" + em + "g" + em + "h" + "    ");
         StringBuilder beta = new StringBuilder(alpha).reverse();
 
-        if (username.equals(currentGame.getBlackUsername())) {
-            startingColor = ChessGame.TeamColor.BLACK;
-            result.append("\u001b[39m").append(beta).append(EscapeSequences.EMPTY).append("\n");
-        }
-        else {
+        if (username.equals(currentGame.getWhiteUsername()) || currentState == State.Observing) {
             startingColor = ChessGame.TeamColor.WHITE;
             result.append("\u001b[39m").append(alpha).append(EscapeSequences.EMPTY).append("\n");
+        }
+        else {
+            startingColor = ChessGame.TeamColor.BLACK;
+            result.append("\u001b[39m").append(beta).append(EscapeSequences.EMPTY).append("\n");
         }
 
         for (int row=1; row < 9; row++) {
@@ -438,7 +438,7 @@ public class ServerFacadeLocal {
                 currentBackColor = backColor1;
             }
         }
-        if (username.equals(currentGame.getBlackUsername())) {
+        if (username.equals(currentGame.getBlackUsername()) && currentState != State.Observing) {
             result.append(beta).append(EscapeSequences.EMPTY).append("\n");
         }
         else {
