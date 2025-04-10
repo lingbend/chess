@@ -13,13 +13,18 @@ public class GameDrawer {
     private ServerFacadeLocal.State currentState;
     private String username;
     private GameData currentGame;
-    private ServerFacadeLocal client;
+    private final ServerFacadeLocal client;
     private static final String backColor1 = "107";
     private static final String backColor2 = "40";
     private static final String frontColor1 = "35";
     private static final String frontColor2 = "34";
-    private static String highlightColorPiece;
-    private static String highlightColorMove;
+    private static final String highlightColorPiece = "103";
+    private static final String highlightColorMove = "42";
+    private static final String em = "\u2004".repeat(3) + "\u2006" + "\u2009".repeat(3);
+    private static final StringBuilder whiteHorizLabel = new StringBuilder("    " + "a" + em + "b" + em + "c" +
+            em + "d" + em + "e" + em + "f" + em + "g" + em + "h" + "    ");
+    private static final StringBuilder blackHorizLabel = whiteHorizLabel.reverse();
+
 
     public GameDrawer(ServerFacadeLocal clientExternal) {
         this.client = clientExternal;
@@ -37,71 +42,74 @@ public class GameDrawer {
 
     public String drawBoard(ChessGame chess) throws Exception {
         updateStates();
+
+
         ChessBoard board = chess.getBoard();
         String currentBackColor = backColor2;
         String currentFrontColor = "";
         StringBuilder result = new StringBuilder();
         ChessGame.TeamColor startingColor;
-        String em = "\u2004".repeat(3) + "\u2006" + "\u2009".repeat(3);
-        StringBuilder alpha = new StringBuilder("    " + "a" + em + "b" + em + "c" +
-                em + "d" + em + "e" + em + "f" + em + "g" + em + "h" + "    ");
-        StringBuilder beta = new StringBuilder(alpha).reverse();
+
+        StringBuilder horizLabel;
+
+        int row;
+        int col;
+        int inc;
 
         if (username.equals(currentGame.getWhiteUsername()) || currentState == ServerFacadeLocal.State.Observing) {
             startingColor = ChessGame.TeamColor.WHITE;
-            result.append("\u001b[39m").append(alpha).append(EscapeSequences.EMPTY).append("\n");
+            horizLabel = whiteHorizLabel;
+            row = 8;
+            col = 1;
+            inc = -1;
         }
         else {
             startingColor = ChessGame.TeamColor.BLACK;
-            result.append("\u001b[39m").append(beta).append(EscapeSequences.EMPTY).append("\n");
+            horizLabel = blackHorizLabel;
+            row = 1;
+            col = 8;
+            inc = 1;
         }
 
-        for (int row=1; row < 9; row++) {
-            if (startingColor == ChessGame.TeamColor.WHITE) {
-                result.append(" ").append(9-row).append(" ");
-            }
-            else {
-                result.append(" ").append(row).append(" ");
-            }
-            for (int col=1; col<9; col++) {
-                if (startingColor == ChessGame.TeamColor.WHITE) {
-                    currentFrontColor = getPieceColor(9-row, col, board, frontColor1, frontColor2);
-                    result.append("\u001b[").append(currentBackColor).append(";").append(currentFrontColor)
-                            .append("m").append(getPieceCode(9-row, col, board));
-                }
-                else {
-                    currentFrontColor = getPieceColor(row, 9-col, board, frontColor1, frontColor2);
-                    result.append("\u001b[").append(currentBackColor).append(";").append(currentFrontColor).
-                            append("m").append(getPieceCode(row, 9-col, board));
-                }
+        result.append("\u001b[39m").append(horizLabel).append(EscapeSequences.EMPTY).append("\n");
+
+
+        while (row < 9 && row > 0) {
+            result.append(" ").append(row).append(" ");
+
+            while (col < 9 && col > 0) {
+                currentFrontColor = getPieceColor(row, col, board, frontColor1, frontColor2);
+                result.append("\u001b[").append(currentBackColor).append(";").append(currentFrontColor)
+                        .append("m").append(getPieceCode(row, col, board));
                 if (currentBackColor.equals(backColor1)) {
                     currentBackColor = backColor2;
                 }
                 else {
                     currentBackColor = backColor1;
                 }
+                col -= inc;
             }
-            result.append("\u001b[49;39m");
-            if (startingColor == ChessGame.TeamColor.WHITE) {
-                result.append(" ").append(9-row).append(" ");
-            }
-            else {
-                result.append(" ").append(row).append(" ");
-            }
-            result.append("\n");
+
+            result.append("\u001b[49;39m").append(" ").append(row).append(" ").append("\n");
+
             if (currentBackColor.equals(backColor1)) {
                 currentBackColor = backColor2;
             }
             else {
                 currentBackColor = backColor1;
             }
+
+            row += inc;
+            if (startingColor == ChessGame.TeamColor.WHITE) {
+                col = 1;
+            }
+            else {
+                col = 8;
+            }
         }
-        if (username.equals(currentGame.getBlackUsername()) && currentState != ServerFacadeLocal.State.Observing) {
-            result.append(beta).append(EscapeSequences.EMPTY).append("\n");
-        }
-        else {
-            result.append(alpha).append(EscapeSequences.EMPTY).append("\n");
-        }
+
+        result.append(horizLabel).append(EscapeSequences.EMPTY).append("\n");
+
         return result.toString();
     }
 
