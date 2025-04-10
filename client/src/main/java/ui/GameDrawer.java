@@ -112,7 +112,10 @@ public class GameDrawer {
     private String getCurrentBackColor(ChessPosition start, ArrayList<ChessMove> validMoves,
                                        int row, int col, String tileColor) {
         String currentBackColor;
-        if (start.equals(new ChessPosition(row, col))) {
+        if (start == null) {
+            currentBackColor = tileColor;
+        }
+        else if (start.equals(new ChessPosition(row, col))) {
             currentBackColor = highlightColorPiece;
         }
         else if (checkIsMove(validMoves, start, row, col)) {
