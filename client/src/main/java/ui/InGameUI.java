@@ -6,6 +6,8 @@ import chess.ChessPosition;
 import java.lang.Math;
 import java.lang.Character;
 import java.util.ArrayList;
+import java.util.Map;
+import java.util.TreeMap;
 
 public class InGameUI {
 
@@ -26,17 +28,18 @@ public class InGameUI {
             System.out.println(clientDB.drawer.drawBoard(clientDB.currentGame.getGame(), null));
         }
         else if (command.equals("leave")) {
-            System.out.println("");
+            System.out.println("Leaving game...");
+            clientDB.currentState = ServerFacadeLocal.State.LoggedIn;
         }
         else if (command.equals("move")) {
             checkParameters(2);
-            System.out.println("Previewing moves...");
-            ChessPosition start = parsePosition(parameters.get(0));
-            System.out.println(clientDB.drawer.drawBoard(clientDB.currentGame.getGame(), start));
+
         }
         else if (command.equals("preview")) {
             checkParameters(1);
-            System.out.println("");
+            System.out.println("Previewing moves...");
+            ChessPosition start = parsePosition(parameters.get(0));
+            System.out.println(clientDB.drawer.drawBoard(clientDB.currentGame.getGame(), start));
         }
         else if (command.equals("")) {}
         else {
@@ -91,8 +94,4 @@ public class InGameUI {
 
         return new ChessPosition(row, col);
     }
-
-
-
-
 }

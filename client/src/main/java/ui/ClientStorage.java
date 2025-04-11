@@ -1,5 +1,6 @@
 package ui;
 
+import chess.ChessGame;
 import model.GameData;
 import java.util.ArrayList;
 
@@ -13,6 +14,7 @@ public class ClientStorage {
     public ArrayList<GameData> existingGames;
     public GameData currentGame;
     public GameDrawer drawer;
+    public ChessGame.TeamColor currentColor;
 
     public ClientStorage() {
         currentState = ServerFacadeLocal.State.LoggedOut;
