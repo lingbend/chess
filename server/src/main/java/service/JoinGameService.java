@@ -32,11 +32,12 @@ public class JoinGameService implements Service{
             throw new DataAccessException("bad request");
         }
         var game = (GameData) gameAccess.read(request.getGameID());
-        if ((request.getColor().equals("WHITE") && game.getWhiteUsername() != null)
-        || (request.getColor().equals("BLACK") && game.getBlackUsername() != null)) {
+        var auth = (AuthData) authAccess.read(request.getAuthToken());
+        if ((request.getColor().equals("WHITE") && game.getWhiteUsername() != null
+                && !game.getWhiteUsername().equals(auth.getUsername())) || (request.getColor().equals("BLACK")
+                && game.getBlackUsername() != null && !game.getBlackUsername().equals(auth.getUsername()))) {
             throw new DataAccessException("already taken");
         }
-        var auth = (AuthData) authAccess.read(request.getAuthToken());
 
         if (request.getColor().equals("WHITE")) {
             game.setWhiteUsername(auth.getUsername());
