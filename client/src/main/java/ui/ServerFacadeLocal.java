@@ -41,7 +41,7 @@ public class ServerFacadeLocal {
         clientDB.drawer = new GameDrawer(this);
         preLoginUI = new PreLoginUI(clientDB);
         postLoginUI = new PostLoginUI(clientDB);
-        inGameUI = new InGameUI();
+        inGameUI = new InGameUI(clientDB);
 
     }
 

@@ -94,8 +94,9 @@ public class PostLoginUI {
     public void logout() throws Exception {
         header = new TreeMap(Map.of("authToken", String.valueOf(clientDB.authToken)));
         body = new TreeMap();
-        getConnection("/session", "DELETE");
-        getResponse();
+        ClientConnector connector = new ClientConnector(header, body, clientDB);
+        connector.getConnection("/session", "DELETE");
+        connector.getResponse();
         clientDB.currentState = ServerFacadeLocal.State.LoggedOut;
         System.out.print("\u001b[95m");
         System.out.println("...Logged out successfully");
@@ -105,8 +106,9 @@ public class PostLoginUI {
     public String createGame(String gameName) throws Exception {
         header = new TreeMap(Map.of("authToken", String.valueOf(clientDB.authToken)));
         body = new TreeMap(Map.of("gameName", gameName));
-        getConnection("/game", "POST");
-        TreeMap response = getResponse();
+        ClientConnector connector = new ClientConnector(header, body, clientDB);
+        connector.getConnection("/game", "POST");
+        TreeMap response = connector.getResponse();
         String gameID = (String) response.get("gameID");
         System.out.println("...Created game successfully");
         return gameID;
@@ -115,8 +117,9 @@ public class PostLoginUI {
     public void listGames() throws Exception {
         header = new TreeMap(Map.of("authToken", String.valueOf(clientDB.authToken)));
         body = new TreeMap();
-        getConnection("/game", "GET");
-        clientDB.existingGames = getArrayResponse();
+        ClientConnector connector = new ClientConnector(header, body, clientDB);
+        connector.getConnection("/game", "GET");
+        clientDB.existingGames = connector.getArrayResponse();
         System.out.println("...Created list of games successfully");
         System.out.println("Current Games: ");
         for (int i = 1; i < clientDB.existingGames.size() + 1; i++) {
@@ -140,8 +143,9 @@ public class PostLoginUI {
         }
         header = new TreeMap(Map.of("authToken", String.valueOf(clientDB.authToken)));
         body = new TreeMap(Map.of("playerColor", color, "gameID", id));
-        getConnection("/game", "PUT");
-        getResponse();
+        ClientConnector connector = new ClientConnector(header, body, clientDB);
+        connector.getConnection("/game", "PUT");
+        connector.getResponse();
 
         if (color == ChessGame.TeamColor.WHITE) {
             clientDB.existingGames.get(gameNumber - 1).setWhiteUsername(clientDB.username);
@@ -173,66 +177,4 @@ public class PostLoginUI {
         System.out.print("\u001b[34;49m");
     }
 
-    private void getConnection(String path, String method) throws Exception {
-        HttpURLConnection newConnection = (HttpURLConnection) (new URI(clientDB.baseUri + path)).toURL().openConnection();
-        newConnection.setRequestMethod(method);
-        newConnection.setDoOutput(true);
-        newConnection.setDoInput(true);
-        for (var entry : header.entrySet()) {
-            newConnection.addRequestProperty(entry.getKey(), entry.getValue());
-        }
-
-        if (!body.isEmpty()) {
-            var outStream = newConnection.getOutputStream();
-            String json = new Gson().toJson(body);
-            outStream.write(json.getBytes());
-            outStream.close();
-        }
-
-        newConnection.connect();
-        connection = newConnection;
-    }
-
-    private TreeMap getResponse() throws Exception {
-        int responseCode = connection.getResponseCode();
-        TreeMap responseMap = getResponseHelper();
-
-        responseMap.put("code", Integer.toString(responseCode));
-
-        return responseMap;
-    }
-
-    private ArrayList<GameData> getArrayResponse() throws Exception {
-        TreeMap responseMap = getResponseHelper();
-
-        ArrayList rawArray = (ArrayList) responseMap.get("games");
-        ArrayList<GameData> arrayResponse = new ArrayList<>();
-
-        for (var i : rawArray) {
-            arrayResponse.add(new Gson().fromJson((new Gson().toJson(i)), GameData.class));
-        }
-
-        return arrayResponse;
-    }
-
-    private TreeMap getResponseHelper() throws IOException, FacadeException {
-        int responseCode = connection.getResponseCode();
-        InputStream responseStream;
-        if (responseCode != 200) {
-            responseStream = connection.getErrorStream();
-        }
-        else {
-            responseStream = connection.getInputStream();
-        }
-        InputStreamReader reader = new InputStreamReader(responseStream);
-
-        TreeMap responseMap = new Gson().fromJson(reader, TreeMap.class);
-
-        reader.close();
-        responseStream.close();
-        if (responseCode != 200) {
-            throw new FacadeException((String) responseMap.get("message"));
-        }
-        return responseMap;
-    }
 }

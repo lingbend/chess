@@ -1,12 +1,14 @@
 package ui;
 
 import com.google.gson.Gson;
+import model.GameData;
 
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URI;
+import java.util.ArrayList;
 import java.util.TreeMap;
 
 public class ClientConnector {
@@ -23,7 +25,7 @@ public class ClientConnector {
     }
 
 
-    private void getConnection(String path, String method) throws Exception {
+    public void getConnection(String path, String method) throws Exception {
         HttpURLConnection newConnection = (HttpURLConnection) (new URI(clientDB.baseUri + path)).toURL().openConnection();
         newConnection.setRequestMethod(method);
         newConnection.setDoOutput(true);
@@ -43,7 +45,7 @@ public class ClientConnector {
         connection = newConnection;
     }
 
-    private TreeMap getResponse() throws Exception {
+    public TreeMap getResponse() throws Exception {
         int responseCode = connection.getResponseCode();
         TreeMap responseMap = getResponseHelper();
 
@@ -73,10 +75,17 @@ public class ClientConnector {
         return responseMap;
     }
 
+    public ArrayList<GameData> getArrayResponse() throws Exception {
+        TreeMap responseMap = getResponseHelper();
 
+        ArrayList rawArray = (ArrayList) responseMap.get("games");
+        ArrayList<GameData> arrayResponse = new ArrayList<>();
 
+        for (var i : rawArray) {
+            arrayResponse.add(new Gson().fromJson((new Gson().toJson(i)), GameData.class));
+        }
 
-
-
+        return arrayResponse;
+    }
 
 }

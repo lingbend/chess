@@ -1,12 +1,6 @@
 package ui;
 
-import com.google.gson.Gson;
-
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
-import java.net.URI;
 import java.util.*;
 
 public class PreLoginUI {
@@ -62,8 +56,9 @@ public class PreLoginUI {
     public void login(String username, String password) throws Exception {
         header = new TreeMap();
         body = new TreeMap(Map.of("username", username, "password", password));
-        getConnection("/session", "POST");
-        TreeMap response = getResponse();
+        ClientConnector connector = new ClientConnector(header, body, clientDB);
+        connector.getConnection("/session", "POST");
+        TreeMap response = connector.getResponse();
         clientDB.authToken = Integer.parseInt((String) response.get("authToken"));
         clientDB.currentState = ServerFacadeLocal.State.LoggedIn;
         System.out.print("\u001b[34m");
@@ -74,8 +69,9 @@ public class PreLoginUI {
     public void register(String username, String password, String email) throws Exception {
         header = new TreeMap();
         body = new TreeMap(Map.of("username", username, "password", password, "email", email));
-        getConnection("/user", "POST");
-        TreeMap response = getResponse();
+        ClientConnector connector = new ClientConnector(header, body, clientDB);
+        connector.getConnection("/user", "POST");
+        TreeMap response = connector.getResponse();
         clientDB.authToken = Integer.parseInt((String) response.get("authToken"));
         clientDB.currentState = ServerFacadeLocal.State.LoggedIn;
         System.out.print("\u001b[34m");
@@ -83,55 +79,6 @@ public class PreLoginUI {
         clientDB.username = username;
     }
 
-    private void getConnection(String path, String method) throws Exception {
-        HttpURLConnection newConnection = (HttpURLConnection) (new URI(clientDB.baseUri + path)).toURL().openConnection();
-        newConnection.setRequestMethod(method);
-        newConnection.setDoOutput(true);
-        newConnection.setDoInput(true);
-        for (var entry : header.entrySet()) {
-            newConnection.addRequestProperty(entry.getKey(), entry.getValue());
-        }
-
-        if (!body.isEmpty()) {
-            var outStream = newConnection.getOutputStream();
-            String json = new Gson().toJson(body);
-            outStream.write(json.getBytes());
-            outStream.close();
-        }
-
-        newConnection.connect();
-        connection = newConnection;
-    }
-
-    private TreeMap getResponse() throws Exception {
-        int responseCode = connection.getResponseCode();
-        TreeMap responseMap = getResponseHelper();
-
-        responseMap.put("code", Integer.toString(responseCode));
-
-        return responseMap;
-    }
-
-    private TreeMap getResponseHelper() throws IOException, FacadeException {
-        int responseCode = connection.getResponseCode();
-        InputStream responseStream;
-        if (responseCode != 200) {
-            responseStream = connection.getErrorStream();
-        }
-        else {
-            responseStream = connection.getInputStream();
-        }
-        InputStreamReader reader = new InputStreamReader(responseStream);
-
-        TreeMap responseMap = new Gson().fromJson(reader, TreeMap.class);
-
-        reader.close();
-        responseStream.close();
-        if (responseCode != 200) {
-            throw new FacadeException((String) responseMap.get("message"));
-        }
-        return responseMap;
-    }
 }
 
 

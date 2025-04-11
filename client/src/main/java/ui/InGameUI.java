@@ -2,5 +2,9 @@ package ui;
 
 public class InGameUI {
 
-    public InGameUI(){}
+    private ClientStorage clientDB;
+
+    public InGameUI (ClientStorage clientDB){
+        this.clientDB = clientDB;
+    }
 }
