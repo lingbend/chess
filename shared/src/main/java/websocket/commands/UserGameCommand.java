@@ -12,12 +12,12 @@ import java.util.Objects;
  */
 public class UserGameCommand {
 
-    private final CommandType commandType;
-    private final String authToken;
-    private final Integer gameID;
-    private ChessMove move;
+    public final CommandType commandType;
+    public final int authToken;
+    public final String gameID;
+    public ChessMove move;
 
-    public UserGameCommand(CommandType commandType, String authToken, Integer gameID) {
+    public UserGameCommand(CommandType commandType, int authToken, String gameID) {
         this.commandType = commandType;
         this.authToken = authToken;
         this.gameID = gameID;
@@ -35,11 +35,11 @@ public class UserGameCommand {
     }
 
     public String getAuthToken() {
-        return authToken;
+        return String.valueOf(authToken);
     }
 
     public Integer getGameID() {
-        return gameID;
+        return Integer.valueOf(gameID);
     }
 
     public void setMove(ChessMove move) {

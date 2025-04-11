@@ -1,13 +1,13 @@
 package ui;
 
-import chess.ChessGame;
+import chess.ChessMove;
+import chess.ChessPiece;
 import chess.ChessPosition;
+import websocket.commands.UserGameCommand;
 
 import java.lang.Math;
 import java.lang.Character;
 import java.util.ArrayList;
-import java.util.Map;
-import java.util.TreeMap;
 
 public class InGameUI {
 
@@ -29,13 +29,36 @@ public class InGameUI {
         }
         else if (command.equals("leave")) {
             System.out.println("Leaving game...");
+            UserGameCommand request = new UserGameCommand(UserGameCommand.CommandType.LEAVE,
+                    clientDB.authToken, clientDB.currentGameID);
+            clientDB.webSocket.transmit(request);
             clientDB.webSocket.close();
             clientDB.webSocket = null;
             clientDB.currentState = ServerFacadeLocal.State.LoggedIn;
         }
         else if (command.equals("move")) {
-            checkParameters(2);
-
+            if (parameters.size() > 2) {
+                checkParameters(3);
+            }
+            else {
+                checkParameters(2);
+            }
+            ChessPosition start = parsePosition(parameters.get(0));
+            ChessPosition end = parsePosition(parameters.get(1));
+            ChessMove move;
+            if (parameters.size() == 3) {
+                move = new ChessMove(start, end,
+                        Enum.valueOf(ChessPiece.PieceType.class, parameters.get(2).toUpperCase()));
+            }
+            else {
+                move = new ChessMove(start, end, null);
+            }
+            UserGameCommand request = new UserGameCommand(UserGameCommand.CommandType.MAKE_MOVE,
+                    clientDB.authToken, clientDB.currentGameID);
+            request.setMove(move);
+            clientDB.webSocket.transmit(request);
+            clientDB.webSocket.close();
+            clientDB.webSocket = null;
         }
         else if (command.equals("preview")) {
             checkParameters(1);
@@ -61,7 +84,7 @@ public class InGameUI {
                 Available Commands:                                 Format:
                 Redraw the chess game                               | redraw
                 Leave the game without resigning                    | leave
-                Move a piece from one square to another             | move start(eg. a1) end(eg. c8)
+                Move a piece from one square to another             | move start(a1) end(c8) promo_piece(if applicable)
                 Resign the game (forfeit)                           | resign
                 View legal moves for the piece on a square          | preview space(eg. e4)
                 View currently available options                    | help
