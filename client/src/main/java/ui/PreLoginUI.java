@@ -10,9 +10,6 @@ import java.net.URI;
 import java.util.*;
 
 public class PreLoginUI {
-//    public String username;
-//    public int authToken;
-//    public String baseUri;
     public HttpURLConnection connection;
     public TreeMap<String, String> header;
     public TreeMap<String, String> body;
