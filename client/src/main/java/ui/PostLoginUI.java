@@ -157,6 +157,8 @@ public class PostLoginUI {
         clientDB.currentGame = clientDB.existingGames.get(gameNumber - 1);
         clientDB.currentState = ServerFacadeLocal.State.InGame;
 
+        clientDB.webSocket = new WebSocketConnector(clientDB);
+
         System.out.printf("...Joined game %s\n", clientDB.currentGame.getGameName());
         System.out.print(clientDB.drawer.drawBoard(new ChessGame(), null));
         System.out.print("\u001b[34;49m");
@@ -171,6 +173,8 @@ public class PostLoginUI {
         }
         clientDB.currentGameID = String.valueOf(clientDB.currentGame.getGameID());
         clientDB.currentState = ServerFacadeLocal.State.Observing;
+
+        clientDB.webSocket = new WebSocketConnector(clientDB);
 
         System.out.printf("...Observing game %s\n", clientDB.currentGame.getGameName());
         System.out.print(clientDB.drawer.drawBoard(new ChessGame(), null));

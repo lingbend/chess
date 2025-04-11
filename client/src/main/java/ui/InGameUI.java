@@ -29,6 +29,8 @@ public class InGameUI {
         }
         else if (command.equals("leave")) {
             System.out.println("Leaving game...");
+            clientDB.webSocket.close();
+            clientDB.webSocket = null;
             clientDB.currentState = ServerFacadeLocal.State.LoggedIn;
         }
         else if (command.equals("move")) {

@@ -76,8 +76,11 @@ public class ServerFacadeLocal {
                 else if (clientDB.currentState == State.LoggedIn) {
                     postLoginUI.run(command, parameters);
                 }
-                else if (clientDB.currentState == State.Observing || clientDB.currentState == State.InGame) {
-                    //run inGameUI here
+                else if (clientDB.currentState == State.InGame) {
+                    inGameUI.run(command, parameters);
+                }
+                else if (clientDB.currentState == State.Observing) {
+                    //
                 }
             }
             catch (NumberFormatException ex) {
