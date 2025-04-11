@@ -15,6 +15,7 @@ public class ClientStorage {
     public GameData currentGame;
     public GameDrawer drawer;
     public ChessGame.TeamColor currentColor;
+    public WebSocketConnector webSocket;
 
     public ClientStorage() {
         currentState = ServerFacadeLocal.State.LoggedOut;
