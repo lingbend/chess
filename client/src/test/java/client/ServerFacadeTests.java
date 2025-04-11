@@ -54,8 +54,8 @@ public class ServerFacadeTests {
     @Test
     public void registerNegative(){
         try {
-            facade.register("frog", "cow", "pigeon@pigeon.com");
-            facade.register("frog", "cow", "pigeon@pigeon.com");
+            facade.preLoginUI.register("frog", "cow", "pigeon@pigeon.com");
+            facade.preLoginUI.register("frog", "cow", "pigeon@pigeon.com");
             Assertions.fail("Didn't detect duplicate registry");
         }
         catch (FacadeException ex) {
@@ -69,7 +69,7 @@ public class ServerFacadeTests {
     @Test
     public void registerPositive(){
         try {
-            facade.register("frog", "234ksdfjo", "pigeon@gmail.com");
+            facade.preLoginUI.register("frog", "234ksdfjo", "pigeon@gmail.com");
             Assertions.assertEquals("frog", facade.clientDB.username);
             Assertions.assertTrue(facade.clientDB.authToken > 1);
             Assertions.assertEquals(ServerFacadeLocal.State.LoggedIn, facade.clientDB.currentState);
@@ -83,7 +83,7 @@ public class ServerFacadeTests {
     @Test
     public void loginNegative() {
         try {
-            facade.login("piggy", "wiggy");
+            facade.preLoginUI.login("piggy", "wiggy");
             Assertions.fail("loginNegative didn't throw an error");
         }
         catch (FacadeException ex){
@@ -98,9 +98,9 @@ public class ServerFacadeTests {
     @Test
     public void loginPositive() {
         try {
-            facade.register("dogman", "123123kdfs", "figment@imagination.org");
-            facade.logout();
-            facade.login("dogman", "123123kdfs");
+            facade.preLoginUI.register("dogman", "123123kdfs", "figment@imagination.org");
+            facade.postLoginUI.logout();
+            facade.preLoginUI.login("dogman", "123123kdfs");
             Assertions.assertEquals("dogman", facade.clientDB.username);
             Assertions.assertTrue(facade.clientDB.authToken > 1);
             Assertions.assertEquals(ServerFacadeLocal.State.LoggedIn, facade.clientDB.currentState);
@@ -114,7 +114,7 @@ public class ServerFacadeTests {
     @Test
     public void logoutNegative() {
         try {
-            facade.logout();
+            facade.postLoginUI.logout();
             Assertions.fail("logoutNegative failed to produce Exception");
         }
         catch (Exception ex) {
@@ -125,8 +125,8 @@ public class ServerFacadeTests {
     @Test
     public void logoutPositive(){
         try {
-            facade.register("pig", "43*dUU", "doris@banana.co.farming");
-            facade.logout();
+            facade.preLoginUI.register("pig", "43*dUU", "doris@banana.co.farming");
+            facade.postLoginUI.logout();
             Assertions.assertTrue(facade.clientDB.username.equals(""));
             Assertions.assertEquals(ServerFacadeLocal.State.LoggedOut, facade.clientDB.currentState);
 
@@ -139,12 +139,12 @@ public class ServerFacadeTests {
     @Test
     public void createGameNegative(){
         try {
-            facade.createGame("pig");
+            facade.postLoginUI.createGame("pig");
             Assertions.fail("creatGameNegative made a game without auth token");
         }
         catch (Exception ex) {
             try {
-                facade.createGame(null);
+                facade.postLoginUI.createGame(null);
                 Assertions.fail("createGameNegative created a game with null name");
             }
             catch (Exception ex2) {
@@ -156,8 +156,8 @@ public class ServerFacadeTests {
     @Test
     public void createGamePositive() {
         try {
-            facade.register("i", "j", "g@g.c");
-            String id = facade.createGame("porkrind");
+            facade.preLoginUI.register("i", "j", "g@g.c");
+            String id = facade.postLoginUI.createGame("porkrind");
             Assertions.assertTrue(id.getClass() == String.class && id.length() > 0);
         }
         catch (Exception ex) {
@@ -168,7 +168,7 @@ public class ServerFacadeTests {
     @Test
     public void listGamesNegative() {
         try {
-            facade.listGames();
+            facade.postLoginUI.listGames();
             Assertions.fail("listGamesNegative listed games without auth");
         }
         catch (Exception ex) {
@@ -179,9 +179,9 @@ public class ServerFacadeTests {
     @Test
     public void listGamesPositive() {
         try {
-            facade.register("chuck", "wagon", "innards@gizzards.note");
-            facade.createGame("barbeque");
-            facade.listGames();
+            facade.preLoginUI.register("chuck", "wagon", "innards@gizzards.note");
+            facade.postLoginUI.createGame("barbeque");
+            facade.postLoginUI.listGames();
             Assertions.assertTrue(facade.clientDB.existingGames.size() == 1);
             Assertions.assertTrue(facade.clientDB.existingGames.get(0).getGameName().equals("barbeque"));
         }
@@ -193,17 +193,17 @@ public class ServerFacadeTests {
     @Test
     public void playGameNegative() {
         try {
-            facade.playGame(0, ChessGame.TeamColor.BLACK);
+            facade.postLoginUI.playGame(0, ChessGame.TeamColor.BLACK);
             Assertions.fail("playGameNegative joined a non-existent game");
         }
         catch (FacadeException ex) {
             Assertions.assertNotNull(ex.getMessage());
             try {
-                facade.register("b", "c", "d");
-                facade.createGame("Nef's wonderful game of life");
-                facade.listGames();
-                facade.logout();
-                facade.playGame(0, ChessGame.TeamColor.WHITE);
+                facade.preLoginUI.register("b", "c", "d");
+                facade.postLoginUI.createGame("Nef's wonderful game of life");
+                facade.postLoginUI.listGames();
+                facade.postLoginUI.logout();
+                facade.postLoginUI.playGame(0, ChessGame.TeamColor.WHITE);
                 Assertions.fail("playGameNegative joined a game without auth" + ex.getMessage());
             }
             catch (Exception ex2) {
@@ -218,10 +218,10 @@ public class ServerFacadeTests {
     @Test
     public void playGamePositive() {
         try {
-            facade.register("b", "c", "d");
-            facade.createGame("Nef's wonderful game of life");
-            facade.listGames();
-            facade.playGame(1, ChessGame.TeamColor.WHITE);
+            facade.preLoginUI.register("b", "c", "d");
+            facade.postLoginUI.createGame("Nef's wonderful game of life");
+            facade.postLoginUI.listGames();
+            facade.postLoginUI.playGame(1, ChessGame.TeamColor.WHITE);
             Assertions.assertTrue(facade.clientDB.existingGames.get(0).getWhiteUsername().equals("b"));
             Assertions.assertEquals(ServerFacadeLocal.State.InGame, facade.clientDB.currentState);
         }
@@ -233,14 +233,14 @@ public class ServerFacadeTests {
     @Test
     public void observeGameNegative() {
         try {
-            facade.observeGame(0);
+            facade.postLoginUI.observeGame(0);
             Assertions.fail("observeGameNegative joined a non-existant game");
         }
         catch (FacadeException ex) {
             try {
-                facade.register("gimt", "qlkjfo","3@4.d");
-                facade.createGame("hogie");
-                facade.observeGame(1);
+                facade.preLoginUI.register("gimt", "qlkjfo","3@4.d");
+                facade.postLoginUI.createGame("hogie");
+                facade.postLoginUI.observeGame(1);
                 Assertions.fail("observeGameNegative joined a non-existant game");
             }
             catch (Exception ex2) {
@@ -257,10 +257,10 @@ public class ServerFacadeTests {
     @Test
     public void observeGamePositive() {
         try {
-            facade.register("sda ", "df3333","3@4.fffd");
-            facade.createGame("hillbilly");
-            facade.listGames();
-            facade.observeGame(1);
+            facade.preLoginUI.register("sda ", "df3333","3@4.fffd");
+            facade.postLoginUI.createGame("hillbilly");
+            facade.postLoginUI.listGames();
+            facade.postLoginUI.observeGame(1);
             Assertions.assertEquals(ServerFacadeLocal.State.Observing, facade.clientDB.currentState);
             Assertions.assertNotNull(facade.clientDB.currentGameID);
         }
