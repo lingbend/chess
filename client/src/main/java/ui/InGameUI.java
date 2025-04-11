@@ -16,19 +16,20 @@ public class InGameUI {
     public void run(String command, ArrayList<String> parameters) throws Exception {
         this.parameters = parameters;
         if (command.equals("help")) {
-            System.out.print("");
+            System.out.print(getHelp());
         }
         else if (command.equals("redraw")) {
-//            checkState(ServerFacadeLocal.State.LoggedIn, 0);
             System.out.println("");
         }
         else if (command.equals("leave")) {
             System.out.println("");
         }
         else if (command.equals("move")) {
+            checkParameters(2);
             System.out.println("");
         }
         else if (command.equals("preview")) {
+            checkParameters(1);
             System.out.println("");
         }
         else if (command.equals("")) {}
@@ -37,16 +38,23 @@ public class InGameUI {
         }
     }
 
-    private void checkState(ServerFacadeLocal.State state, int size) throws Exception {
-        if (state == ServerFacadeLocal.State.LoggedOut && clientDB.currentState != state) {
-            throw new Exception("Must logout first");
-        }
-        else if (state == ServerFacadeLocal.State.LoggedIn && clientDB.currentState == ServerFacadeLocal.State.LoggedOut) {
-            throw new Exception("Not logged in. Login first");
-        }
-        else if (parameters.size() != size) {
+    private void checkParameters(int size) throws Exception {
+        if (parameters.size() != size) {
             throw new FacadeException("Error: Wrong number of inputs");
         }
+    }
+
+    private String getHelp() {
+        return
+                """
+                Available Commands:                                 Format:
+                Redraw the chess game                               | redraw
+                Leave the game without resigning                    | leave
+                Move a piece from one square to another             | move start(eg. a1) end(eg. c8)
+                Resign the game (forfeit)                           | resign
+                View legal moves for the piece on a square          | preview space(eg. e4)
+                View currently available options                    | help
+                """;
     }
 
 
