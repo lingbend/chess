@@ -27,15 +27,15 @@ public class GameDrawer {
 
     public GameDrawer(ServerFacadeLocal clientExternal) {
         this.client = clientExternal;
-        currentState = clientExternal.currentState;
-        username = clientExternal.username;
-        currentGame = clientExternal.currentGame;
+        currentState = clientExternal.clientDB.currentState;
+        username = clientExternal.clientDB.username;
+        currentGame = clientExternal.clientDB.currentGame;
     }
 
     void updateStates() {
-        currentState = client.currentState;
-        username = client.username;
-        currentGame = client.currentGame;
+        currentState = client.clientDB.currentState;
+        username = client.clientDB.username;
+        currentGame = client.clientDB.currentGame;
     }
 
 

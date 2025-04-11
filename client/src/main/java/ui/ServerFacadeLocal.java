@@ -17,12 +17,6 @@ import java.util.*;
 
 public class ServerFacadeLocal {
 
-    public State currentState;
-    public String username;
-    public int authToken;
-    public String currentGameID;
-    public ArrayList<GameData> existingGames;
-    public GameData currentGame;
     public String baseUri;
     public HttpURLConnection connection;
     public TreeMap<String, String> header;
@@ -31,7 +25,7 @@ public class ServerFacadeLocal {
     public int port;
     public String command;
     public ArrayList<String> parameters;
-    private GameDrawer drawer;
+    public ClientStorage clientDB;
 
     public enum State {
         LoggedOut,
@@ -41,17 +35,19 @@ public class ServerFacadeLocal {
     }
 
     public ServerFacadeLocal(int portNum) throws URISyntaxException {
-        currentState = State.LoggedOut;
-        authToken = 0;
-        username = "";
-        currentGameID = "";
-        existingGames = new ArrayList<GameData>();
+        clientDB = new ClientStorage();
+        clientDB.currentState = State.LoggedOut;
+        clientDB.authToken = 0;
+        clientDB.username = "";
+        clientDB.currentGameID = "";
+        clientDB.existingGames = new ArrayList<GameData>();
         baseUri = "http://localhost:";
         header = new TreeMap<>();
         body = new TreeMap<>();
         input = new Scanner(System.in);
         port = portNum;
-        drawer = new GameDrawer(this);
+        clientDB.drawer = new GameDrawer(this);
+
     }
 
     public void run() throws Exception {
@@ -71,6 +67,15 @@ public class ServerFacadeLocal {
     private void runLoop() {
         while (true) {
             try {
+//                if (clientDB.currentState == State.LoggedOut) {
+//
+//                }
+//                else if (clientDB.currentState == State.LoggedIn) {
+//
+//                }
+//                else if (clientDB.currentState == State.Observing || clientDB.currentState == State.InGame) {
+//
+//                }
                 if (command.equalsIgnoreCase("help")) {
                     System.out.print(getHelp());
                 }
@@ -97,7 +102,7 @@ public class ServerFacadeLocal {
                 else if (command.equalsIgnoreCase("join")) {
                     checkState(State.LoggedIn, 2);
                     System.out.println("Joining game...");
-                    if (existingGames.isEmpty()) {
+                    if (clientDB.existingGames.isEmpty()) {
                         throw new Exception("Game not found. Use 'list' to find games and 'create' if none exist");
                     }
                     playGame(Integer.parseInt(parameters.get(0)),
@@ -114,7 +119,7 @@ public class ServerFacadeLocal {
                     listGames();
                 }
                 else if (command.equalsIgnoreCase("quit") || command.equalsIgnoreCase("exit")) {
-                    if (currentState != State.LoggedOut) {
+                    if (clientDB.currentState != State.LoggedOut) {
                         throw new Exception("Logout before quitting");
                     }
                     break;
@@ -146,10 +151,10 @@ public class ServerFacadeLocal {
     }
 
     private void checkState(State state, int size) throws Exception {
-        if (state == State.LoggedOut && currentState != state) {
+        if (state == State.LoggedOut && clientDB.currentState != state) {
             throw new Exception("Must logout first");
         }
-        else if (state == State.LoggedIn && currentState == State.LoggedOut) {
+        else if (state == State.LoggedIn && clientDB.currentState == State.LoggedOut) {
             throw new Exception("Not logged in. Login first");
         }
         else if (parameters.size() != size) {
@@ -163,9 +168,9 @@ public class ServerFacadeLocal {
             body.clear();
             parameters.clear();
             if ((!command.equalsIgnoreCase("quit") && !command.equalsIgnoreCase("exit"))
-                    || currentState != State.LoggedOut) {
+                    || clientDB.currentState != State.LoggedOut) {
                 parameters = getInput();
-                command = parameters.get(0);
+                command = parameters.get(0).toLowerCase();
                 parameters.remove(0);
             }
         }
@@ -175,7 +180,7 @@ public class ServerFacadeLocal {
     }
 
     private String getHelp() {
-        if (currentState == State.LoggedOut) {
+        if (clientDB.currentState == State.LoggedOut) {
             return
                 """
                 Available Commands:              Format:
@@ -204,11 +209,11 @@ public class ServerFacadeLocal {
         body = new TreeMap(Map.of("username", username, "password", password));
         getConnection("/session", "POST");
         TreeMap response = getResponse();
-        authToken = Integer.parseInt((String) response.get("authToken"));
-        currentState = State.LoggedIn;
+        clientDB.authToken = Integer.parseInt((String) response.get("authToken"));
+        clientDB.currentState = State.LoggedIn;
         System.out.print("\u001b[34m");
         System.out.println("...Logged in successfully");
-        this.username = username;
+        clientDB.username = username;
     }
 
     public void register(String username, String password, String email) throws Exception {
@@ -216,26 +221,26 @@ public class ServerFacadeLocal {
         body = new TreeMap(Map.of("username", username, "password", password, "email", email));
         getConnection("/user", "POST");
         TreeMap response = getResponse();
-        authToken = Integer.parseInt((String) response.get("authToken"));
-        currentState = State.LoggedIn;
+        clientDB.authToken = Integer.parseInt((String) response.get("authToken"));
+        clientDB.currentState = State.LoggedIn;
         System.out.print("\u001b[34m");
         System.out.println("...Registered and logged in successfully");
-        this.username = username;
+        clientDB.username = username;
     }
 
     public void logout() throws Exception {
-        header = new TreeMap(Map.of("authToken", String.valueOf(authToken)));
+        header = new TreeMap(Map.of("authToken", String.valueOf(clientDB.authToken)));
         body = new TreeMap();
         getConnection("/session", "DELETE");
         getResponse();
-        currentState = State.LoggedOut;
+        clientDB.currentState = State.LoggedOut;
         System.out.print("\u001b[95m");
         System.out.println("...Logged out successfully");
-        this.username = "";
+        clientDB.username = "";
     }
 
     public String createGame(String gameName) throws Exception {
-        header = new TreeMap(Map.of("authToken", String.valueOf(authToken)));
+        header = new TreeMap(Map.of("authToken", String.valueOf(clientDB.authToken)));
         body = new TreeMap(Map.of("gameName", gameName));
         getConnection("/game", "POST");
         TreeMap response = getResponse();
@@ -245,17 +250,17 @@ public class ServerFacadeLocal {
     }
 
     public void listGames() throws Exception {
-        header = new TreeMap(Map.of("authToken", String.valueOf(authToken)));
+        header = new TreeMap(Map.of("authToken", String.valueOf(clientDB.authToken)));
         body = new TreeMap();
         getConnection("/game", "GET");
-        existingGames = getArrayResponse();
+        clientDB.existingGames = getArrayResponse();
         System.out.println("...Created list of games successfully");
         System.out.println("Current Games: ");
-        for (int i = 1; i < existingGames.size() + 1; i++) {
-            String white = existingGames.get(i-1).getWhiteUsername();
-            String black = existingGames.get(i-1).getBlackUsername();
+        for (int i = 1; i < clientDB.existingGames.size() + 1; i++) {
+            String white = clientDB.existingGames.get(i-1).getWhiteUsername();
+            String black = clientDB.existingGames.get(i-1).getBlackUsername();
             System.out.printf("Game %s: %s | White's username: %s | Black's username: %s\n",
-                    i, existingGames.get(i - 1).getGameName(),
+                    i, clientDB.existingGames.get(i - 1).getGameName(),
                     white != null ? white : "none",
                     black != null ? black : "none");
         }
@@ -265,43 +270,43 @@ public class ServerFacadeLocal {
         String id;
 
         try {
-            id = String.valueOf(existingGames.get(gameNumber - 1).getGameID());
+            id = String.valueOf(clientDB.existingGames.get(gameNumber - 1).getGameID());
         }
         catch (IndexOutOfBoundsException ex) {
             throw new FacadeException("Error: Game doesn't exist. Choose a different number or use list to load games");
         }
-        header = new TreeMap(Map.of("authToken", String.valueOf(authToken)));
+        header = new TreeMap(Map.of("authToken", String.valueOf(clientDB.authToken)));
         body = new TreeMap(Map.of("playerColor", color, "gameID", id));
         getConnection("/game", "PUT");
         getResponse();
 
         if (color == ChessGame.TeamColor.WHITE) {
-            existingGames.get(gameNumber - 1).setWhiteUsername(username);
+            clientDB.existingGames.get(gameNumber - 1).setWhiteUsername(clientDB.username);
         }
         else {
-            existingGames.get(gameNumber - 1).setBlackUsername(username);
+            clientDB.existingGames.get(gameNumber - 1).setBlackUsername(clientDB.username);
         }
-        currentGameID = id;
-        currentGame = existingGames.get(gameNumber - 1);
-        currentState = State.InGame;
+        clientDB.currentGameID = id;
+        clientDB.currentGame = clientDB.existingGames.get(gameNumber - 1);
+        clientDB.currentState = State.InGame;
 
-        System.out.printf("...Joined game %s\n", currentGame.getGameName());
-        System.out.print(drawer.drawBoard(new ChessGame(), null));
+        System.out.printf("...Joined game %s\n", clientDB.currentGame.getGameName());
+        System.out.print(clientDB.drawer.drawBoard(new ChessGame(), null));
         System.out.print("\u001b[34;49m");
     }
 
     public void observeGame(int gameNumber) throws Exception {
         try {
-            currentGame = existingGames.get(gameNumber - 1);
+            clientDB.currentGame = clientDB.existingGames.get(gameNumber - 1);
         }
         catch (IndexOutOfBoundsException ex) {
             throw new FacadeException("Game doesn't exist. Choose a different number");
         }
-        currentGameID = String.valueOf(currentGame.getGameID());
-        currentState = State.Observing;
+        clientDB.currentGameID = String.valueOf(clientDB.currentGame.getGameID());
+        clientDB.currentState = State.Observing;
 
-        System.out.printf("...Observing game %s\n", currentGame.getGameName());
-        System.out.print(drawer.drawBoard(new ChessGame(), null));
+        System.out.printf("...Observing game %s\n", clientDB.currentGame.getGameName());
+        System.out.print(clientDB.drawer.drawBoard(new ChessGame(), null));
         System.out.print("\u001b[34;49m");
     }
 
