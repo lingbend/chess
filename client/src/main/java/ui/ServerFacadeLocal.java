@@ -17,7 +17,7 @@ import java.util.*;
 
 public class ServerFacadeLocal {
 
-    public String baseUri;
+//    public String baseUri;
     public HttpURLConnection connection;
     public TreeMap<String, String> header;
     public TreeMap<String, String> body;
@@ -26,6 +26,9 @@ public class ServerFacadeLocal {
     public String command;
     public ArrayList<String> parameters;
     public ClientStorage clientDB;
+    private PreLoginUI preLoginUI;
+    private PostLoginUI postLoginUI;
+    private InGameUI inGameUI;
 
     public enum State {
         LoggedOut,
@@ -41,17 +44,20 @@ public class ServerFacadeLocal {
         clientDB.username = "";
         clientDB.currentGameID = "";
         clientDB.existingGames = new ArrayList<GameData>();
-        baseUri = "http://localhost:";
+        clientDB.baseUri = "http://localhost:";
         header = new TreeMap<>();
         body = new TreeMap<>();
         input = new Scanner(System.in);
         port = portNum;
         clientDB.drawer = new GameDrawer(this);
+        preLoginUI = new PreLoginUI(clientDB);
+        postLoginUI = new PostLoginUI(clientDB);
+        inGameUI = new InGameUI();
 
     }
 
     public void run() throws Exception {
-        baseUri += String.valueOf(port);
+        clientDB.baseUri += String.valueOf(port);
         System.out.println("\u001b[95mWelcome to Chess!");
 
         command = "";
@@ -67,67 +73,75 @@ public class ServerFacadeLocal {
     private void runLoop() {
         while (true) {
             try {
-//                if (clientDB.currentState == State.LoggedOut) {
-//
-//                }
-//                else if (clientDB.currentState == State.LoggedIn) {
-//
-//                }
-//                else if (clientDB.currentState == State.Observing || clientDB.currentState == State.InGame) {
-//
-//                }
-                if (command.equalsIgnoreCase("help")) {
-                    System.out.print(getHelp());
-                }
-                else if (command.equalsIgnoreCase("login")) {
-                    checkState(State.LoggedOut, 2);
-                    System.out.println("Logging in...");
-                    login(parameters.get(0), parameters.get(1));
-                }
-                else if (command.equalsIgnoreCase("register")) {
-                    checkState(State.LoggedOut, 3);
-                    System.out.println("Registering user...");
-                    register(parameters.get(0), parameters.get(1), parameters.get(2));
-                }
-                else if (command.equalsIgnoreCase("logout")) {
-                    checkState(State.LoggedIn, 0);
-                    System.out.println("Logging out...");
-                    logout();
-                }
-                else if (command.equalsIgnoreCase("create")) {
-                    checkState(State.LoggedIn, 1);
-                    System.out.println("Creating game...");
-                    createGame(parameters.get(0));
-                }
-                else if (command.equalsIgnoreCase("join")) {
-                    checkState(State.LoggedIn, 2);
-                    System.out.println("Joining game...");
-                    if (clientDB.existingGames.isEmpty()) {
-                        throw new Exception("Game not found. Use 'list' to find games and 'create' if none exist");
-                    }
-                    playGame(Integer.parseInt(parameters.get(0)),
-                            Enum.valueOf(ChessGame.TeamColor.class, parameters.get(1).toUpperCase()));
-                }
-                else if (command.equalsIgnoreCase("observe")) {
-                    checkState(State.LoggedIn, 1);
-                    System.out.println("Loading game as observer...");
-                    observeGame(Integer.parseInt(parameters.get(0)));
-                }
-                else if (command.equalsIgnoreCase("list")) {
-                    checkState(State.LoggedIn, 0);
-                    System.out.println("Retrieving current games...");
-                    listGames();
-                }
-                else if (command.equalsIgnoreCase("quit") || command.equalsIgnoreCase("exit")) {
+                System.out.println(command);
+                System.out.println(parameters);
+                if (command.equals("quit") || command.equals("exit")) {
                     if (clientDB.currentState != State.LoggedOut) {
                         throw new Exception("Logout before quitting");
                     }
                     break;
                 }
-                else if (command.equals("")) {}
-                else {
-                    System.out.println("Error: Not a valid input");
+                if (clientDB.currentState == State.LoggedOut) {
+                    preLoginUI.run(command, parameters);
                 }
+                else if (clientDB.currentState == State.LoggedIn) {
+                    postLoginUI.run(command, parameters);
+                }
+                else if (clientDB.currentState == State.Observing || clientDB.currentState == State.InGame) {
+                    //run inGameUI here
+                }
+//                if (command.equalsIgnoreCase("help")) {
+//                    System.out.print(getHelp());
+//                }
+//                else if (command.equalsIgnoreCase("login")) {
+//                    checkState(State.LoggedOut, 2);
+//                    System.out.println("Logging in...");
+//                    login(parameters.get(0), parameters.get(1));
+//                }
+//                else if (command.equalsIgnoreCase("register")) {
+//                    checkState(State.LoggedOut, 3);
+//                    System.out.println("Registering user...");
+//                    register(parameters.get(0), parameters.get(1), parameters.get(2));
+//                }
+//                else if (command.equalsIgnoreCase("logout")) {
+//                    checkState(State.LoggedIn, 0);
+//                    System.out.println("Logging out...");
+//                    logout();
+//                }
+//                else if (command.equalsIgnoreCase("create")) {
+//                    checkState(State.LoggedIn, 1);
+//                    System.out.println("Creating game...");
+//                    createGame(parameters.get(0));
+//                }
+//                else if (command.equalsIgnoreCase("join")) {
+//                    checkState(State.LoggedIn, 2);
+//                    System.out.println("Joining game...");
+//                    if (clientDB.existingGames.isEmpty()) {
+//                        throw new Exception("Game not found. Use 'list' to find games and 'create' if none exist");
+//                    }
+//                    playGame(Integer.parseInt(parameters.get(0)),
+//                            Enum.valueOf(ChessGame.TeamColor.class, parameters.get(1).toUpperCase()));
+//                }
+//                else if (command.equalsIgnoreCase("observe")) {
+//                    checkState(State.LoggedIn, 1);
+//                    System.out.println("Loading game as observer...");
+//                    observeGame(Integer.parseInt(parameters.get(0)));
+//                }
+//                else if (command.equalsIgnoreCase("list")) {
+//                    checkState(State.LoggedIn, 0);
+//                    System.out.println("Retrieving current games...");
+//                    listGames();
+//                }
+//                else if (command.equalsIgnoreCase("quit") || command.equalsIgnoreCase("exit")) {
+//                    if (clientDB.currentState != State.LoggedOut) {
+//                        throw new Exception("Logout before quitting");
+//                    }
+//                    break;
+//                }
+//                else if (command.equals("")) {}
+//                else {
+//                    System.out.println("Error: Not a valid input");
+//                }
             }
             catch (NumberFormatException ex) {
                 System.out.println("Error: Not a number");
@@ -320,7 +334,7 @@ public class ServerFacadeLocal {
     }
 
     private void getConnection(String path, String method) throws Exception {
-        HttpURLConnection newConnection = (HttpURLConnection) (new URI(baseUri + path)).toURL().openConnection();
+        HttpURLConnection newConnection = (HttpURLConnection) (new URI(clientDB.baseUri + path)).toURL().openConnection();
         newConnection.setRequestMethod(method);
         newConnection.setDoOutput(true);
         newConnection.setDoInput(true);

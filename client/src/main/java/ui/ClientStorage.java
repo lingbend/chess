@@ -12,7 +12,7 @@ public class ClientStorage {
     public String username;
     public int authToken;
     public String currentGameID;
-
+    public String baseUri;
     public ArrayList<GameData> existingGames;
     public GameData currentGame;
     public GameDrawer drawer;

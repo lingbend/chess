@@ -34,7 +34,7 @@ public class ServerFacadeTests {
     public void clear() throws Exception{
         DatabaseManager.initializeEntireDatabase();
         facade = new ServerFacadeLocal(port);
-        facade.baseUri += String.valueOf(port);
+        facade.clientDB.baseUri += String.valueOf(port);
     }
 
     @AfterEach
@@ -70,9 +70,9 @@ public class ServerFacadeTests {
     public void registerPositive(){
         try {
             facade.register("frog", "234ksdfjo", "pigeon@gmail.com");
-            Assertions.assertEquals("frog", facade.username);
-            Assertions.assertTrue(facade.authToken > 1);
-            Assertions.assertEquals(ServerFacadeLocal.State.LoggedIn, facade.currentState);
+            Assertions.assertEquals("frog", facade.clientDB.username);
+            Assertions.assertTrue(facade.clientDB.authToken > 1);
+            Assertions.assertEquals(ServerFacadeLocal.State.LoggedIn, facade.clientDB.currentState);
 
         }
         catch (Exception ex) {
@@ -101,9 +101,9 @@ public class ServerFacadeTests {
             facade.register("dogman", "123123kdfs", "figment@imagination.org");
             facade.logout();
             facade.login("dogman", "123123kdfs");
-            Assertions.assertEquals("dogman", facade.username);
-            Assertions.assertTrue(facade.authToken > 1);
-            Assertions.assertEquals(ServerFacadeLocal.State.LoggedIn, facade.currentState);
+            Assertions.assertEquals("dogman", facade.clientDB.username);
+            Assertions.assertTrue(facade.clientDB.authToken > 1);
+            Assertions.assertEquals(ServerFacadeLocal.State.LoggedIn, facade.clientDB.currentState);
 
         }
         catch (Exception ex) {
@@ -127,8 +127,8 @@ public class ServerFacadeTests {
         try {
             facade.register("pig", "43*dUU", "doris@banana.co.farming");
             facade.logout();
-            Assertions.assertTrue(facade.username.equals(""));
-            Assertions.assertEquals(ServerFacadeLocal.State.LoggedOut, facade.currentState);
+            Assertions.assertTrue(facade.clientDB.username.equals(""));
+            Assertions.assertEquals(ServerFacadeLocal.State.LoggedOut, facade.clientDB.currentState);
 
         }
         catch (Exception ex) {
@@ -182,8 +182,8 @@ public class ServerFacadeTests {
             facade.register("chuck", "wagon", "innards@gizzards.note");
             facade.createGame("barbeque");
             facade.listGames();
-            Assertions.assertTrue(facade.existingGames.size() == 1);
-            Assertions.assertTrue(facade.existingGames.get(0).getGameName().equals("barbeque"));
+            Assertions.assertTrue(facade.clientDB.existingGames.size() == 1);
+            Assertions.assertTrue(facade.clientDB.existingGames.get(0).getGameName().equals("barbeque"));
         }
         catch (Exception ex) {
             Assertions.fail("listGamesPositive threw an error" + ex.getMessage());
@@ -222,8 +222,8 @@ public class ServerFacadeTests {
             facade.createGame("Nef's wonderful game of life");
             facade.listGames();
             facade.playGame(1, ChessGame.TeamColor.WHITE);
-            Assertions.assertTrue(facade.existingGames.get(0).getWhiteUsername().equals("b"));
-            Assertions.assertEquals(ServerFacadeLocal.State.InGame, facade.currentState);
+            Assertions.assertTrue(facade.clientDB.existingGames.get(0).getWhiteUsername().equals("b"));
+            Assertions.assertEquals(ServerFacadeLocal.State.InGame, facade.clientDB.currentState);
         }
         catch (Exception ex) {
             Assertions.fail("playGamePositive threw an Exception " + ex.getMessage());
@@ -246,7 +246,7 @@ public class ServerFacadeTests {
             catch (Exception ex2) {
                 Assertions.assertNotNull(ex2.getMessage());
                 Assertions.assertNotNull(ex.getMessage());
-                Assertions.assertNotEquals(ServerFacadeLocal.State.Observing, facade.currentState);
+                Assertions.assertNotEquals(ServerFacadeLocal.State.Observing, facade.clientDB.currentState);
             }
         }
         catch (Exception ex) {
@@ -261,8 +261,8 @@ public class ServerFacadeTests {
             facade.createGame("hillbilly");
             facade.listGames();
             facade.observeGame(1);
-            Assertions.assertEquals(ServerFacadeLocal.State.Observing, facade.currentState);
-            Assertions.assertNotNull(facade.currentGameID);
+            Assertions.assertEquals(ServerFacadeLocal.State.Observing, facade.clientDB.currentState);
+            Assertions.assertNotNull(facade.clientDB.currentGameID);
         }
         catch (Exception ex) {
             Assertions.fail("observeGamePositive threw an exception " + ex.getMessage());
@@ -271,7 +271,7 @@ public class ServerFacadeTests {
 
     @Test
     public void runPositive() {
-        facade.baseUri = "http://localhost:";
+        facade.clientDB.baseUri = "http://localhost:";
         try {
             facade.input = new Scanner(
                     """
@@ -288,12 +288,13 @@ public class ServerFacadeTests {
                     quiT
                     """);
             facade.run();
-            Assertions.assertEquals("", facade.username);
-            Assertions.assertEquals(ServerFacadeLocal.State.LoggedOut, facade.currentState);
-            Assertions.assertTrue(facade.existingGames.size() == 1);
+            Assertions.assertEquals("", facade.clientDB.username);
+            Assertions.assertEquals(ServerFacadeLocal.State.LoggedOut, facade.clientDB.currentState);
+            System.out.println(facade.clientDB.existingGames.size());
+            Assertions.assertTrue(facade.clientDB.existingGames.size() == 1);
         }
         catch (Exception ex) {
-            Assertions.fail("runPositive threw an error" + ex.getMessage());
+            Assertions.fail("runPositive threw an error " + ex.getMessage());
         }
 
     }
@@ -306,16 +307,16 @@ public class ServerFacadeTests {
                     register tony 2393h9 email@email.com
                     quiT
                     """);
-            facade.baseUri = "chicken";
+            facade.clientDB.baseUri = "chicken";
             facade.run();
-            Assertions.assertNotEquals("tony", facade.username);
-            Assertions.assertTrue(facade.authToken == 0);
-            Assertions.assertEquals(ServerFacadeLocal.State.LoggedOut, facade.currentState);
+            Assertions.assertNotEquals("tony", facade.clientDB.username);
+            Assertions.assertTrue(facade.clientDB.authToken == 0);
+            Assertions.assertEquals(ServerFacadeLocal.State.LoggedOut, facade.clientDB.currentState);
         }
         catch (Exception ex) {
             Assertions.assertNotNull(ex.getMessage());
             try {
-                facade.baseUri = "http://localhost:";
+                facade.clientDB.baseUri = "http://localhost:";
                 facade.input = new Scanner("""
                     register tony
                     creaTe
@@ -327,10 +328,10 @@ public class ServerFacadeTests {
                     logout
                     quiT
                     """);
-                Assertions.assertNotEquals("tony", facade.username);
-                Assertions.assertTrue(facade.existingGames == null || facade.existingGames.isEmpty());
-                Assertions.assertTrue(facade.authToken == 0);
-                Assertions.assertEquals(ServerFacadeLocal.State.LoggedOut, facade.currentState);
+                Assertions.assertNotEquals("tony", facade.clientDB.username);
+                Assertions.assertTrue(facade.clientDB.existingGames == null || facade.clientDB.existingGames.isEmpty());
+                Assertions.assertTrue(facade.clientDB.authToken == 0);
+                Assertions.assertEquals(ServerFacadeLocal.State.LoggedOut, facade.clientDB.currentState);
             }
             catch (Exception ex2) {
                 Assertions.fail("runNegative threw an unexpected Exception " + ex2.getMessage());
