@@ -57,14 +57,20 @@ public class InGameUI {
                     clientDB.authToken, clientDB.currentGameID);
             request.setMove(move);
             clientDB.webSocket.transmit(request);
-            clientDB.webSocket.close();
-            clientDB.webSocket = null;
         }
         else if (command.equals("preview")) {
             checkParameters(1);
             System.out.println("Previewing moves...");
             ChessPosition start = parsePosition(parameters.get(0));
             System.out.println(clientDB.drawer.drawBoard(clientDB.currentGame.getGame(), start));
+        }
+        else if (command.equals("resign")) {
+            System.out.println("Resigning...");
+            UserGameCommand request = new UserGameCommand(UserGameCommand.CommandType.RESIGN,
+                    clientDB.authToken, clientDB.currentGameID);
+            clientDB.webSocket.transmit(request);
+            clientDB.currentState = ServerFacadeLocal.State.LoggedIn;
+            System.out.println("...Successfully Resigned");
         }
         else if (command.equals("")) {}
         else {
