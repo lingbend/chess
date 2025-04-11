@@ -1,7 +1,5 @@
 package ui;
-import chess.ChessBoard;
 import chess.ChessGame;
-import chess.ChessPiece;
 import model.GameData;
 
 import com.google.gson.Gson;
@@ -9,7 +7,6 @@ import com.google.gson.Gson;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
-import java.lang.reflect.Field;
 import java.net.HttpURLConnection;
 import java.net.URI;
 import java.net.URISyntaxException;
@@ -17,7 +14,6 @@ import java.util.*;
 
 public class ServerFacadeLocal {
 
-//    public String baseUri;
     public HttpURLConnection connection;
     public TreeMap<String, String> header;
     public TreeMap<String, String> body;
@@ -90,58 +86,6 @@ public class ServerFacadeLocal {
                 else if (clientDB.currentState == State.Observing || clientDB.currentState == State.InGame) {
                     //run inGameUI here
                 }
-//                if (command.equalsIgnoreCase("help")) {
-//                    System.out.print(getHelp());
-//                }
-//                else if (command.equalsIgnoreCase("login")) {
-//                    checkState(State.LoggedOut, 2);
-//                    System.out.println("Logging in...");
-//                    login(parameters.get(0), parameters.get(1));
-//                }
-//                else if (command.equalsIgnoreCase("register")) {
-//                    checkState(State.LoggedOut, 3);
-//                    System.out.println("Registering user...");
-//                    register(parameters.get(0), parameters.get(1), parameters.get(2));
-//                }
-//                else if (command.equalsIgnoreCase("logout")) {
-//                    checkState(State.LoggedIn, 0);
-//                    System.out.println("Logging out...");
-//                    logout();
-//                }
-//                else if (command.equalsIgnoreCase("create")) {
-//                    checkState(State.LoggedIn, 1);
-//                    System.out.println("Creating game...");
-//                    createGame(parameters.get(0));
-//                }
-//                else if (command.equalsIgnoreCase("join")) {
-//                    checkState(State.LoggedIn, 2);
-//                    System.out.println("Joining game...");
-//                    if (clientDB.existingGames.isEmpty()) {
-//                        throw new Exception("Game not found. Use 'list' to find games and 'create' if none exist");
-//                    }
-//                    playGame(Integer.parseInt(parameters.get(0)),
-//                            Enum.valueOf(ChessGame.TeamColor.class, parameters.get(1).toUpperCase()));
-//                }
-//                else if (command.equalsIgnoreCase("observe")) {
-//                    checkState(State.LoggedIn, 1);
-//                    System.out.println("Loading game as observer...");
-//                    observeGame(Integer.parseInt(parameters.get(0)));
-//                }
-//                else if (command.equalsIgnoreCase("list")) {
-//                    checkState(State.LoggedIn, 0);
-//                    System.out.println("Retrieving current games...");
-//                    listGames();
-//                }
-//                else if (command.equalsIgnoreCase("quit") || command.equalsIgnoreCase("exit")) {
-//                    if (clientDB.currentState != State.LoggedOut) {
-//                        throw new Exception("Logout before quitting");
-//                    }
-//                    break;
-//                }
-//                else if (command.equals("")) {}
-//                else {
-//                    System.out.println("Error: Not a valid input");
-//                }
             }
             catch (NumberFormatException ex) {
                 System.out.println("Error: Not a number");
@@ -164,18 +108,6 @@ public class ServerFacadeLocal {
         }
     }
 
-    private void checkState(State state, int size) throws Exception {
-        if (state == State.LoggedOut && clientDB.currentState != state) {
-            throw new Exception("Must logout first");
-        }
-        else if (state == State.LoggedIn && clientDB.currentState == State.LoggedOut) {
-            throw new Exception("Not logged in. Login first");
-        }
-        else if (parameters.size() != size) {
-            throw new FacadeException("Error: Wrong number of inputs");
-        }
-    }
-
     private void cleanUp() {
         try {
             header.clear();
@@ -190,31 +122,6 @@ public class ServerFacadeLocal {
         }
         catch (IndexOutOfBoundsException ex) {
             System.out.println("Please input properly formatted commands. Print help for more information.");
-        }
-    }
-
-    private String getHelp() {
-        if (clientDB.currentState == State.LoggedOut) {
-            return
-                """
-                Available Commands:              Format:
-                Log in to Chess System           | login username password
-                Register a new account for Chess | register username password email
-                Close the Chess program          | quit OR exit
-                View currently available options | help
-                """;
-        }
-        else {
-            return
-                    """
-                    Available Commands:                                               Format:
-                    Log out of the Chess System                                       | logout
-                    Create a new chess game by naming it                              | create (game name)
-                    Get a list of all chess games currently ongoing and their numbers | list
-                    Join a chess game to start playing                                | join (game number) color
-                    Watch a chess game                                                | observe (game number)
-                    View currently available options                                  | help
-                    """;
         }
     }
 

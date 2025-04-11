@@ -10,15 +10,11 @@ import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URI;
 import java.util.ArrayList;
-import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
 
 public class PostLoginUI {
 
-    public String username;
-    public int authToken;
-//    public String baseUri;
     public HttpURLConnection connection;
     public TreeMap<String, String> header;
     public TreeMap<String, String> body;
