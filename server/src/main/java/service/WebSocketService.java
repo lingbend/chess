@@ -1,5 +1,8 @@
 package service;
 
+import chess.ChessGame;
+import chess.ChessMove;
+import chess.ChessPosition;
 import dataaccess.DataAccessException;
 import dataaccess.SQLAuthAccess;
 import dataaccess.SQLGameAccess;
@@ -19,13 +22,14 @@ public class WebSocketService {
     public WebSocketService(){}
 
     public String run(UserGameCommand request, Session session, TreeMap<String, ArrayList<Session>> liveGames)
-            throws DataAccessException {
+            throws Exception {
         UserGameCommand.CommandType command = request.commandType;
         String sessionID = session.id();
         var authAccess = new SQLAuthAccess();
         var gameAccess = new SQLGameAccess();
         var auth = (AuthData) authAccess.read(request.getAuthToken());
         var game = (GameData) gameAccess.read(request.gameID);
+        ChessGame gameObj = game.getGame();
         var username = auth.getUsername();
         String whiteUsername = game.getWhiteUsername();
         String blackUsername = game.getBlackUsername();
@@ -47,7 +51,23 @@ public class WebSocketService {
                 sendMessage(liveGames.get(request.gameID), session, username + " joined game as black");
             }
         }
-        else if (command == UserGameCommand.CommandType.MAKE_MOVE) {
+        else if (command == UserGameCommand.CommandType.MAKE_MOVE &&
+                (username.equals(whiteUsername) || username.equals(blackUsername))) {
+            ChessPosition start = request.move.getStartPosition();
+            ChessMove move = request.move;
+            ArrayList<ChessMove> validMoves = (ArrayList<ChessMove>) gameObj.validMoves(start);
+            if (validMoves.contains(move)) {
+                gameObj.makeMove(move);
+                if (gameAccess.update(gameObj)) {
+                    sendMessage(liveGames.get(request.gameID), session, username + " moved " + move);
+                }
+                else {
+                    throw new DataAccessException("server failed move");
+                }
+            }
+            else {
+                throw new DataAccessException("illegal move");
+            }
 
         }
         else if (command == UserGameCommand.CommandType.LEAVE) {
