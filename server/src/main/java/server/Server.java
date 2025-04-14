@@ -1,14 +1,24 @@
 package server;
 
+import com.google.gson.Gson;
+import org.eclipse.jetty.websocket.api.annotations.*;
 import spark.*;
 import service.*;
 import service.Service;
 import handler.*;
 import dataaccess.*;
+import websocket.commands.UserGameCommand;
+import websocket.messages.ServerMessage;
+
 import java.lang.String;
 import java.lang.Integer;
+import java.util.ArrayList;
+import java.util.TreeMap;
 
+@WebSocket
 public class Server {
+
+    private TreeMap<String, ArrayList<Session>> liveGames = new TreeMap<>();
 
     public int run(int desiredPort) {
         Spark.port(desiredPort);
@@ -16,6 +26,7 @@ public class Server {
         Spark.staticFiles.location("web");
 
         // Register your endpoints and handle exceptions here.
+        Spark.webSocket("/ws", Server.class);
         Spark.post("/user", this::register);
         Spark.delete("/db", this::clear);
         Spark.post("/session", this::login);
@@ -83,5 +94,17 @@ public class Server {
         res.type("application/json");
         res.status(Integer.valueOf(handlerRes[0]));
         return handlerRes[1];
+    }
+
+
+
+    @OnWebSocketMessage
+    private void onMessage(Session session, String msg) {
+        UserGameCommand request = new Gson().fromJson(msg, UserGameCommand.class);
+        var service = new WebSocketService();
+        var handler = new WebSocketHandler(service);
+        service.registerHandler(handler);
+        String response = handler.deserialize(request, session, liveGames);
+        //Then return the response here
     }
 }
