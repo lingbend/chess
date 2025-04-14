@@ -34,6 +34,18 @@ public class WebSocketService {
         String whiteUsername = game.getWhiteUsername();
         String blackUsername = game.getBlackUsername();
 
+        if (request.getGameID() == null || request.getAuthToken() == null) {
+            throw new DataAccessException("bad request");
+        }
+
+        if (!authAccess.find(request.getAuthToken())) {
+            throw new DataAccessException("unauthorized");
+        }
+
+        if (!gameAccess.find(request.getGameID())) {
+            throw new DataAccessException("bad request");
+        }
+
 
 
         if (command == UserGameCommand.CommandType.CONNECT) {
@@ -71,45 +83,25 @@ public class WebSocketService {
 
         }
         else if (command == UserGameCommand.CommandType.LEAVE) {
-
+            liveGames.get(request.gameID).remove(session);
+            sendMessage(liveGames.get(request.gameID), session, username + " disconnected from the game");
         }
         else if (command == UserGameCommand.CommandType.RESIGN) {
-
-        }
-
-        if (request.getGameID() == null || request.getAuthToken() == null) {
-            throw new DataAccessException("bad request");
-        }
-
-        if (!authAccess.find(request.getAuthToken())) {
-            throw new DataAccessException("unauthorized");
-        }
-
-        if (!gameAccess.find(request.getGameID())) {
-            throw new DataAccessException("bad request");
-        }
-
-
-
-        if ((request.getColor().equals("WHITE") && game.getWhiteUsername() != null
-                && !game.getWhiteUsername().equals(auth.getUsername())) || (request.getColor().equals("BLACK")
-                && game.getBlackUsername() != null && !game.getBlackUsername().equals(auth.getUsername()))) {
-            throw new DataAccessException("already taken");
-        }
-
-        if (request.getColor().equals("WHITE")) {
-            game.setWhiteUsername(auth.getUsername());
+            if (whiteUsername.equals(username)) {
+                game.setWhiteUsername(null);
+            }
+            else if (blackUsername.equals(username)) {
+                game.setBlackUsername(null);
+            }
+            else {
+                throw new DataAccessException("observers cannot resign");
+            }
+            sendMessage(liveGames.get(request.gameID), session, username + " resigned");
         }
         else {
-            game.setBlackUsername(auth.getUsername());
+            throw new DataAccessException("bad request");
         }
-        if (!gameAccess.update(game)) {
-            throw new DataAccessException("unable to alter game");
-        };
-
-        var result = new ResultObj(Map.of( "code", "200"));
-        return handler.serialize(result);
-    return null;
+        return null;
     }
 
     public void registerHandler(WebSocketHandler handler) {
