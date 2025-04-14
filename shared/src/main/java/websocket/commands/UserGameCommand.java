@@ -21,6 +21,7 @@ public class UserGameCommand {
         this.commandType = commandType;
         this.authToken = authToken;
         this.gameID = gameID;
+        this.move = null;
     }
 
     public enum CommandType {

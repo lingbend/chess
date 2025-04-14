@@ -24,6 +24,11 @@ public class WebSocketService {
         String sessionID = session.id();
         var authAccess = new SQLAuthAccess();
         var gameAccess = new SQLGameAccess();
+        var auth = (AuthData) authAccess.read(request.getAuthToken());
+        var game = (GameData) gameAccess.read(request.gameID);
+        var username = auth.getUsername();
+        String whiteUsername = game.getWhiteUsername();
+        String blackUsername = game.getBlackUsername();
 
 
 
@@ -32,6 +37,15 @@ public class WebSocketService {
                 liveGames.put(request.gameID, new ArrayList<Session>());
             }
             liveGames.get(request.gameID).add(session);
+            if (!whiteUsername.equals(username) && !blackUsername.equals(username)) {
+                sendMessage(liveGames.get(request.gameID), session, username + " joined game as observer");
+            }
+            else if (whiteUsername.equals(username)) {
+                sendMessage(liveGames.get(request.gameID), session, username + " joined game as white");
+            }
+            else {
+                sendMessage(liveGames.get(request.gameID), session, username + " joined game as black");
+            }
         }
         else if (command == UserGameCommand.CommandType.MAKE_MOVE) {
 
@@ -56,8 +70,7 @@ public class WebSocketService {
         }
 
 
-        var game = (GameData) gameAccess.read(request.getGameID());
-        var auth = (AuthData) authAccess.read(request.getAuthToken());
+
         if ((request.getColor().equals("WHITE") && game.getWhiteUsername() != null
                 && !game.getWhiteUsername().equals(auth.getUsername())) || (request.getColor().equals("BLACK")
                 && game.getBlackUsername() != null && !game.getBlackUsername().equals(auth.getUsername()))) {
@@ -84,7 +97,7 @@ public class WebSocketService {
     };
 
 
-    private void sendMessage(TreeMap<String, ArrayList<Session>> liveGames) {
+    private void sendMessage(ArrayList<Session> liveGame, Session session, String message) {
 
     }
 
