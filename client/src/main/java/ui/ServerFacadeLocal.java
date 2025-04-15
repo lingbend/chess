@@ -33,7 +33,7 @@ public class ServerFacadeLocal {
         clientDB.username = "";
         clientDB.currentGameID = "";
         clientDB.existingGames = new ArrayList<GameData>();
-        clientDB.baseUri = "http://localhost:";
+        clientDB.baseUri = "localhost:";
         header = new TreeMap<>();
         body = new TreeMap<>();
         input = new Scanner(System.in);
@@ -62,8 +62,8 @@ public class ServerFacadeLocal {
     private void runLoop() {
         while (true) {
             try {
-                System.out.println(command);
-                System.out.println(parameters);
+//                System.out.println(command);
+//                System.out.println(parameters);
                 if (command.equals("quit") || command.equals("exit")) {
                     if (clientDB.currentState != State.LoggedOut) {
                         throw new Exception("Logout before quitting");

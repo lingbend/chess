@@ -57,7 +57,7 @@ public class WebSocketService {
 
 
         if (command == UserGameCommand.CommandType.CONNECT) {
-            if (liveGames.get(request.gameID).isEmpty()) {
+            if (liveGames.get(request.gameID) == null || liveGames.get(request.gameID).isEmpty()) {
                 liveGames.put(request.gameID, new ArrayList<Session>());
             }
             liveGames.get(request.gameID).add(session);
@@ -128,7 +128,7 @@ public class WebSocketService {
             else if (blackUsername.equals(username)) {
                 game.setBlackUsername(null);
             }
-            if (liveGames.get(request.gameID).isEmpty()) {
+            if (liveGames.get(request.gameID) == null || liveGames.get(request.gameID).isEmpty()) {
                 gameAccess.delete(request.gameID);
             }
             else {

@@ -6,7 +6,10 @@ import org.eclipse.jetty.websocket.api.Session;
 import org.eclipse.jetty.websocket.api.*;
 
 
-import spark.*;
+import spark.Spark;
+import spark.Request;
+import spark.Response;
+//import spark.Session;
 import service.*;
 import service.Service;
 import handler.*;
@@ -26,11 +29,11 @@ public class Server {
 
     public int run(int desiredPort) {
         Spark.port(desiredPort);
+        Spark.webSocket("/ws", Server.class);
 
         Spark.staticFiles.location("web");
 
         // Register your endpoints and handle exceptions here.
-        Spark.webSocket("/ws", Server.class);
         Spark.post("/user", this::register);
         Spark.delete("/db", this::clear);
         Spark.post("/session", this::login);
@@ -103,7 +106,7 @@ public class Server {
 
 
     @OnWebSocketMessage
-    private void onMessage(Session session, String msg) {
+    public void onMessage(Session session, String msg) {
         UserGameCommand request = new Gson().fromJson(msg, UserGameCommand.class);
         var service = new WebSocketService();
         var handler = new WebSocketHandler(service);

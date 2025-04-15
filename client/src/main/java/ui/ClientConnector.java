@@ -26,7 +26,7 @@ public class ClientConnector {
 
 
     public void getConnection(String path, String method) throws Exception {
-        HttpURLConnection newConnection = (HttpURLConnection) (new URI(clientDB.baseUri + path)).toURL().openConnection();
+        HttpURLConnection newConnection = (HttpURLConnection) (new URI("http://" + clientDB.baseUri + path)).toURL().openConnection();
         newConnection.setRequestMethod(method);
         newConnection.setDoOutput(true);
         newConnection.setDoInput(true);
