@@ -87,6 +87,21 @@ public class WebSocketService {
                             ServerMessage.ServerMessageType.NOTIFICATION);
                     sendMessage(liveGames.get(request.gameID), session, "moved",
                             ServerMessage.ServerMessageType.LOAD_GAME);
+                    String otherUsername;
+                    if (gameObj.getTeamTurn() == ChessGame.TeamColor.WHITE) {
+                        otherUsername = game.getWhiteUsername();
+                    }
+                    else {
+                        otherUsername = game.getBlackUsername();
+                    }
+                    if (gameObj.isInCheckmate(gameObj.getTeamTurn())) {
+                        sendAll(liveGames.get(request.gameID), session, otherUsername + " moved is in checkmate",
+                                ServerMessage.ServerMessageType.NOTIFICATION);
+                    }
+                    else if (gameObj.isInCheck(gameObj.getTeamTurn())) {
+                        sendAll(liveGames.get(request.gameID), session, otherUsername + " moved is in check",
+                                ServerMessage.ServerMessageType.NOTIFICATION);
+                    }
                 }
                 else {
                     throw new DataAccessException("server failed move");
@@ -136,4 +151,15 @@ public class WebSocketService {
             }
         }
     }
+
+    private void sendAll(ArrayList<Session> liveGame, Session session,
+                         String message, ServerMessage.ServerMessageType type) throws Exception {
+        var serverMessage = new ServerMessage(type);
+        serverMessage.setMessage(message);
+        for (Session otherSession : liveGame) {
+            otherSession.getRemote().sendString(new Gson().toJson(serverMessage));
+        }
+    }
+
+
 }
