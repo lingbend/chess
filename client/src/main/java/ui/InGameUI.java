@@ -108,11 +108,11 @@ public class InGameUI {
         int col;
 
         if (Character.isAlphabetic(a) && Character.isDigit(b)) {
-            col = Character.getNumericValue(a) - 9;
+            col = 18 - Character.getNumericValue(a);
             row = Character.getNumericValue(b);
         }
         else if (Character.isAlphabetic(b) && Character.isDigit(a)) {
-            row = Character.getNumericValue(b) - 9;
+            row = 18 - Character.getNumericValue(b);
             col = Character.getNumericValue(a);
         }
         else {
