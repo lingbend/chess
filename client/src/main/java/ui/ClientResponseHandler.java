@@ -9,12 +9,14 @@ public class ClientResponseHandler {
     ChessGame game;
     String message;
     ClientStorage clientDB;
+    String errorMessage;
 
     public ClientResponseHandler(ServerMessage serverMessage, ClientStorage storage) {
         type = serverMessage.getServerMessageType();
         game = serverMessage.getGame();
         message = serverMessage.getMessage();
         clientDB = storage;
+        errorMessage = serverMessage.getErrorMessage();
     }
 
     public void run() throws Exception {
@@ -26,7 +28,7 @@ public class ClientResponseHandler {
             System.out.println(clientDB.drawer.drawBoard(game, null));
         }
         else {
-            System.out.println(message);
+            System.out.println(errorMessage);
         }
     }
 

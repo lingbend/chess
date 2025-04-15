@@ -55,7 +55,7 @@ public class WebSocketHandler {
     private void sendMessage(Session session,
                              String message, ServerMessage.ServerMessageType type) throws Exception {
         var serverMessage = new ServerMessage(type);
-        serverMessage.setMessage(message);
+        serverMessage.setErrorMessage(message);
 
         session.getRemote().sendString(new Gson().toJson(serverMessage));
     }

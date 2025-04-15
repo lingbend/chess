@@ -74,7 +74,7 @@ public class WebSocketService {
                 sendMessage(liveGames.get(request.gameID), session, username + " joined game as black",
                         ServerMessage.ServerMessageType.NOTIFICATION);
             }
-            sendOne(session, "game", ServerMessage.ServerMessageType.LOAD_GAME);
+            sendOne(session, null, ServerMessage.ServerMessageType.LOAD_GAME);
         }
         else if (command == UserGameCommand.CommandType.MAKE_MOVE &&
                 (username.equals(whiteUsername) || username.equals(blackUsername)) &&
@@ -88,7 +88,7 @@ public class WebSocketService {
                     currentGame = gameObj;
                     sendMessage(liveGames.get(request.gameID), session, username + " moved " + move,
                             ServerMessage.ServerMessageType.NOTIFICATION);
-                    sendMessage(liveGames.get(request.gameID), session, "moved",
+                    sendMessage(liveGames.get(request.gameID), session, null,
                             ServerMessage.ServerMessageType.LOAD_GAME);
                     String otherUsername;
                     if (gameObj.getTeamTurn() == ChessGame.TeamColor.WHITE) {
