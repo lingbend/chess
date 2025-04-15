@@ -74,8 +74,7 @@ public class WebSocketService {
                 sendMessage(liveGames.get(request.gameID), session, username + " joined game as black",
                         ServerMessage.ServerMessageType.NOTIFICATION);
             }
-            sendMessage(liveGames.get(request.gameID), session, "game",
-                    ServerMessage.ServerMessageType.LOAD_GAME);
+            sendOne(session, "game", ServerMessage.ServerMessageType.LOAD_GAME);
         }
         else if (command == UserGameCommand.CommandType.MAKE_MOVE &&
                 (username.equals(whiteUsername) || username.equals(blackUsername))) {
@@ -179,5 +178,12 @@ public class WebSocketService {
         for (Session otherSession : liveGame) {
             otherSession.getRemote().sendString(new Gson().toJson(serverMessage));
         }
+    }
+
+    private void sendOne(Session session, String message, ServerMessage.ServerMessageType type) throws Exception {
+        var serverMessage = new ServerMessage(type);
+        serverMessage.setMessage(message);
+        serverMessage.setGame(currentGame);
+        session.getRemote().sendString(new Gson().toJson(serverMessage));
     }
 }
