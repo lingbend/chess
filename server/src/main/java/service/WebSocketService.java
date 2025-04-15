@@ -77,7 +77,8 @@ public class WebSocketService {
             sendOne(session, "game", ServerMessage.ServerMessageType.LOAD_GAME);
         }
         else if (command == UserGameCommand.CommandType.MAKE_MOVE &&
-                (username.equals(whiteUsername) || username.equals(blackUsername))) {
+                (username.equals(whiteUsername) || username.equals(blackUsername)) &&
+                !game.getState().equals("inactive")) {
             ChessPosition start = request.move.getStartPosition();
             ChessMove move = request.move;
             ArrayList<ChessMove> validMoves = (ArrayList<ChessMove>) gameObj.validMoves(start);
@@ -97,6 +98,7 @@ public class WebSocketService {
                         otherUsername = game.getBlackUsername();
                     }
                     if (gameObj.isInCheckmate(gameObj.getTeamTurn())) {
+                        game.setState("inactive");
                         sendAll(liveGames.get(request.gameID), session, otherUsername + " is in checkmate",
                                 ServerMessage.ServerMessageType.NOTIFICATION);
                     }
@@ -105,6 +107,7 @@ public class WebSocketService {
                                 ServerMessage.ServerMessageType.NOTIFICATION);
                     }
                     else if (gameObj.isInStalemate(gameObj.getTeamTurn())) {
+                        game.setState("inactive");
                         sendAll(liveGames.get(request.gameID), session, otherUsername
                                         + " is in stalemate", ServerMessage.ServerMessageType.NOTIFICATION);
                     }
@@ -136,6 +139,7 @@ public class WebSocketService {
             }
         }
         else if (command == UserGameCommand.CommandType.RESIGN) {
+            game.setState("inactive");
             if (whiteUsername.equals(username)) {
                 game.setWhiteUsername(null);
                 gameAccess.update(game);
