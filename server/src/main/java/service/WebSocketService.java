@@ -128,7 +128,12 @@ public class WebSocketService {
             else if (blackUsername.equals(username)) {
                 game.setBlackUsername(null);
             }
-            gameAccess.update(game);
+            if (liveGames.get(request.gameID).isEmpty()) {
+                gameAccess.delete(request.gameID);
+            }
+            else {
+                gameAccess.update(game);
+            }
         }
         else if (command == UserGameCommand.CommandType.RESIGN) {
             if (whiteUsername.equals(username)) {
@@ -174,6 +179,4 @@ public class WebSocketService {
             otherSession.getRemote().sendString(new Gson().toJson(serverMessage));
         }
     }
-
-
 }
