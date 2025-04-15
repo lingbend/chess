@@ -40,8 +40,8 @@ public class WebSocketService {
         ChessGame gameObj = game.getGame();
         currentGame = gameObj;
         var username = auth.getUsername();
-        String whiteUsername = game.getWhiteUsername();
-        String blackUsername = game.getBlackUsername();
+        String whiteUsername = game.getWhiteUsername() != null ? game.getWhiteUsername() : "";
+        String blackUsername = game.getBlackUsername() != null ? game.getBlackUsername() : "";
 
         if (request.getGameID() == null || request.getAuthToken() == null) {
             throw new DataAccessException("bad request");
