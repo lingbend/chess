@@ -20,9 +20,9 @@ public class GameDrawer {
     private static final String highlightColorPiece = "103";
     private static final String highlightColorMove = "42";
     private static final String em = "\u2004".repeat(3) + "\u2006" + "\u2009".repeat(3);
-    private static final StringBuilder whiteHorizLabel = new StringBuilder("    " + "a" + em + "b" + em + "c" +
+    private StringBuilder whiteHorizLabel = new StringBuilder("    " + "a" + em + "b" + em + "c" +
             em + "d" + em + "e" + em + "f" + em + "g" + em + "h" + "    ");
-    private static final StringBuilder blackHorizLabel = whiteHorizLabel.reverse();
+    private final StringBuilder blackHorizLabel = new StringBuilder(whiteHorizLabel.toString()).reverse();;
 
 
     public GameDrawer(ServerFacadeLocal clientExternal) {
