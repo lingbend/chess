@@ -119,8 +119,16 @@ public class WebSocketService {
         }
         else if (command == UserGameCommand.CommandType.LEAVE) {
             liveGames.get(request.gameID).remove(session);
+
             sendMessage(liveGames.get(request.gameID), session, username + " disconnected from the game",
                     ServerMessage.ServerMessageType.NOTIFICATION);
+            if (whiteUsername.equals(username)) {
+                game.setWhiteUsername(null);
+            }
+            else if (blackUsername.equals(username)) {
+                game.setBlackUsername(null);
+            }
+            gameAccess.update(game);
         }
         else if (command == UserGameCommand.CommandType.RESIGN) {
             if (whiteUsername.equals(username)) {
