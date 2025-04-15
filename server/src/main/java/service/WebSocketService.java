@@ -138,11 +138,11 @@ public class WebSocketService {
         else if (command == UserGameCommand.CommandType.RESIGN) {
             if (whiteUsername.equals(username)) {
                 game.setWhiteUsername(null);
-                gameAccess.delete(Integer.valueOf(request.gameID));
+                gameAccess.update(game);
             }
             else if (blackUsername.equals(username)) {
                 game.setBlackUsername(null);
-                gameAccess.delete(Integer.valueOf(request.gameID));
+                gameAccess.update(game);
             }
             else {
                 throw new DataAccessException("observers cannot resign");
