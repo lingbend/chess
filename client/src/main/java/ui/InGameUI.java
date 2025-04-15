@@ -70,15 +70,23 @@ public class InGameUI {
             System.out.println(clientDB.drawer.drawBoard(clientDB.currentGame.getGame(), start));
         }
         else if (command.equals("resign")) {
-            if (clientDB.currentState == ServerFacadeLocal.State.Observing) {
-                throw new Exception("Access denied");
-            }
-            System.out.println("Resigning...");
-            UserGameCommand request = new UserGameCommand(UserGameCommand.CommandType.RESIGN,
-                    clientDB.authToken, clientDB.currentGameID);
-            clientDB.webSocket.transmit(request);
+            System.out.println("Are you sure you want to resign? Enter yes to confirm.");
+            clientDB.facade.cleanUp();
+            if (clientDB.facade.command.toLowerCase().equals("yes") ||
+                    clientDB.facade.command.toLowerCase().equals("y")) {
+                if (clientDB.currentState == ServerFacadeLocal.State.Observing) {
+                    throw new Exception("Access denied");
+                }
+                System.out.println("Resigning...");
+                UserGameCommand request = new UserGameCommand(UserGameCommand.CommandType.RESIGN,
+                        clientDB.authToken, clientDB.currentGameID);
+                clientDB.webSocket.transmit(request);
 
-            System.out.println("...Successfully Resigned");
+                System.out.println("...Successfully Resigned");
+            }
+            else {
+                System.out.println("...Aborted Resignation");
+            }
         }
         else if (command.equals("")) {}
         else {

@@ -77,8 +77,9 @@ public class WebSocketService {
             sendOne(session, null, ServerMessage.ServerMessageType.LOAD_GAME);
         }
         else if (command == UserGameCommand.CommandType.MAKE_MOVE &&
-                (username.equals(whiteUsername) || username.equals(blackUsername)) &&
-                !game.getState().equals("inactive")) {
+                ((username.equals(whiteUsername) && gameObj.getTeamTurn() == ChessGame.TeamColor.WHITE)
+                        || (username.equals(blackUsername) && gameObj.getTeamTurn() == ChessGame.TeamColor.BLACK)) &&
+                game.getState().equals("active")) {
             ChessPosition start = request.move.getStartPosition();
             ChessMove move = request.move;
             ArrayList<ChessMove> validMoves = (ArrayList<ChessMove>) gameObj.validMoves(start);

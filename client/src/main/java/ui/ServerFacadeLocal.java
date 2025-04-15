@@ -34,6 +34,7 @@ public class ServerFacadeLocal {
         clientDB.currentGameID = "";
         clientDB.existingGames = new ArrayList<GameData>();
         clientDB.baseUri = "localhost:";
+        clientDB.facade = this;
         header = new TreeMap<>();
         body = new TreeMap<>();
         input = new Scanner(System.in);
@@ -101,7 +102,7 @@ public class ServerFacadeLocal {
         }
     }
 
-    private void cleanUp() {
+    public void cleanUp() {
         try {
             header.clear();
             body.clear();

@@ -1,6 +1,7 @@
 package ui;
 
 import chess.ChessGame;
+import com.google.gson.Gson;
 import websocket.messages.ServerMessage;
 
 public class ClientResponseHandler {
@@ -17,6 +18,7 @@ public class ClientResponseHandler {
         message = serverMessage.getMessage();
         clientDB = storage;
         errorMessage = serverMessage.getErrorMessage();
+        System.out.println(new Gson().toJson(serverMessage));
     }
 
     public void run() throws Exception {
@@ -31,8 +33,4 @@ public class ClientResponseHandler {
             System.out.println(errorMessage);
         }
     }
-
-
-
-
 }
