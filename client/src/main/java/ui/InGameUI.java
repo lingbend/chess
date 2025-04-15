@@ -39,6 +39,9 @@ public class InGameUI {
             System.out.println("... Game left");
         }
         else if (command.equals("move")) {
+            if (clientDB.currentState == ServerFacadeLocal.State.Observing) {
+                throw new Exception("Access denied");
+            }
             if (parameters.size() > 2) {
                 checkParameters(3);
             }
@@ -67,10 +70,14 @@ public class InGameUI {
             System.out.println(clientDB.drawer.drawBoard(clientDB.currentGame.getGame(), start));
         }
         else if (command.equals("resign")) {
+            if (clientDB.currentState == ServerFacadeLocal.State.Observing) {
+                throw new Exception("Access denied");
+            }
             System.out.println("Resigning...");
             UserGameCommand request = new UserGameCommand(UserGameCommand.CommandType.RESIGN,
                     clientDB.authToken, clientDB.currentGameID);
             clientDB.webSocket.transmit(request);
+
             System.out.println("...Successfully Resigned");
         }
         else if (command.equals("")) {}
