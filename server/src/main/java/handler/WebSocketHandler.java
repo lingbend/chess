@@ -44,9 +44,9 @@ public class WebSocketHandler {
             else if (ex.getMessage().equals("unauthorized")){
                 code = "401";
             }
-            var result = new ResultObj(Map.of("code", code, "message", "Error: " + ex.getMessage()));
+            var result =  "Error: " + ex.getMessage();
             try {
-                sendMessage(session, new Gson().toJson(result), ServerMessage.ServerMessageType.ERROR);
+                sendMessage(session, result, ServerMessage.ServerMessageType.ERROR);
             }
             catch (Exception ex2){}
         }
