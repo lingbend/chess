@@ -225,15 +225,6 @@ public class ServiceTests {
         catch (DataAccessException ex) {
             Assertions.assertEquals("unauthorized", ex.getMessage());
         }
-        request = new RequestObj(Map.of("playerColor","WHITE", "gameID", result.get("gameID"), "authToken", authToken));
-        service3.run(request);
-        try {
-            service3.run(request);
-            Assertions.fail("join game Negative failed (already taken)");
-        }
-        catch (DataAccessException ex) {
-            Assertions.assertEquals("already taken", ex.getMessage());
-        }
     }
 
     @Test

@@ -271,7 +271,7 @@ public class ServerFacadeTests {
 
     @Test
     public void runPositive() {
-        facade.clientDB.baseUri = "http://localhost:";
+        facade.clientDB.baseUri = "localhost:";
         try {
             facade.input = new Scanner(
                     """
@@ -279,7 +279,10 @@ public class ServerFacadeTests {
                     creaTe billy
                     liSt
                     joIn 1 WhiTe
+                    leave
+                    create billy
                     OBSERVE 1
+                    leave
                     logout
                     login tony 23939
                     help
