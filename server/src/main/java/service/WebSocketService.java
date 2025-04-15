@@ -129,7 +129,7 @@ public class WebSocketService {
                 game.setBlackUsername(null);
             }
             if (liveGames.get(request.gameID) == null || liveGames.get(request.gameID).isEmpty()) {
-                gameAccess.delete(request.gameID);
+                gameAccess.delete(Integer.valueOf(request.gameID));
             }
             else {
                 gameAccess.update(game);
@@ -138,11 +138,11 @@ public class WebSocketService {
         else if (command == UserGameCommand.CommandType.RESIGN) {
             if (whiteUsername.equals(username)) {
                 game.setWhiteUsername(null);
-                gameAccess.delete(request.gameID);
+                gameAccess.delete(Integer.valueOf(request.gameID));
             }
             else if (blackUsername.equals(username)) {
                 game.setBlackUsername(null);
-                gameAccess.delete(request.gameID);
+                gameAccess.delete(Integer.valueOf(request.gameID));
             }
             else {
                 throw new DataAccessException("observers cannot resign");
