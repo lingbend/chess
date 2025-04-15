@@ -139,14 +139,13 @@ public class WebSocketService {
                 gameAccess.update(game);
             }
         }
-        else if (command == UserGameCommand.CommandType.RESIGN) {
-            game.setState("inactive");
+        else if (command == UserGameCommand.CommandType.RESIGN && game.getState().equals("active")) {
             if (whiteUsername.equals(username)) {
-                game.setWhiteUsername(null);
+                game.setState("inactive");
                 gameAccess.update(game);
             }
             else if (blackUsername.equals(username)) {
-                game.setBlackUsername(null);
+                game.setState("inactive");
                 gameAccess.update(game);
             }
             else {
