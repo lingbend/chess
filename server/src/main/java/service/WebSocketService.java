@@ -38,6 +38,7 @@ public class WebSocketService {
         var auth = (AuthData) authAccess.read(request.getAuthToken());
         var game = (GameData) gameAccess.read(request.gameID);
         ChessGame gameObj = game.getGame();
+        currentGame = gameObj;
         var username = auth.getUsername();
         String whiteUsername = game.getWhiteUsername();
         String blackUsername = game.getBlackUsername();
@@ -83,7 +84,7 @@ public class WebSocketService {
             ArrayList<ChessMove> validMoves = (ArrayList<ChessMove>) gameObj.validMoves(start);
             if (validMoves.contains(move)) {
                 gameObj.makeMove(move);
-                if (gameAccess.update(gameObj)) {
+                if (gameAccess.update(game)) {
                     currentGame = gameObj;
                     sendMessage(liveGames.get(request.gameID), session, username + " moved " + move,
                             ServerMessage.ServerMessageType.NOTIFICATION);
@@ -165,7 +166,7 @@ public class WebSocketService {
             serverMessage.setGame(currentGame);
         }
         for (Session otherSession : liveGame) {
-            if (!otherSession.equals(session) && type == ServerMessage.ServerMessageType.NOTIFICATION) {
+            if (!otherSession.equals(session) || type != ServerMessage.ServerMessageType.NOTIFICATION) {
                 otherSession.getRemote().sendString(new Gson().toJson(serverMessage));
             }
         }

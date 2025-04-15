@@ -22,6 +22,7 @@ public class ClientResponseHandler {
             System.out.println(message);
         }
         else if (type == ServerMessage.ServerMessageType.LOAD_GAME) {
+            clientDB.currentGame.setGame(game);
             clientDB.drawer.drawBoard(game, null);
         }
         else {
