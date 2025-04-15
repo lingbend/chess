@@ -35,6 +35,7 @@ public class InGameUI {
             clientDB.webSocket.close();
             clientDB.webSocket = null;
             clientDB.currentState = ServerFacadeLocal.State.LoggedIn;
+            System.out.print("\u001b[34m");
             System.out.println("... Game left");
         }
         else if (command.equals("move")) {
