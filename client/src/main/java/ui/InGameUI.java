@@ -69,7 +69,6 @@ public class InGameUI {
             UserGameCommand request = new UserGameCommand(UserGameCommand.CommandType.RESIGN,
                     clientDB.authToken, clientDB.currentGameID);
             clientDB.webSocket.transmit(request);
-            clientDB.currentState = ServerFacadeLocal.State.LoggedIn;
             System.out.println("...Successfully Resigned");
         }
         else if (command.equals("")) {}
