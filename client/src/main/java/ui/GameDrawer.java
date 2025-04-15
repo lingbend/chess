@@ -43,9 +43,9 @@ public class GameDrawer {
         updateStates();
 
         ChessBoard board = chess.getBoard();
-        String currentBackColor = backColor2;
+        String currentBackColor = backColor1;
         String currentFrontColor = "";
-        String tileColor = backColor2;
+        String tileColor = backColor1;
         StringBuilder result = new StringBuilder();
         ChessGame.TeamColor startingColor;
         ArrayList<ChessMove> validMoves = new ArrayList<>();
