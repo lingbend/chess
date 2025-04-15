@@ -135,6 +135,7 @@ public class WebSocketService {
             else {
                 gameAccess.update(game);
             }
+            System.out.println("... Game left");
         }
         else if (command == UserGameCommand.CommandType.RESIGN) {
             if (whiteUsername.equals(username)) {
@@ -151,6 +152,7 @@ public class WebSocketService {
             currentGame = gameObj;
             sendMessage(liveGames.get(request.gameID), session, username + " resigned",
                     ServerMessage.ServerMessageType.NOTIFICATION);
+            System.out.println("... Resigned");
         }
         else {
             throw new DataAccessException("bad request");
