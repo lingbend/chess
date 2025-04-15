@@ -15,6 +15,8 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.TreeMap;
 import spark.*;
+import websocket.messages.ServerMessage;
+
 import java.util.ArrayList;
 
 
@@ -26,12 +28,12 @@ public class WebSocketHandler {
         service = serviceType;
     }
 
-    public String deserialize(UserGameCommand request, Session session, TreeMap<String, ArrayList<Session>> liveGames) {
+    public void deserialize(UserGameCommand request, Session session, TreeMap<String, ArrayList<Session>> liveGames) {
         try {
             initializeDB();
-            return service.run(request, session, liveGames);
+            service.run(request, session, liveGames);
         }
-        catch (DataAccessException ex) {
+        catch (Exception ex) {
             String code = "500";
             if (ex.getMessage().equals("already taken")) {
                 code = "403";
@@ -43,22 +45,19 @@ public class WebSocketHandler {
                 code = "401";
             }
             var result = new ResultObj(Map.of("code", code, "message", "Error: " + ex.getMessage()));
-            return serialize(result);
+            try {
+                sendMessage(session, new Gson().toJson(result), ServerMessage.ServerMessageType.ERROR);
+            }
+            catch (Exception ex2){}
         }
     }
 
-    public String serialize(ResultObj obj) {
-        String code = obj.getCode();
-        obj.setCode(null);
-        String json;
-        if (code != null) {
-            json = new Gson().toJson(obj);
-        }
-        else {
-            json = "";
-        }
-        String[] response = {code, json};
-        return response;
+    private void sendMessage(Session session,
+                             String message, ServerMessage.ServerMessageType type) throws Exception {
+        var serverMessage = new ServerMessage(type);
+        serverMessage.setMessage(message);
+
+        session.getRemote().sendString(new Gson().toJson(serverMessage));
     }
 
     public static void initializeDB() throws DataAccessException{

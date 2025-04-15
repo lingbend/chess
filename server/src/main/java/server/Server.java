@@ -107,8 +107,7 @@ public class Server {
         UserGameCommand request = new Gson().fromJson(msg, UserGameCommand.class);
         var service = new WebSocketService();
         var handler = new WebSocketHandler(service);
-        service.registerHandler(handler);
-        String response = handler.deserialize(request, session, liveGames);
+        handler.deserialize(request, session, liveGames);
         //Then return the response here
     }
 }

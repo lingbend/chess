@@ -30,7 +30,7 @@ public class WebSocketService {
 
     public WebSocketService(){}
 
-    public String run(UserGameCommand request, Session session, TreeMap<String, ArrayList<Session>> liveGames)
+    public void run(UserGameCommand request, Session session, TreeMap<String, ArrayList<Session>> liveGames)
             throws Exception {
         UserGameCommand.CommandType command = request.commandType;
         var authAccess = new SQLAuthAccess();
@@ -120,12 +120,7 @@ public class WebSocketService {
         else {
             throw new DataAccessException("bad request");
         }
-        return null;
     }
-
-    public void registerHandler(WebSocketHandler handler) {
-
-    };
 
 
     private void sendMessage(ArrayList<Session> liveGame, Session session,
@@ -136,13 +131,9 @@ public class WebSocketService {
             serverMessage.setGame(currentGame);
         }
         for (Session otherSession : liveGame) {
-            if (!otherSession.equals(session)) {
+            if (!otherSession.equals(session) && type == ServerMessage.ServerMessageType.NOTIFICATION) {
                 otherSession.getRemote().sendString(new Gson().toJson(serverMessage));
             }
         }
     }
-
-
-
-
 }
