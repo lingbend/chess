@@ -13,6 +13,7 @@ public class GameData {
     String blackUsername = null;
     String gameName = null;
     ChessGame game = null;
+    String state = "active";
 
     public GameData(int id, String name){
         gameID = id;
@@ -68,6 +69,10 @@ public class GameData {
     public String getGameName() {
         return gameName;
     }
+
+    public String getState(){return state;}
+
+    public void setState(String newState) {state = newState;}
 
     public void setGame(ChessGame newGame) {
         game = newGame;

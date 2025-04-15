@@ -23,13 +23,14 @@ public class SQLGameAccess implements DataAccess, GameAccessInter {
         ChessGame game = gameData.getGame();
         String whiteUsername = gameData.getWhiteUsername();
         String blackUsername = gameData.getBlackUsername();
+        String state = gameData.getState();
 
         //needs to be refined to actually work here
         String jsonGame = new Gson().toJson(game);
 
         try (var conn = DatabaseManager.getConnection()) {
-            String statement = "INSERT games (gameID, gameName, game, whiteUsername, blackUsername)" +
-                    " VALUES(?, ?, ?, ?, ?)";
+            String statement = "INSERT games (gameID, gameName, game, whiteUsername, blackUsername, state)" +
+                    " VALUES(?, ?, ?, ?, ?, ?)";
             var preparedStatement = conn.prepareStatement(statement);
 
             preparedStatement.setInt(1, gameID);
@@ -37,6 +38,8 @@ public class SQLGameAccess implements DataAccess, GameAccessInter {
             preparedStatement.setString(3, jsonGame);
             preparedStatement.setString(4, whiteUsername);
             preparedStatement.setString(5, blackUsername);
+            preparedStatement.setString(6, state);
+
 
             preparedStatement.executeUpdate();
 
@@ -151,7 +154,8 @@ public class SQLGameAccess implements DataAccess, GameAccessInter {
         int gameID = Integer.decode(index);
 
         try (var conn = DatabaseManager.getConnection()) {
-            String statement = "SELECT gameID, whiteUsername, blackUsername, gameName, game FROM games WHERE gameID=?";
+            String statement = "SELECT gameID, whiteUsername, blackUsername, gameName, game, state" +
+                    " FROM games WHERE gameID=?";
             var preparedStatement = conn.prepareStatement(statement);
 
             preparedStatement.setInt(1, gameID);

@@ -40,6 +40,7 @@ public class DatabaseManager {
                 blackUsername VARCHAR(255),
                 gameName VARCHAR(255) NOT NULL,
                 game TEXT NOT NULL,
+                state TEXT NOT NULL,
                 Primary KEY (gameID)
                 """;
 
