@@ -95,10 +95,9 @@ public class GameDrawer {
 
             result.append("\u001b[49;39m").append(" ").append(row).append(" ").append("\n");
 
-            row += inc;
 
-            tileColor = getTileColor(tileColor);
-            currentBackColor = getCurrentBackColor(start, validMoves, row, col, tileColor);
+
+            row += inc;
 
 
             if (startingColor == ChessGame.TeamColor.WHITE) {
@@ -107,6 +106,9 @@ public class GameDrawer {
             else {
                 col = 8;
             }
+
+            tileColor = getTileColor(tileColor);
+            currentBackColor = getCurrentBackColor(start, validMoves, row, col, tileColor);
         }
 
         result.append(horizLabel).append(EscapeSequences.EMPTY).append("\n");
