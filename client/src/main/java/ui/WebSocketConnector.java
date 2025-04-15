@@ -2,6 +2,7 @@ package ui;
 
 import websocket.commands.UserGameCommand;
 import com.google.gson.Gson;
+import websocket.messages.ServerMessage;
 
 import javax.websocket.*;
 import java.net.URI;
@@ -20,7 +21,14 @@ public class WebSocketConnector extends Endpoint{
         session = container.connectToServer(this, uri);
         session.addMessageHandler(new MessageHandler.Whole<String>(){
             public void onMessage(String msg) {
-
+                ServerMessage message = new Gson().fromJson(msg, ServerMessage.class);
+                ClientResponseHandler responseHandler = new ClientResponseHandler(message, clientDB);
+                try {
+                    responseHandler.run();
+                }
+                catch (Exception ex) {
+                    System.out.println("Error receiving server response");
+                }
             };
         });
 
