@@ -73,6 +73,8 @@ public class WebSocketService {
                 sendMessage(liveGames.get(request.gameID), session, username + " joined game as black",
                         ServerMessage.ServerMessageType.NOTIFICATION);
             }
+            sendMessage(liveGames.get(request.gameID), session, "game",
+                    ServerMessage.ServerMessageType.LOAD_GAME);
         }
         else if (command == UserGameCommand.CommandType.MAKE_MOVE &&
                 (username.equals(whiteUsername) || username.equals(blackUsername))) {
@@ -95,12 +97,16 @@ public class WebSocketService {
                         otherUsername = game.getBlackUsername();
                     }
                     if (gameObj.isInCheckmate(gameObj.getTeamTurn())) {
-                        sendAll(liveGames.get(request.gameID), session, otherUsername + " moved is in checkmate",
+                        sendAll(liveGames.get(request.gameID), session, otherUsername + " is in checkmate",
                                 ServerMessage.ServerMessageType.NOTIFICATION);
                     }
                     else if (gameObj.isInCheck(gameObj.getTeamTurn())) {
-                        sendAll(liveGames.get(request.gameID), session, otherUsername + " moved is in check",
+                        sendAll(liveGames.get(request.gameID), session, otherUsername + " is in check",
                                 ServerMessage.ServerMessageType.NOTIFICATION);
+                    }
+                    else if (gameObj.isInStalemate(gameObj.getTeamTurn())) {
+                        sendAll(liveGames.get(request.gameID), session, otherUsername
+                                        + " is in stalemate", ServerMessage.ServerMessageType.NOTIFICATION);
                     }
                 }
                 else {
