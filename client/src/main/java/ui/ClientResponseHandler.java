@@ -18,7 +18,6 @@ public class ClientResponseHandler {
         message = serverMessage.getMessage();
         clientDB = storage;
         errorMessage = serverMessage.getErrorMessage();
-        System.out.println(new Gson().toJson(serverMessage));
     }
 
     public void run() throws Exception {

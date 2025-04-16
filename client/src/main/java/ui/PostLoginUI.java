@@ -176,7 +176,6 @@ public class PostLoginUI {
                 clientDB.currentGameID));
 
         System.out.printf("...Observing game %s\n", clientDB.currentGame.getGameName());
-        System.out.print(clientDB.drawer.drawBoard(new ChessGame(), null));
         System.out.print("\u001b[34;49m");
     }
 
