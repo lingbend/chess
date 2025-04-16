@@ -40,7 +40,7 @@ public class InGameUI {
         }
         else if (command.equals("move")) {
             if (clientDB.currentState == ServerFacadeLocal.State.Observing) {
-                throw new Exception("Access denied");
+                throw new FacadeException("Access denied");
             }
             if (parameters.size() > 2) {
                 checkParameters(3);
@@ -71,7 +71,7 @@ public class InGameUI {
         }
         else if (command.equals("resign")) {
             if (clientDB.currentState == ServerFacadeLocal.State.Observing) {
-                throw new Exception("Access denied");
+                throw new FacadeException("Access denied");
             }
             System.out.println("Are you sure you want to resign? Enter yes to confirm.");
             clientDB.facade.cleanUp();

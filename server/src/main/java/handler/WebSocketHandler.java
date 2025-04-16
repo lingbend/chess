@@ -44,7 +44,7 @@ public class WebSocketHandler {
             else if (ex.getMessage().equals("unauthorized")){
                 code = "401";
             }
-            var result =  "Error: " + ex.getMessage();
+            String result =  "Error: " + ex.getMessage();
             try {
                 sendMessage(session, result, ServerMessage.ServerMessageType.ERROR);
             }
