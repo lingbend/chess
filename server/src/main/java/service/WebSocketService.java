@@ -68,7 +68,8 @@ public class WebSocketService {
         }
     }
 
-    private void connect(UserGameCommand request, Session session, TreeMap<String, ArrayList<Session>> liveGames, String whiteUsername, String username, String blackUsername) throws Exception {
+    private void connect(UserGameCommand request, Session session, TreeMap<String,
+            ArrayList<Session>> liveGames, String whiteUsername, String username, String blackUsername) throws Exception {
         if (liveGames.get(request.gameID) == null || liveGames.get(request.gameID).isEmpty()) {
             liveGames.put(request.gameID, new ArrayList<Session>());
         }
@@ -88,7 +89,8 @@ public class WebSocketService {
         sendOne(session, null, ServerMessage.ServerMessageType.LOAD_GAME);
     }
 
-    private void makeMove(UserGameCommand request, Session session, TreeMap<String, ArrayList<Session>> liveGames, ChessGame gameObj, SQLGameAccess gameAccess, GameData game, String username) throws Exception {
+    private void makeMove(UserGameCommand request, Session session, TreeMap<String,
+            ArrayList<Session>> liveGames, ChessGame gameObj, SQLGameAccess gameAccess, GameData game, String username) throws Exception {
         ChessPosition start = request.move.getStartPosition();
         ChessMove move = request.move;
         ArrayList<ChessMove> validMoves = (ArrayList<ChessMove>) gameObj.validMoves(start);
@@ -131,7 +133,8 @@ public class WebSocketService {
         }
     }
 
-    private void leave(UserGameCommand request, Session session, TreeMap<String, ArrayList<Session>> liveGames, String username, String whiteUsername, GameData game, String blackUsername, SQLGameAccess gameAccess) throws Exception {
+    private void leave(UserGameCommand request, Session session, TreeMap<String, ArrayList<Session>> liveGames,
+                       String username, String whiteUsername, GameData game, String blackUsername, SQLGameAccess gameAccess) throws Exception {
         liveGames.get(request.gameID).remove(session);
 
         sendMessage(liveGames.get(request.gameID), session, username + " disconnected from the game",
@@ -150,7 +153,9 @@ public class WebSocketService {
         }
     }
 
-    private void resign(UserGameCommand request, Session session, TreeMap<String, ArrayList<Session>> liveGames, String whiteUsername, String username, GameData game, SQLGameAccess gameAccess, String blackUsername, ChessGame gameObj) throws Exception {
+    private void resign(UserGameCommand request, Session session, TreeMap<String, ArrayList<Session>> liveGames,
+                        String whiteUsername, String username, GameData game, SQLGameAccess gameAccess,
+                        String blackUsername, ChessGame gameObj) throws Exception {
         if (whiteUsername.equals(username)) {
             game.setState("inactive");
             gameAccess.update(game);
