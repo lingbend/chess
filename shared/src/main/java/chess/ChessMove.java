@@ -61,7 +61,10 @@ public class ChessMove {
 
     @Override
     public String toString() {
-        String output = "Start: " + this.startPosition + "End: " + this.endPosition + "Promo: " + this.promotionType;
+        String output = "Start: " + this.startPosition + " End: " + this.endPosition;
+        if (this.promotionType != null) {
+            output += " Promo: " + this.promotionType;
+        }
         return output;
     }
 }

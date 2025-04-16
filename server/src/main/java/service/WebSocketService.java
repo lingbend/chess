@@ -63,6 +63,9 @@ public class WebSocketService {
         else if (command == UserGameCommand.CommandType.RESIGN && game.getState().equals("active")) {
             resign(request, session, liveGames, whiteUsername, username, game, gameAccess, blackUsername, gameObj);
         }
+        else if (command == UserGameCommand.CommandType.MAKE_MOVE) {
+            throw new DataAccessException("illegal move");
+        }
         else {
             throw new DataAccessException("bad request");
         }
