@@ -30,7 +30,7 @@ public class InGameUI {
         else if (command.equals("leave")) {
             System.out.println("Leaving game...");
             UserGameCommand request = new UserGameCommand(UserGameCommand.CommandType.LEAVE,
-                    clientDB.authToken, clientDB.currentGameID);
+                    String.valueOf(clientDB.authToken), clientDB.currentGameID);
             clientDB.webSocket.transmit(request);
             clientDB.webSocket.close();
             clientDB.webSocket = null;
@@ -59,7 +59,7 @@ public class InGameUI {
                 move = new ChessMove(start, end, null);
             }
             UserGameCommand request = new UserGameCommand(UserGameCommand.CommandType.MAKE_MOVE,
-                    clientDB.authToken, clientDB.currentGameID);
+                    String.valueOf(clientDB.authToken), clientDB.currentGameID);
             request.setMove(move);
             clientDB.webSocket.transmit(request);
         }
@@ -79,7 +79,7 @@ public class InGameUI {
                     clientDB.facade.command.toLowerCase().equals("y")) {
                 System.out.println("Resigning...");
                 UserGameCommand request = new UserGameCommand(UserGameCommand.CommandType.RESIGN,
-                        clientDB.authToken, clientDB.currentGameID);
+                        String.valueOf(clientDB.authToken), clientDB.currentGameID);
                 clientDB.webSocket.transmit(request);
                 clientDB.currentState = ServerFacadeLocal.State.Observing;
                 System.out.println("...Successfully Resigned");

@@ -152,7 +152,8 @@ public class PostLoginUI {
         clientDB.currentState = ServerFacadeLocal.State.InGame;
 
         clientDB.webSocket = new WebSocketConnector(clientDB);
-        clientDB.webSocket.transmit(new UserGameCommand(UserGameCommand.CommandType.CONNECT, clientDB.authToken,
+        clientDB.webSocket.transmit(new UserGameCommand(UserGameCommand.CommandType.CONNECT,
+                String.valueOf(clientDB.authToken),
                 clientDB.currentGameID));
 
         System.out.printf("...Joined game %s\n", clientDB.currentGame.getGameName());
@@ -170,7 +171,8 @@ public class PostLoginUI {
         clientDB.currentState = ServerFacadeLocal.State.Observing;
 
         clientDB.webSocket = new WebSocketConnector(clientDB);
-        clientDB.webSocket.transmit(new UserGameCommand(UserGameCommand.CommandType.CONNECT, clientDB.authToken,
+        clientDB.webSocket.transmit(new UserGameCommand(UserGameCommand.CommandType.CONNECT,
+                String.valueOf(clientDB.authToken),
                 clientDB.currentGameID));
 
         System.out.printf("...Observing game %s\n", clientDB.currentGame.getGameName());

@@ -85,7 +85,7 @@ public class SQLGameAccess implements DataAccess, GameAccessInter {
 
     public ArrayList<GameData> findAll() throws DataAccessException{
         try (var conn = DatabaseManager.getConnection()) {
-            String statement = "SELECT gameID, whiteUsername, blackUsername, gameName, game FROM games";
+            String statement = "SELECT gameID, whiteUsername, blackUsername, gameName, game, state FROM games";
             var preparedStatement = conn.prepareStatement(statement);
 
             var findResponse = preparedStatement.executeQuery();
