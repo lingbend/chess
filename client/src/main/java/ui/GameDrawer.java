@@ -13,15 +13,15 @@ public class GameDrawer {
     private String username;
     private GameData currentGame;
     private final ServerFacadeLocal client;
-    private static final String backColor1 = "107";
-    private static final String backColor2 = "40";
-    private static final String frontColor1 = "35";
-    private static final String frontColor2 = "34";
-    private static final String highlightColorPiece = "103";
-    private static final String highlightColorMove = "42";
-    private static final String em = "\u2004".repeat(3) + "\u2006" + "\u2009".repeat(3);
-    private StringBuilder whiteHorizLabel = new StringBuilder("    " + "a" + em + "b" + em + "c" +
-            em + "d" + em + "e" + em + "f" + em + "g" + em + "h" + "    ");
+    private static final String BACKCOLOR1 = "107";
+    private static final String BACKCOLOR2 = "40";
+    private static final String FRONTCOLOR1 = "35";
+    private static final String FRONTCOLOR2 = "34";
+    private static final String HIGHLIGHTCOLORPIECE = "103";
+    private static final String HIGHLIGHTCOLORMOVE = "42";
+    private static final String EM = "\u2004".repeat(3) + "\u2006" + "\u2009".repeat(3);
+    private StringBuilder whiteHorizLabel = new StringBuilder("    " + "a" + EM + "b" + EM + "c" +
+            EM + "d" + EM + "e" + EM + "f" + EM + "g" + EM + "h" + "    ");
     private final StringBuilder blackHorizLabel = new StringBuilder(whiteHorizLabel.toString()).reverse();;
 
 
@@ -43,9 +43,9 @@ public class GameDrawer {
         updateStates();
 
         ChessBoard board = chess.getBoard();
-        String currentBackColor = backColor1;
+        String currentBackColor = BACKCOLOR1;
         String currentFrontColor = "";
-        String tileColor = backColor1;
+        String tileColor = BACKCOLOR1;
         StringBuilder result = new StringBuilder();
         ChessGame.TeamColor startingColor;
         ArrayList<ChessMove> validMoves = new ArrayList<>();
@@ -81,7 +81,7 @@ public class GameDrawer {
             result.append(" ").append(row).append(" ");
 
             while (col < 9 && col > 0) {
-                currentFrontColor = getPieceColor(row, col, board, frontColor1, frontColor2);
+                currentFrontColor = getPieceColor(row, col, board, FRONTCOLOR1, FRONTCOLOR2);
                 result.append("\u001b[").append(currentBackColor).append(";").append(currentFrontColor)
                         .append("m").append(getPieceCode(row, col, board));
                 tileColor = getTileColor(tileColor);
@@ -123,10 +123,10 @@ public class GameDrawer {
             currentBackColor = tileColor;
         }
         else if (start.equals(new ChessPosition(row, col))) {
-            currentBackColor = highlightColorPiece;
+            currentBackColor = HIGHLIGHTCOLORPIECE;
         }
         else if (checkIsMove(validMoves, start, row, col)) {
-            currentBackColor = highlightColorMove;
+            currentBackColor = HIGHLIGHTCOLORMOVE;
         }
         else {
             currentBackColor = tileColor;
@@ -135,11 +135,11 @@ public class GameDrawer {
     }
 
     private String getTileColor(String tileColor) {
-        if (tileColor.equals(backColor1)) {
-            tileColor = backColor2;
+        if (tileColor.equals(BACKCOLOR1)) {
+            tileColor = BACKCOLOR2;
         }
         else {
-            tileColor = backColor1;
+            tileColor = BACKCOLOR1;
         }
         return tileColor;
     }
