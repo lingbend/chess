@@ -152,7 +152,7 @@ public class WebSocketService {
                 throw new DataAccessException("observers cannot resign");
             }
             currentGame = gameObj;
-            sendMessage(liveGames.get(request.gameID), session, username + " resigned",
+            sendAll(liveGames.get(request.gameID), session, username + " resigned",
                     ServerMessage.ServerMessageType.NOTIFICATION);
         }
         else {

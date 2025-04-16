@@ -110,12 +110,14 @@ public class SQLGameAccess implements DataAccess, GameAccessInter {
         int gameID = findResponse.getInt("gameID");
         String gameName = findResponse.getString("gameName");
         String jsonGame = findResponse.getString("game");
+        String state = findResponse.getString("state");
         ChessGame game = new Gson().fromJson(jsonGame, ChessGame.class); //Need to make this part work
 
         GameData gameDataEntry = new GameData(gameID, gameName, game);
 
         gameDataEntry.setWhiteUsername(findResponse.getString("whiteUsername"));
         gameDataEntry.setBlackUsername(findResponse.getString("blackUsername"));
+        gameDataEntry.setState(state);
         return gameDataEntry;
     }
 
